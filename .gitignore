@@ -48,3 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+/UPS/.vs/UPS
+/UPS/obj/Debug
