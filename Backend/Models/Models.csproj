@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E0DC31CD-A361-41E9-85C4-BE1D395AF38E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>UPS</RootNamespace>
-    <AssemblyName>UPS</AssemblyName>
+    <ProjectGuid>{21AD8DA4-D413-4AEE-BA68-CE1B3F84E5F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Models</RootNamespace>
+    <AssemblyName>Models</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,8 +32,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup />
   <ItemGroup>
-    <None Include="App.config" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Product.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
