@@ -34,5 +34,18 @@ services:
    environment:
      ASPNETCORE_URLS: http://+;
      ASPNETCORE_HTTPS_PORT: 2006
+ 
+ frontend:
+   build:
+     context: ./Frontend/ups
+   ports:
+     - 3000:3000
+   depends_on:
+     - backend
+   networks:
+     - ups-net
+   environment:
+     REACT_APP_BACKEND_URL: http://backend:80
+     
 volumes:
  postgres-data:
