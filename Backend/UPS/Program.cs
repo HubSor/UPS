@@ -21,10 +21,8 @@ using (var scope = app.Services.CreateScope())
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred creating the DB.");
-        Console.WriteLine("Exception");
     }
 }
-Console.WriteLine("Nie ma exception");
 
 if (!app.Environment.IsDevelopment())
 {
