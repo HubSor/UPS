@@ -1,13 +1,12 @@
 networks:
   ups-net:
-    driver: bridge 
 
 services:
  base:
    image: postgres
    restart: always
    environment:
-     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?database password not set}
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
    volumes:
      - postgres-data:/var/lib/postgresql/data
    networks:
@@ -25,27 +24,26 @@ services:
    build:
      context: ./Backend
    ports:
-     - 2006:443
-     - 2007:80
+     - 2443:443
+     - 2080:80
    depends_on:
      - base
    networks:
      - ups-net
    environment:
-     ASPNETCORE_URLS: http://+;
-     ASPNETCORE_HTTPS_PORT: 2006
+     FRONTEND_ORIGIN: http://localhost:3000
+     ASPNETCORE_URLS: http://+:80;
+     #ASPNETCORE_HTTPS_PORT: 2443
  
  frontend:
    build:
      context: ./Frontend/ups
    ports:
      - 3000:3000
-   depends_on:
-     - backend
    networks:
      - ups-net
    environment:
-     REACT_APP_BACKEND_URL: http://backend:80
+     REACT_APP_BACKEND_URL: http://localhost:2080
      
 volumes:
  postgres-data:
