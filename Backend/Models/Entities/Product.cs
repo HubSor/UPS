@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Models.Entities
+﻿namespace Models.Entities
 {
     public class Product : Entity
     {

@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UPS;
+﻿using Consumers.Products;
+using Core;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,12 @@ builder.Services.AddCors(op =>
         pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "http://localhost:3000")
             .AllowAnyMethod().AllowAnyHeader();
     });
+});
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddMassTransit();
+builder.Services.AddMediator(op =>
+{
+    op.AddConsumersFromNamespaceContaining(typeof(AddProductConsumer));
 });
 
 var app = builder.Build();
