@@ -1,21 +1,17 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import '../style/App.css';
-import axios from 'axios';
+import { AddProductForm } from './AddProductForm';
+import { Products } from './Products';
 
-function App() {
-  const url = process.env.REACT_APP_BACKEND_URL + "/test/get";
+export default function App() {
+    const [refresh, setRefresh] = useState(true);
 
-  useEffect(() => {
-    axios.get(url).then(res => console.log(res));
-  }, [url]);
-
-  return <div className="App">
-      <header className="App-header">
-        <p>
-          Backend url: {url}
-        </p>
-      </header>
-    </div>
+    return (
+        <div className="App">
+            <header className="App-header">
+                <AddProductForm setRefresh={setRefresh} />
+                <Products refresh={refresh} setRefresh={setRefresh} />
+            </header>
+        </div>
+    );
 }
-
-export default App;
