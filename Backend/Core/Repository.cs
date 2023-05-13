@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Core
+﻿namespace Core
 {
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
@@ -29,9 +27,9 @@ namespace Core
             await context.SaveChangesAsync();
         }
 
-        IQueryable<TEntity> IRepository<TEntity>.GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
-            return context.Set<TEntity>().AsNoTracking();
+            return context.Set<TEntity>().ToList();
         }
     }
 }

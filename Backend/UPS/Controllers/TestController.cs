@@ -1,5 +1,4 @@
-﻿using Consumers.Products;
-using MassTransit.Mediator;
+﻿using MassTransit.Mediator;
 using Messages.Products;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,11 +31,11 @@ namespace UPS.Controllers
 
         [HttpGet]
         [Route("viewproducts")]
-        public async Task<IActionResult> ViewProducts()
+        public async Task<ViewProductsResponse> ViewProducts()
         {
             var client = Mediator.CreateRequestClient<ViewProductsOrder>();
             var res = await client.GetResponse<ViewProductsResponse>(new ViewProductsOrder());
-            return Ok(res.Message);
+            return res.Message;
         }
     }
 }

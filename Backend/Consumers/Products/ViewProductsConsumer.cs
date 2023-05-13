@@ -2,19 +2,21 @@
 using MassTransit;
 using Messages.Products;
 using Models.Dtos;
+using Models.Entities;
 
 namespace Consumers.Products;
 public class ViewProductConsumer : IConsumer<ViewProductsOrder>
 {
-    private UPSContext products;
-    public ViewProductConsumer(UPSContext products)
+    private readonly IRepository<Product> products;
+    public ViewProductConsumer(IRepository<Product> products)
     {
         this.products = products;
     }
 
-    public async Task Consume(ConsumeContext<ViewProductsOrder> context)
+    public Task Consume(ConsumeContext<ViewProductsOrder> context)
     {
-        var dtos = products.Products.Select(x => new ProductDto() { Name = x.Name, CreatedAt = x.CreatedAt });
-        await context.RespondAsync(new ViewProductsResponse() { Products = dtos });
+        var dtos = products.GetAll().Select(x => new ProductDto() { Name = x.Name, CreatedAt = x.CreatedAt });
+        context.Respond(new ViewProductsResponse() { Products = dtos });
+        return Task.CompletedTask;
     }
 }

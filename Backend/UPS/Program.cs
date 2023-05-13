@@ -2,9 +2,7 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Products;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +11,6 @@ builder.Services.AddDbContext<UPSContext>(options =>
    op => op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName))
 );
 
-builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddCors(op =>
 {
@@ -23,32 +20,19 @@ builder.Services.AddCors(op =>
         pol.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
-builder.Services.AddScoped(typeof(IRepository<Product>), typeof(Repository<Product>));
-builder.Services.AddScoped(typeof(IConsumer<ViewProductsOrder>), typeof(ViewProductConsumer));
 builder.Services.AddMediator(op =>
 {
     op.AddConsumersFromNamespaceContaining<AddProductConsumer>();
 });
-builder.Services.AddMassTransit(op =>
-{
-    op.AddConsumersFromNamespaceContaining<AddProductConsumer>();
-});
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<UPSContext>();
-        DataInitializer.Initialize(context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred creating the DB.");
-    }
+    var context = scope.ServiceProvider.GetRequiredService<UPSContext>();
+    DataInitializer.Initialize(context);
 }
 
 if (!app.Environment.IsDevelopment())
@@ -59,7 +43,6 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("AllowFrontend");
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
