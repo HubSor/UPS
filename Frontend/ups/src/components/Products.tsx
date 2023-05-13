@@ -20,9 +20,9 @@ export function Products({ refresh, setRefresh } : ProductsProps) {
     return (
         <div>
             <h2>Produkty</h2>
-            {products.map((p, i) => (
-                <div>
-                    Nr: {i} Name: {p.name} CreatedAt: {p.createdAt.toDateString()}
+            {products.map(p => (
+                <div key={p.id}>
+                    Nr: {p.id} Name: {p.name}
                 </div>
             ))}
         </div>

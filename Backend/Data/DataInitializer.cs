@@ -14,7 +14,7 @@ namespace Data
             }
 
             if (!context.Products.Any())
-                context.Products.Add(new Product() { CreatedAt = new DateTime(2000, 1, 1), Name = "Millennium" });
+                context.Products.Add(new Product() { Name = "Millennium" });
 
             context.SaveChanges();
         }

@@ -15,7 +15,7 @@ public class ViewProductConsumer : IConsumer<ViewProductsOrder>
 
     public Task Consume(ConsumeContext<ViewProductsOrder> context)
     {
-        var dtos = products.GetAll().Select(x => new ProductDto() { Name = x.Name, CreatedAt = x.CreatedAt });
+        var dtos = products.GetAll().Select(x => new ProductDto() { Id = x.Id, Name = x.Name });
         context.Respond(new ViewProductsResponse() { Products = dtos });
         return Task.CompletedTask;
     }
