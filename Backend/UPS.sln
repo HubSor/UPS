@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messages", "Messages\Messag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E7BE1058-72B1-45CD-994F-8B684B65005B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{D5E8C7AC-F3C2-465D-B697-FA868E2B1767}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E7BE1058-72B1-45CD-994F-8B684B65005B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7BE1058-72B1-45CD-994F-8B684B65005B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7BE1058-72B1-45CD-994F-8B684B65005B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5E8C7AC-F3C2-465D-B697-FA868E2B1767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5E8C7AC-F3C2-465D-B697-FA868E2B1767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5E8C7AC-F3C2-465D-B697-FA868E2B1767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5E8C7AC-F3C2-465D-B697-FA868E2B1767}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

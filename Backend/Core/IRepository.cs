@@ -1,8 +1,11 @@
 ﻿namespace Core
 {
     public interface IRepository<TEntity>
+        where TEntity : class
     {
-        TEntity Add(TEntity entity);
-        IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll();
+        Task AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
+        Task DeleteAsync(TEntity entity);
     }
 }

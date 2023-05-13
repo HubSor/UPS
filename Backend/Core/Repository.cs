@@ -5,22 +5,33 @@ namespace Core
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
-        protected UPSContext context;
-        protected DbSet<TEntity> entities;
+        protected readonly UPSContext context;
         public Repository(UPSContext context)
         {
             this.context = context;
-            entities = context.Set<TEntity>();
         }
 
-        public virtual TEntity Add(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
-            return entities.Add(entity).Entity;
+            await context.Set<TEntity>().AddAsync(entity);
+            await context.SaveChangesAsync();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public async Task DeleteAsync(TEntity entity)
         {
-            return entities;
+            context.Set<TEntity>().Remove(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            context.Set<TEntity>().Update(entity);
+            await context.SaveChangesAsync();
+        }
+
+        IQueryable<TEntity> IRepository<TEntity>.GetAll()
+        {
+            return context.Set<TEntity>().AsNoTracking();
         }
     }
 }

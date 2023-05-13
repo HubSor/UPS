@@ -14,7 +14,7 @@ public class AddProductConsumer : IConsumer<AddProductOrder>
 
     public async Task Consume(ConsumeContext<AddProductOrder> context)
     {
-        products.Add(new Product() { Name = context.Message.Name, CreatedAt = DateTime.Now });
+        await products.AddAsync(new Product() { Name = context.Message.Name, CreatedAt = DateTime.Now });
         await context.RespondAsync(new AddProductResponse());
     }
 }
