@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<UPSContext>(options =>
-   options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
-   op => op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
+        op => op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName))
 );
 
 builder.Services.AddControllers();
