@@ -1,3 +1,6 @@
 {
-    "dotnet.defaultSolution": "UPS.sln"
+    "dotnet.defaultSolution": "UPS.sln",
+    "csharp.inlayHints.enableInlayHintsForLambdaParameterTypes": false,
+    "csharp.inlayHints.enableInlayHintsForTypes": false,
+    "csharp.inlayHints.enableInlayHintsForImplicitVariableTypes": false,
 }

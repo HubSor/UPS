@@ -13,8 +13,12 @@ namespace Data
                 context.Database.Migrate();
             }
 
-            if (!context.Products.Any())
-                context.Products.Add(new Product() { Name = "Millennium" });
+            if (!context.Users.Any())
+                context.Users.Add(new User()
+                { 
+                    Id = 1,
+                    Name = "Admin" 
+                });
 
             context.SaveChanges();
         }
