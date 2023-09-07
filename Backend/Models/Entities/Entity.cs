@@ -2,9 +2,9 @@
 
 namespace Models.Entities
 {
-    public abstract class Entity
+    public abstract class Entity<T>
     {
         [Key]
-        public long Id { get; set; }
+        public T Id { get; set; } = default!;
     }
 }

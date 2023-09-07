@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/UPS/bin/Debug/net7.0/UPS.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/UPS",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",

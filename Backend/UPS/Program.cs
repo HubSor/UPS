@@ -11,10 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-	builder.Services.AddDbContext<UPSContext>(options =>
+	builder.Services.AddDbContext<UPSContext>(options => 
+	{
 		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
-			op => op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName))
-	);
+			op => {
+				op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName);
+			});
+	});
 }
 catch (Exception ex)
 {
@@ -42,6 +45,7 @@ builder.Services.AddMediator(mrc =>
 	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
 });
 
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginValidator));
