@@ -29,7 +29,7 @@ public class ExceptionFilter : IExceptionFilter
 			_logger.LogError(context.Exception, "Http request failed");
 			context.Result = new ContentResult
 			{
-				Content = _hostEnvironment.IsDevelopment() ? context.Exception.ToString() : "Server Error",
+				Content = _hostEnvironment.IsDevelopment() ? context.Exception.ToString() : "Błąd serwera",
 				StatusCode = (int)HttpStatusCode.InternalServerError
 			};
 		}

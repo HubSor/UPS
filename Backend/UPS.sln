@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validators", "Validators\Validators.csproj", "{61E63F91-5AE1-4682-A8E9-C482DE69BAD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{BB80524C-F77E-4A39-832A-85EA9F7A103C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{7C77BB2E-0A5E-45B3-8203-5857B398CDF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{61E63F91-5AE1-4682-A8E9-C482DE69BAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61E63F91-5AE1-4682-A8E9-C482DE69BAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61E63F91-5AE1-4682-A8E9-C482DE69BAD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB80524C-F77E-4A39-832A-85EA9F7A103C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB80524C-F77E-4A39-832A-85EA9F7A103C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB80524C-F77E-4A39-832A-85EA9F7A103C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB80524C-F77E-4A39-832A-85EA9F7A103C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C77BB2E-0A5E-45B3-8203-5857B398CDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C77BB2E-0A5E-45B3-8203-5857B398CDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C77BB2E-0A5E-45B3-8203-5857B398CDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C77BB2E-0A5E-45B3-8203-5857B398CDF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

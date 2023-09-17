@@ -3,6 +3,7 @@ using Core;
 using Data;
 using FluentValidation;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using UPS.Filters;
 using Validators.Users;
@@ -50,6 +51,16 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginValidator));
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+	.AddCookie(conf => 
+	{
+		conf.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+		conf.SlidingExpiration = true;
+		conf.LoginPath = "/login";
+		conf.LogoutPath = "/logout";
+	});
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 try 
@@ -77,6 +88,9 @@ else
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseCookiePolicy(new CookiePolicyOptions(){ Secure = CookieSecurePolicy.None});
 app.UseCors("AllowFrontend");
 
 app.MapControllerRoute(
