@@ -13,9 +13,9 @@ namespace Models.Entities
 		[MaxLength(32)]
 		public byte[] Salt { get; set; } = default!;
 		public bool Active { get; set; } = true;
-		public IEnumerable<Role> Roles { get; set; } = Enumerable.Empty<Role>();
+		public ICollection<RoleEntity> Roles { get; set; } = default!;
 		
-		public IEnumerable<Claim> GetClaims()
+		public ICollection<Claim> GetClaims()
 		{
 			return new List<Claim>()
 			{

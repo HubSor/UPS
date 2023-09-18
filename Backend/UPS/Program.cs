@@ -5,6 +5,7 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Services;
 using UPS.Filters;
 using Validators.Users;
 
@@ -12,11 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-	builder.Services.AddDbContext<UPSContext>(options => 
+	builder.Services.AddDbContext<UnitOfWork>(options => 
 	{
 		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
 			op => {
-				op.MigrationsAssembly(typeof(UPSContext).Assembly.FullName);
+				op.MigrationsAssembly(typeof(UnitOfWork).Assembly.FullName);
 			});
 	});
 }
@@ -48,6 +49,7 @@ builder.Services.AddMediator(mrc =>
 
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginValidator));
 
@@ -60,14 +62,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 		conf.LogoutPath = "/logout";
 	});
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
 try 
 {
 	using var scope = app.Services.CreateScope();
-	var context = scope.ServiceProvider.GetRequiredService<UPSContext>();
-	DataInitializer.Initialize(context);
+	{
+		var context = scope.ServiceProvider.GetRequiredService<UnitOfWork>();
+		var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
+		DataInitializer.Initialize(context, passwordService);
+	}
 }
 catch (Exception ex)
 {
@@ -92,6 +99,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy(new CookiePolicyOptions(){ Secure = CookieSecurePolicy.None});
 app.UseCors("AllowFrontend");
+app.UseSession();
 
 app.MapControllerRoute(
 	name: "default",

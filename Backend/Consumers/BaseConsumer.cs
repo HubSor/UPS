@@ -26,6 +26,6 @@ public abstract class BaseConsumer<Order, Response> : IConsumer<Order>
 	
 	public virtual async Task RespondAsync(ConsumeContext<Order> context, Response response)
 	{
-		await context.RespondAsync(response);
+		await context.RespondAsync(new ApiResponse<Response>(response));
 	}
 }

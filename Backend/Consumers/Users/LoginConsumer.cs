@@ -26,7 +26,7 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 
 	public override async Task InTransaction(ConsumeContext<LoginOrder> context)
 	{
-		var user = await users.GetAll().FirstOrDefaultAsync(u => u.Name == context.Message.Username);
+		var user = await users.GetAll().Include(x => x.Roles).FirstOrDefaultAsync(u => u.Name == context.Message.Username);
 		
 		if (user == null || !user.Active)
 		{
@@ -35,7 +35,8 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 			return;
 		}
 		
-		if (passwordService.GenerateHash(context.Message.Password, user.Salt) == user.Hash)
+		var newHash = passwordService.GenerateHash(context.Message.Password, user.Salt);
+		if (newHash.SequenceEqual(user.Hash))
 		{
 			var claims = user.GetClaims();
 			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

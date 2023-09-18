@@ -3,8 +3,8 @@
 	public class Repository<TEntity> : IRepository<TEntity>
 		where TEntity : class
 	{
-		protected readonly UPSContext context;
-		public Repository(UPSContext context)
+		protected readonly UnitOfWork context;
+		public Repository(UnitOfWork context)
 		{
 			this.context = context;
 		}

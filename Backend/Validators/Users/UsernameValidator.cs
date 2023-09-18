@@ -9,7 +9,7 @@ namespace Validators.Users
 			When(x => !string.IsNullOrEmpty(x), () => 
 			{
 				RuleFor(x => x)
-					.MinimumLength(8).WithMessage("Minimalna długość loginu to 8")
+					.MinimumLength(4).WithMessage("Minimalna długość loginu to 4")
 					.MaximumLength(64).WithMessage("Maksymalna długość loginu to 64");
 			});
 		}
