@@ -12,5 +12,11 @@ public static class HttpContextHelpers
 	}
 	
 	public static bool HasRole(this IHttpContextAccessor context, Role role) => HasAnyRole(context, new List<Role>() { role });
+	
+	public static bool IsAuthorized(this IHttpContextAccessor context)
+	{
+		var nameClaim = context.HttpContext.User.FindFirst(ClaimTypes.Name);
+		return nameClaim?.Value != null && !string.IsNullOrEmpty(nameClaim.Value);
+	}
 }
 

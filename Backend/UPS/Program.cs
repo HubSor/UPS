@@ -58,8 +58,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 	{
 		conf.ExpireTimeSpan = TimeSpan.FromMinutes(15);
 		conf.SlidingExpiration = true;
-		conf.LoginPath = "/login";
-		conf.LogoutPath = "/logout";
+		conf.Events.OnRedirectToLogin = context => 
+		{
+			context.Response.StatusCode = 401;
+			return Task.CompletedTask;
+		};
 	});
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();

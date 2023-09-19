@@ -1,2 +1,2 @@
 migracje dodawać z poziomu ./UPS komendą
-dotnet ef migrations add [tytuł] --project ../Data/Data.csproj -c UPSContext
+dotnet ef migrations add [tytuł] --project ../Data/Data.csproj -c UnitOfWork

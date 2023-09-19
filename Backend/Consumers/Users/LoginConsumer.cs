@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Core;
+using Helpers;
 using MassTransit;
 using Messages.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -26,6 +27,12 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 
 	public override async Task InTransaction(ConsumeContext<LoginOrder> context)
 	{
+		if (httpContextAccessor.IsAuthorized())
+		{
+			await RespondWithValidationFailAsync(context, nameof(LoginOrder.Username), "Użytkownik już zalogowany");
+			return;
+		}
+		
 		var user = await users.GetAll().Include(x => x.Roles).FirstOrDefaultAsync(u => u.Name == context.Message.Username);
 		
 		if (user == null || !user.Active)
