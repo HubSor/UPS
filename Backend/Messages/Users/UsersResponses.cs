@@ -1,5 +1,10 @@
-﻿namespace Messages.Users;
+﻿using Dtos.Users;
 
-public class LoginResponse {}
+namespace Messages.Users;
+
+public class LoginResponse 
+{
+	public UserDto UserDto { get; set; } = default!;
+}
 
 public class LogoutResponse {}

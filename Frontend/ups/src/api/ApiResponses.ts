@@ -1,5 +1,12 @@
-import { ProductDto } from "./Dtos"
+import { UserDto } from "./Dtos"
 
-export type ProductsResponse = {
-    products: ProductDto[]
+export type ApiResponse<T> = {
+    statusCode: number,
+    data?: T,
+    errors: {[key: string]: string[]},
+    success: boolean,
+}
+
+export type LoginResponse = {
+    userDto: UserDto
 }
