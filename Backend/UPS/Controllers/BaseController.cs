@@ -19,7 +19,10 @@ namespace UPS.Controllers
 		{
 			var client = Mediator.CreateRequestClient<O>();
 			var response = await client.GetResponse<ApiResponse<R>>(order);
-			return response.Message.Success ? Ok(response) : BadRequest(response);
+            return new ObjectResult(response.Message)
+            {
+                StatusCode = (int)response.Message.StatusCode
+            };
 		}
 	}
 }

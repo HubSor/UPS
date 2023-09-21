@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Core;
-using Helpers;
+using Dtos.Users;
 using MassTransit;
 using Messages.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -26,13 +26,7 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 	}
 
 	public override async Task InTransaction(ConsumeContext<LoginOrder> context)
-	{
-		if (httpContextAccessor.IsAuthorized())
-		{
-			await RespondWithValidationFailAsync(context, nameof(LoginOrder.Username), "Użytkownik już zalogowany");
-			return;
-		}
-		
+	{		
 		var user = await users.GetAll().Include(x => x.Roles).FirstOrDefaultAsync(u => u.Name == context.Message.Username);
 		
 		if (user == null || !user.Active)
@@ -49,7 +43,14 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 			var principal = new ClaimsPrincipal(claimsIdentity);
 			await httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-			await RespondAsync(context, new LoginResponse());			
+			await RespondAsync(context, new LoginResponse() 
+			{
+				UserDto = new UserDto()
+				{
+					Username = user.Name,
+					Roles = user.Roles.Select(r => r.Id.ToString()).ToList()
+				}
+			});			
 			return;
 		}
 		

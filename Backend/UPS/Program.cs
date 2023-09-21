@@ -21,10 +21,10 @@ try
 			});
 	});
 }
-catch (Exception ex)
+catch (Exception)
 {
 	Console.WriteLine("Database connection error");
-	Console.Write(ex);
+	throw;
 }
 
 builder.Services.AddControllersWithViews(x => x.Filters.Add(typeof(ExceptionFilter)));
@@ -33,7 +33,7 @@ builder.Services.AddCors(op =>
 	op.AddPolicy("AllowFrontend", pol =>
 	{
 		//pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "http://localhost:3000")
-		pol.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+		pol.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 	});
 });
 
@@ -47,25 +47,31 @@ builder.Services.AddMediator(mrc =>
 	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginValidator));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(conf => 
 	{
-		conf.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+		conf.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 		conf.SlidingExpiration = true;
 		conf.Events.OnRedirectToLogin = context => 
 		{
 			context.Response.StatusCode = 401;
 			return Task.CompletedTask;
 		};
+		conf.Cookie.IsEssential = true;
+		conf.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+		conf.Cookie.HttpOnly = true;
+		conf.Cookie.Name="UPSAuth";
+		conf.Cookie.SameSite = SameSiteMode.Strict;
 	});
 builder.Services.AddAuthorization();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 
 var app = builder.Build();
@@ -79,10 +85,10 @@ try
 		DataInitializer.Initialize(context, passwordService);
 	}
 }
-catch (Exception ex)
+catch (Exception)
 {
 	Console.WriteLine("Database initialization error");
-	Console.Write(ex);
+	throw;
 }
 
 
