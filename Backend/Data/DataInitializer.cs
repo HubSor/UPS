@@ -1,5 +1,4 @@
-﻿using Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 using Services;
 

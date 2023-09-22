@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Services;
 
-namespace Consumers.Products;
+namespace Consumers.Users;
 public class LogoutConsumer : BaseConsumer<LogoutOrder, LogoutResponse>
 {
 	private IHttpContextAccessor httpContextAccessor;

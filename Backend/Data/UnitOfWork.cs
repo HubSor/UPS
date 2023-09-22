@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
-namespace Core
+namespace Data
 {
 	public class UnitOfWork : DbContext, IUnitOfWork
 	{

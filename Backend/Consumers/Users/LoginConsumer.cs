@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Core;
+using Data;
 using Dtos.Users;
 using MassTransit;
 using Messages.Users;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Models.Entities;
 using Services;
 
-namespace Consumers.Products;
+namespace Consumers.Users;
 public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 {
 	private IRepository<User> users;

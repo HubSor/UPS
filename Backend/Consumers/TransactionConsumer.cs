@@ -1,4 +1,4 @@
-using Core;
+using Data;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -26,14 +26,14 @@ public abstract class TransactionConsumer<Order, Response> : BaseConsumer<Order,
 				await InTransaction(context);
 				await unitOfWork.FlushAsync();
 				await unitOfWork.CommitTransasctionAsync();
+				
+				await PostTransaction(context);
 			}
 			catch (Exception ex)
 			{
 				await unitOfWork.RollbackTransactionAsync();
 				logger.LogInformation(ex, "Exception in TransactionConsumer");
 			}
-			
-			await PostTransaction(context);
 		}
 		else
 		{

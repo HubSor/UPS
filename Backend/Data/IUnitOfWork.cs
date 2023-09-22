@@ -1,4 +1,4 @@
-namespace Core
+namespace Data
 {
 	public interface IUnitOfWork
 	{
