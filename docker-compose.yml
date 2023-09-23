@@ -31,8 +31,8 @@ services:
    networks:
      - ups-net
    environment:
-     FRONTEND_ORIGIN: http://localhost:3000
-     ASPNETCORE_URLS: http://+:80;
+     FRONTEND_ORIGIN: http://frontend:3000
+     ASPNETCORE_URLS: http://+:80
      #ASPNETCORE_HTTPS_PORT: 2443
  
  frontend:

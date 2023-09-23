@@ -1,4 +1,4 @@
-export type ProductDto = {
-    id: number
-    name: string
+export type UserDto = {
+    username: string
+    roles: string[]
 }
