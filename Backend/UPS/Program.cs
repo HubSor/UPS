@@ -32,8 +32,8 @@ builder.Services.AddCors(op =>
 {
 	op.AddPolicy("AllowFrontend", pol =>
 	{
-		//pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "http://localhost:3000")
-		pol.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "http://frontend:3000", "http://localhost:3000")
+			.AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 	});
 });
 

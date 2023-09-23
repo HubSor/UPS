@@ -8,13 +8,15 @@ namespace Data
 	{
 		public static void Initialize(UnitOfWork context, IPasswordService passwordService)
 		{
-			context.Database.EnsureCreated();
-			Clear(context);
 			
+			context.Database.EnsureCreated();
+						
 			if (context.Database.GetPendingMigrations().Any())
 			{
 				context.Database.Migrate();
 			}
+			
+			Clear(context);
 					
 			var roles = new List<RoleEntity>()
 			{
