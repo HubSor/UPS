@@ -8,13 +8,13 @@ namespace Models
 	{
 		public void Configure(EntityTypeBuilder<User> builder)
 		{
-			builder.HasMany(x => x.Roles).WithMany();
+			builder.HasMany(x => x.Roles).WithMany().UsingEntity("UserRoles");
 		}
 	}
 	
-	public class RoleMapping : IEntityTypeConfiguration<RoleEntity>
+	public class RoleMapping : IEntityTypeConfiguration<Role>
 	{
-		public void Configure(EntityTypeBuilder<RoleEntity> builder)
+		public void Configure(EntityTypeBuilder<Role> builder)
 		{
 			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
 		}

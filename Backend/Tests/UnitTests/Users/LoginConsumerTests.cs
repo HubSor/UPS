@@ -31,11 +31,11 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 			Name = userName,
 			Salt = salt,
 			Hash = hash,
-			Roles = new List<RoleEntity>()
+			Roles = new List<Role>()
 			{
 				new()
 				{
-					Id = Role.Administrator
+					Id = RoleEnum.Administrator
 				}
 			}
 		});

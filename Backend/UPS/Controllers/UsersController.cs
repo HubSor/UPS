@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace UPS.Controllers
 {
-    [Route("user")]
-	public class UserController : BaseController
+	[Route("users")]
+	public class UsersController : BaseController
 	{
-		public UserController(IMediator mediator)
+		public UsersController(IMediator mediator)
 			: base(mediator)
 		{
 		}
@@ -26,6 +26,14 @@ namespace UPS.Controllers
 		public async Task<IActionResult> Logout([FromBody] LogoutOrder order)
 		{
 			return await RespondAsync<LogoutOrder, LogoutResponse>(order);
+		}
+		
+		[HttpPost]
+		[Authorize]
+		[Route("add")]
+		public async Task<IActionResult> AddUser([FromBody] AddUserOrder order)
+		{
+			return await RespondAsync<AddUserOrder, AddUserResponse>(order);
 		}
 	}
 }

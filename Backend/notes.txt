@@ -1,4 +1,0 @@
-migracje dodawać z poziomu ./UPS komendą
-dotnet ef migrations add [tytuł] --project ../Data/Data.csproj -c UnitOfWork
-
-find  . -name '*.cs' -o -name '*.ts*' -not -path '*/node_modules/*' | xargs wc -l

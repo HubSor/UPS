@@ -54,10 +54,10 @@ export class Api {
     private static url =  process.env.REACT_APP_BACKEND_URL;
 
     static async Login(request: LoginRequest) {
-        return await getApiResponse<LoginRequest, LoginResponse>(request, this.url + "/user/login"); 
+        return await getApiResponse<LoginRequest, LoginResponse>(request, this.url + "/users/login"); 
     }
 
     static async Logout() {
-        return await getApiResponse<undefined, undefined>(undefined, this.url + "/user/logout");
+        return await getApiResponse<undefined, undefined>(undefined, this.url + "/users/logout");
     }
 }

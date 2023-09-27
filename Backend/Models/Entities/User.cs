@@ -13,14 +13,14 @@ namespace Models.Entities
 		[MaxLength(32)]
 		public byte[] Salt { get; set; } = default!;
 		public bool Active { get; set; } = true;
-		public ICollection<RoleEntity> Roles { get; set; } = default!;
+		public ICollection<Role> Roles { get; set; } = default!;
 		
 		public ICollection<Claim> GetClaims()
 		{
 			return new List<Claim>()
 			{
-				new Claim(ClaimTypes.Name, Name),
-				new Claim(ClaimTypes.Role, string.Join(':', Roles.Select(x => x.ToString()))),
+				new (ClaimTypes.Name, Name),
+				new (ClaimTypes.Role, string.Join(':', Roles.Select(x => x.Id.ToString()))),
 			};
 		}
 	}

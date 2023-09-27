@@ -8,3 +8,5 @@ public class LoginResponse
 }
 
 public class LogoutResponse {}
+
+public class AddUserResponse {}
