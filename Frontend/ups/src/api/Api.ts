@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiResponse, LoginResponse } from "./ApiResponses";
-import { LoginRequest } from "./ApiRequests";
+import { AddUserRequest, LoginRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 
 axios.defaults.withCredentials = true;
@@ -59,5 +59,24 @@ export class Api {
 
     static async Logout() {
         return await getApiResponse<undefined, undefined>(undefined, this.url + "/users/logout");
+    }
+
+    static async AddUser(request: AddUserRequest) {
+        return await getApiResponse<AddUserRequest, undefined>(request, this.url + "/users/add");
+    }
+
+    static async Session() {
+        const abc = await axios.post(this.url + "/users/session", {}, {
+            validateStatus: status => status <= 500,    
+            headers: {
+                "Content-Type": "application/json"
+            }    
+        }).then(r => {
+            return r.data as boolean;
+        }).catch(e => {
+            return false;
+        })
+
+        return abc;
     }
 }

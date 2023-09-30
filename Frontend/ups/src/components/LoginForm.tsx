@@ -3,13 +3,19 @@ import { Api } from "../api/Api";
 import { useNavigate } from "react-router-dom";
 import { Paths } from "../App";
 import { AuthHelpers } from "../helpers/AuthHelper";
+import { LoginRequest } from "../api/ApiRequests";
+
+const initialValues: LoginRequest = {
+    username: "",
+    password: ""
+}
 
 export default function LoginForm(){
     const nav = useNavigate();
 
     return <div>
         <Formik
-            initialValues={{ username: "", password: ""}}
+            initialValues={initialValues}
             onSubmit={(values, fh) => {
                 Api.Login(values).then(res => {
                     if (res.success && res.data){

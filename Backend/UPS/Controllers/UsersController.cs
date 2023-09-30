@@ -12,6 +12,14 @@ namespace UPS.Controllers
 			: base(mediator)
 		{
 		}
+		
+		[HttpPost]
+		[Authorize]
+		[Route("session")]
+		public IActionResult Session()
+		{
+			return Ok(HttpContext.User.Identity?.IsAuthenticated ?? false);
+		}
 
 		[HttpPost]
 		[Route("login")]
