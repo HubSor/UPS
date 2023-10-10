@@ -1,47 +1,44 @@
 using Core;
-using Helpers;
+using Data;
 using MassTransit;
 using Messages.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 using Services;
 
 namespace Consumers.Users;
-public class AddUserConsumer : BaseConsumer<AddUserOrder, AddUserResponse>
+public class AddUserConsumer : TransactionConsumer<AddUserOrder, AddUserResponse>
 {
-	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IRepository<User> users;
 	private readonly IRepository<Role> roles;
 	private readonly IPasswordService passwordService;
 	
-	public AddUserConsumer(IHttpContextAccessor httpContextAccessor, ILogger<AddUserConsumer> logger, IRepository<User> users, IPasswordService passwordService,
-		IRepository<Role> roles)
-		: base(logger)
+	public AddUserConsumer(ILogger<AddUserConsumer> logger, IRepository<User> users, IPasswordService passwordService,
+		IRepository<Role> roles, IUnitOfWork unitOfWork)
+		: base(unitOfWork, logger)
 	{
 		this.roles = roles;
 		this.users = users;
 		this.passwordService = passwordService;
-		this.httpContextAccessor = httpContextAccessor;
 	}
 
-	public override async Task Consume(ConsumeContext<AddUserOrder> context)
+	public override async Task<bool> PreTransaction(ConsumeContext<AddUserOrder> context)
 	{
-		if (!httpContextAccessor.HasAnyRole(RoleEnum.UserManager, RoleEnum.Administrator))
-		{
-			await RespondWithValidationFailAsync(context, "root", "Brak uprawnień do tworzenia użykowników");
-			return;
-		}
-		
 		if (await users.GetAll().AnyAsync(x => x.Name == context.Message.Username))
 		{
 			await RespondWithValidationFailAsync(context, "Username", "Istnieje już użytkownik o takiej nazwie");
-			return;
+			return false;
 		}
 		
+		return true;
+	}
+
+	public override async Task InTransaction(ConsumeContext<AddUserOrder> context)
+	{
 		var salt = passwordService.GenerateSalt();
 		var hash = passwordService.GenerateHash(context.Message.Password, salt);
+		var roleids = roles.GetAll();
 		var newRoles = await roles.GetAll().Where(r => context.Message.RoleIds.Contains(r.Id)).ToListAsync();
 		
 		var newUser = new User()
@@ -54,6 +51,10 @@ public class AddUserConsumer : BaseConsumer<AddUserOrder, AddUserResponse>
 		};
 		
 		await users.AddAsync(newUser);
+	}
+
+	public override async Task PostTransaction(ConsumeContext<AddUserOrder> context)
+	{
 		await RespondAsync(context, new AddUserResponse());
 	}
 }

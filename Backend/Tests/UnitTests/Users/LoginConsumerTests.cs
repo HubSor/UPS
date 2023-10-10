@@ -46,11 +46,12 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 	[Test]
 	public async Task Consume_BadRequest_NoUser()
 	{
-		var order = new LoginOrder("abc nie ma mnie w bazie", "hasło");
+		var order = new LoginOrder("abc nie ma mnie w bazie", userPassword);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
 		Assert.That(mockHttpContextAccessor.SignedIn, Is.False);
+		Assert.That(responses.Single().Errors!.Values.Any(v => v.Contains("Niepoprawne hasło")), Is.True);
 	}
 	
 	[Test]

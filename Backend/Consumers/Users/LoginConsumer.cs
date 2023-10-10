@@ -48,6 +48,7 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 			{
 				UserDto = new UserDto()
 				{
+					Id = user.Id,
 					Username = user.Name,
 					Roles = user.Roles.Select(r => r.Id.ToString()).ToList()
 				}
@@ -57,7 +58,8 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 		
 		if (!user.Active)
 		{
-			await RespondWithValidationFailAsync(context, nameof(LoginOrder.Username), "Konto nieaktywne");	
+			await RespondWithValidationFailAsync(context, nameof(LoginOrder.Username), "Konto nieaktywne");
+			return;
 		}
 		
 		await RespondWithValidationFailAsync(context, nameof(LoginOrder.Password), "Niepoprawne hasło");
