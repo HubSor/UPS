@@ -16,5 +16,10 @@ public static class HttpContextHelpers
 		var nameClaim = context.HttpContext.User.FindFirst(ClaimTypes.Name);
 		return nameClaim?.Value != null && !string.IsNullOrEmpty(nameClaim.Value);
 	}
+	
+	public static int GetUserId(this IHttpContextAccessor context)
+	{
+		var idClaim = context.HttpContext.User.FindFirst(User.IdClaimType);
+		return idClaim?.Value != null ? int.Parse(idClaim.Value) : 0;  
+	}
 }
-

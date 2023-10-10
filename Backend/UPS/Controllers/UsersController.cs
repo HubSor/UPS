@@ -2,6 +2,8 @@
 using Messages.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using UPS.Attributes;
+using Models.Entities;
 
 namespace UPS.Controllers
 {
@@ -37,11 +39,27 @@ namespace UPS.Controllers
 		}
 		
 		[HttpPost]
-		[Authorize]
+		[AuthorizeRoles(RoleEnum.UserManager, RoleEnum.Administrator)]
 		[Route("add")]
 		public async Task<IActionResult> AddUser([FromBody] AddUserOrder order)
 		{
 			return await RespondAsync<AddUserOrder, AddUserResponse>(order);
+		}
+		
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.UserManager, RoleEnum.Administrator)]
+		[Route("list")]
+		public async Task<IActionResult> ListUsers([FromBody] ListUsersOrder order)
+		{
+			return await RespondAsync<ListUsersOrder, ListUsersResponse>(order);
+		}
+		
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.UserManager, RoleEnum.Administrator)]
+		[Route("edit")]
+		public async Task<IActionResult> Edit([FromBody] EditUserOrder order)
+		{
+			return await RespondAsync<EditUserOrder, EditUserResponse>(order);
 		}
 	}
 }

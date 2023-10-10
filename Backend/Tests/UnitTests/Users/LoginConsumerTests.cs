@@ -5,7 +5,7 @@ using Models.Entities;
 using NUnit.Framework;
 using Services;
 
-namespace UnitTests;
+namespace UnitTests.Users;
 
 [TestFixture]
 public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, LoginResponse>
