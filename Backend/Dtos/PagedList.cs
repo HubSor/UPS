@@ -7,16 +7,16 @@ public class PagedList<T> : IEnumerable<T>
 	public ICollection<T> Items { get; set; }
 	public ResultPaginationDto Pagination { get; set; }
 	
-	public PagedList(ICollection<T> items, int totalCount, int pageNumber, int pageSize)
+	public PagedList(ICollection<T> items, int totalCount, int pageIndex, int pageSize)
 	{
 		Items = items;
 		Pagination = new()
 		{
 			TotalCount = totalCount,
-			PageNumber = pageNumber,
+			PageIndex = pageIndex,
 			PageSize = pageSize,
 			Count = items.Count,
-			TotalPages = totalCount > 0 ? (totalCount - 1) / pageSize : 0
+			TotalPages = totalCount > 0 ? ((totalCount + pageSize - 1) / pageSize) : 0
 		};
 	}
 	
@@ -27,7 +27,7 @@ public class PagedList<T> : IEnumerable<T>
 public class PaginationDto 
 {
 	public int PageSize { get; set; } = 10;
-	public int PageNumber { get; set; }
+	public int PageIndex { get; set; }
 }
 
 public class ResultPaginationDto: PaginationDto

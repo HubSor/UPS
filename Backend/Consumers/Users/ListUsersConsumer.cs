@@ -24,10 +24,11 @@ public class ListUsersConsumer : BaseConsumer<ListUsersOrder, ListUsersResponse>
 		var userList = await users.GetAll()
 			.OrderBy(x => x.Id)
 			.Include(u => u.Roles)
-			.Skip(context.Message.Pagination.PageNumber * context.Message.Pagination.PageSize)
+			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
 			.Take(context.Message.Pagination.PageSize)
 			.Select(u => new UserDto()
 			{
+				Id = u.Id,
 				Username = u.Name,
 				Roles = u.Roles.Select(r => r.Id.ToString()).ToList()
 			})
@@ -36,7 +37,7 @@ public class ListUsersConsumer : BaseConsumer<ListUsersOrder, ListUsersResponse>
 		await RespondAsync(context, new ListUsersResponse()
 		{
 			Users = new PagedList<UserDto>(userList, userCount,
-				context.Message.Pagination.PageNumber, context.Message.Pagination.PageSize)
+				context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)
 		});
 	}
 }

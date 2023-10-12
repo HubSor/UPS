@@ -9,7 +9,7 @@ namespace Validators
 		{				
 			When(x => x != null, () => 
 			{
-				RuleFor(y => y.PageNumber)
+				RuleFor(y => y.PageIndex)
 					.GreaterThanOrEqualTo(0).WithMessage("Numer strony nie może być ujemny");
 				
 				RuleFor(x => x.PageSize)
