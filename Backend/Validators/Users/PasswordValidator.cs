@@ -2,7 +2,7 @@
 
 namespace Validators.Users
 {
-	public class PasswordValidator: AbstractValidator<string>
+	public class PasswordValidator: AbstractValidator<string?>
 	{
 		public PasswordValidator()
 		{

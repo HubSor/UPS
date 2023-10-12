@@ -38,6 +38,15 @@ namespace Data
 				Salt = salt,
 				Hash = hash,
 			});
+			
+			context.Users.Add(new User()
+			{
+				Name = "test",
+				Active = true,
+				Roles = roles.Where(r => r.Id == RoleEnum.Seller).ToList(),
+				Salt = salt,
+				Hash = hash
+			});
 
 			context.SaveChanges();
 		}

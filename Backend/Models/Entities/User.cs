@@ -21,12 +21,13 @@ namespace Models.Entities
 		
 		public ICollection<Claim> GetClaims()
 		{
-			return new List<Claim>()
+			var claims = new List<Claim>()
 			{
 				new (ClaimTypes.Name, Name),
-				new (ClaimTypes.Role, string.Join(':', Roles.Select(x => x.Id.ToString()))),
 				new (IdClaimType, Id.ToString())
 			};
+			claims.AddRange(Roles.Select(r => new Claim(ClaimTypes.Role, r.Id.ToString())));
+			return claims;
 		}
 	}
 }
