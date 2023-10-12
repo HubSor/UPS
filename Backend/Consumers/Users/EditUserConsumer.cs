@@ -71,6 +71,12 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 			.FirstOrDefaultAsync(u => u.Id == context.Message.Id) ??
 			throw new UPSException("No user");
 			
+		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !httpContextAccessor.HasAnyRole(RoleEnum.Administrator))
+		{
+			await RespondWithValidationFailAsync(context, "Id", "Nie można edytować administratora");
+			return;
+		}
+			
 		user.Name = context.Message.Username;
 		user.Roles = newRoles;
 		if (!string.IsNullOrEmpty(context.Message.Password))

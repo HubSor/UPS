@@ -14,3 +14,4 @@ public class ListUsersResponse
 	public PagedList<UserDto> Users { get; set; } = default!;
 }
 public class EditUserResponse {}
+public class DeleteUserResponse {}

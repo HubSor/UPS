@@ -61,5 +61,13 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<EditUserOrder, EditUserResponse>(order);
 		}
+		
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.UserManager, RoleEnum.Administrator)]
+		[Route("delete")]
+		public async Task<IActionResult> Delete([FromBody] DeleteUserOrder order)
+		{
+			return await RespondAsync<DeleteUserOrder, DeleteUserResponse>(order);
+		}
 	}
 }
