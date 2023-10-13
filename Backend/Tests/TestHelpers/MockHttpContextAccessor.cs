@@ -8,7 +8,7 @@ namespace Helpers;
 public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 {
 	public bool SignedIn { get; set; }
-	public static ICollection<Claim> Claims { get; set; } = new List<Claim>();
+	public ICollection<Claim> Claims { get; set; } = new List<Claim>();
 	
 	public MockHttpContextAccessor()
 	{
@@ -40,7 +40,7 @@ public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 		Setup(x => x.HttpContext).Returns(mockHttpContext.Object);
 	}
 	
-	public static void SetClaims(User user) 
+	public void SetClaims(User user) 
 	{
 		Claims = user.GetClaims();
 	}

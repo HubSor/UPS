@@ -62,7 +62,7 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 			Description = "seller"
 		});
 		
-		MockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
+		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
 		consumer = new EditUserConsumer(mockHttpContextAccessor.Object, mockLogger.Object, 
 			users.Object, passwordService, roles.Object, mockUnitOfWork.Object);
@@ -123,7 +123,7 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	[Test]
 	public async Task Consume_BadRequest_NotAdminEditingSelt()
 	{
-		MockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
+		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
 			
 		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
 		
@@ -134,7 +134,7 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	[Test]
 	public async Task Consume_BadRequest_AdminRemovingAdmin()
 	{
-		MockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
+		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
 		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ });
 		
