@@ -32,8 +32,8 @@ public class AddUserConsumerTests : ConsumerTestCase<AddUserConsumer, AddUserOrd
 		});
 		roles.Entities.Add(new()
 		{
-			Id = RoleEnum.Administrator,
-			Description = "admin"
+			Id = RoleEnum.Seller,
+			Description = "seller"
 		});
 			
 		consumer = new AddUserConsumer(mockLogger.Object, users.Object, passwordService, roles.Object, mockUnitOfWork.Object);

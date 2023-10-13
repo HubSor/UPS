@@ -39,7 +39,6 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 			return false;
 		}
 		
-		// nullowalne hasło w formie nie powoduje zmiany
 		var isAdmin = httpContextAccessor.HasAnyRole(RoleEnum.Administrator);
 		if (!isAdmin && httpContextAccessor.GetUserId() == context.Message.Id)
 		{

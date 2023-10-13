@@ -64,7 +64,6 @@ public abstract class ConsumerTestCase<C, O, R>
 	public async Task SuperTearDown()
 	{
 		responses.Clear();
-		mockHttpContextAccessor = new();
 		await TearDown();
 	}
 	
