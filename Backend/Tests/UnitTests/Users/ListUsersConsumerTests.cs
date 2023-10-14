@@ -77,10 +77,10 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 		Assert.That(data!.Pagination.PageSize, Is.EqualTo(10));
 		Assert.That(data!.Pagination.PageIndex, Is.EqualTo(0));
 		
-		Assert.That(data!.Count(u => u.Username == "first"), Is.EqualTo(1));
-		Assert.That(data!.Count(u => u.Username == "second"), Is.EqualTo(1));
-		Assert.That(data!.Count(u => u.Username == "third"), Is.EqualTo(1));
-		Assert.That(data!.First(u => u.Username == "second").Roles.Contains("UserManager"), Is.True);
+		Assert.That(data!.Items.Count(u => u.Username == "first"), Is.EqualTo(1));
+		Assert.That(data!.Items.Count(u => u.Username == "second"), Is.EqualTo(1));
+		Assert.That(data!.Items.Count(u => u.Username == "third"), Is.EqualTo(1));
+		Assert.That(data!.Items.First(u => u.Username == "second").Roles.Contains("UserManager"), Is.True);
 	}
 	
 	[Test]
@@ -102,9 +102,9 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 		Assert.That(data!.Pagination.PageSize, Is.EqualTo(2));
 		Assert.That(data!.Pagination.PageIndex, Is.EqualTo(1));
 		
-		Assert.That(data!.Count(u => u.Username == "first"), Is.EqualTo(0));
-		Assert.That(data!.Count(u => u.Username == "second"), Is.EqualTo(0));
-		Assert.That(data!.Count(u => u.Username == "third"), Is.EqualTo(1));
+		Assert.That(data!.Items.Count(u => u.Username == "first"), Is.EqualTo(0));
+		Assert.That(data!.Items.Count(u => u.Username == "second"), Is.EqualTo(0));
+		Assert.That(data!.Items.Count(u => u.Username == "third"), Is.EqualTo(1));
 	}
 	
 	[Test]
@@ -125,6 +125,6 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 		Assert.That(data!.Pagination.PageSize, Is.EqualTo(10));
 		Assert.That(data!.Pagination.PageIndex, Is.EqualTo(0));
 		
-		Assert.That(data!.Any(), Is.False);
+		Assert.That(data!.Items.Any(), Is.False);
 	}
 }

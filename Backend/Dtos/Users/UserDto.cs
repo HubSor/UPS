@@ -5,8 +5,3 @@ public class UserDto
 	public string Username { get; set; } = default!;
 	public ICollection<string> Roles { get; set; } = Array.Empty<string>();
 }
-
-public class EditUserDto : UserDto 
-{
-	public string Password { get; set; } = default!;
-}

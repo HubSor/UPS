@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Text.Json.Serialization;
 
 namespace Dtos;
 
-public class PagedList<T> : IEnumerable<T>
+public class PagedList<T>
 {
 	public ICollection<T> Items { get; set; }
 	public ResultPaginationDto Pagination { get; set; }
@@ -19,9 +20,6 @@ public class PagedList<T> : IEnumerable<T>
 			TotalPages = totalCount > 0 ? ((totalCount + pageSize - 1) / pageSize) : 0
 		};
 	}
-	
-	public IEnumerator<T> GetEnumerator() => Items.GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 }
 
 public class PaginationDto 

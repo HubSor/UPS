@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ApiResponse, LoginResponse } from "./ApiResponses";
-import { AddUserRequest, LoginRequest } from "./ApiRequests";
+import { ApiResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
+import { AddUserRequest, DeleteUserRequest, EditUserRequest, ListUsersRequest, LoginRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 
 axios.defaults.withCredentials = true;
@@ -63,6 +63,18 @@ export class Api {
 
     static async AddUser(request: AddUserRequest) {
         return await getApiResponse<AddUserRequest, undefined>(request, this.url + "/users/add");
+    }
+
+    static async ListUsers(request: ListUsersRequest) {
+        return await getApiResponse<ListUsersRequest, ListUsersResponse>(request, this.url + "/users/list")
+    }
+
+    static async EditUser(request: EditUserRequest) {
+        return await getApiResponse<EditUserRequest, undefined>(request, this.url + "/users/edit")
+    }
+
+    static async DeleteUser(request: DeleteUserRequest) {
+        return await getApiResponse<DeleteUserRequest, undefined>(request, this.url + "/users/delete")
     }
 
     static async Session() {
