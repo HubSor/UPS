@@ -42,8 +42,8 @@ export default function LoginForm(){
                 })
             }}
         >
-            {() => <Form>
-                <div className="form-group row">
+            {() => <Form className="form">
+                <div className="form-group row justify-content-center">
                     <label className="col-sm-1 col-form-label">Login</label>
                     <div className="col-sm-3">
                         <Field type="text" name="username" className="form-control"/>
@@ -51,7 +51,7 @@ export default function LoginForm(){
                     </div>
                 </div>
                 <br/>
-                <div className="form-group row">
+                <div className="form-group row justify-content-center">
                     <label className="col-sm-1 col-form-label">Hasło</label>
                     <div className="col-sm-3">
                         <Field type="password" name="password" className="form-control"/>
@@ -59,7 +59,12 @@ export default function LoginForm(){
                     </div>
                 </div>
                 <br/>
-                <button className="btn btn-primary" type="submit">Zaloguj</button>
+                <div className="form-group row justify-content-center">
+                    <label className="col-sm-1 col-form-label"/>
+                    <div className="col-sm-3">
+                        <button className="btn btn-primary form-control" type="submit">Zaloguj</button>
+                    </div>
+                </div>
             </Form>}
         </Formik>
     </div>
