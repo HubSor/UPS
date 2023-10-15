@@ -2,7 +2,9 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import { Api } from "../../api/Api";
 import { AddUserRequest } from "../../api/ApiRequests";
 import { RoleEnum } from "../../api/Dtos";
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
+import { Button, Modal, Form as BForm } from "react-bootstrap";
+import { InputGroup, SeparateErrors } from "../../helpers/FormHelpers";
 
 const initialValues: AddUserRequest = {
     username: "",
@@ -24,10 +26,7 @@ const rolesToAddFrom = [
 ];
 
 export function AddUserModal({ onSuccess, close }: AddUserModalProps) {
-    return <div>
-        <div>
-            Dodaj użytkownika
-        </div>
+    return <Modal show size="lg">
         <Formik
             initialValues={initialValues}
             onSubmit={(v, fh) => {
@@ -37,49 +36,57 @@ export function AddUserModal({ onSuccess, close }: AddUserModalProps) {
                         close()
                     }
                     else {
-                        fh.setErrors(res.errors);
+                        fh.setErrors(SeparateErrors(res.errors));
                     }
                 })
             }}
         >
             {({values}) => <Form>
-                <div>
-                    <label>Login</label>
-                    <Field type="text" name="username"/>
-                    <ErrorMessage name="username" component="div"/>
-                </div>
-                <div>
-                    <label>Hasło</label>
-                    <Field type="password" name="password"/>
-                    <ErrorMessage name="password" component="div" />
-                </div>
-                <div>
-                    <FieldArray name="roleIds"
-                        render={ah => <>
-                            <label>Role</label>
-                            <div>
-                                {rolesToAddFrom.map((r, idx) => <React.Fragment key={idx}>
-                                    <label>{r.name}</label>
-                                    <Field name={`roledIds[${idx}]`} type="checkbox" value={r.roleId}
-                                        checked={values.roleIds.includes(r.roleId)}
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                            if (e.target.checked)
+                <Modal.Header>
+                    <Modal.Title>
+                        Dodaj użytkownika
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <InputGroup name="username" label="Login" type="text"/>
+                    <InputGroup name="password" label="Hasło" type="password"/>
+                    <BForm.Group>
+                        <FieldArray name="roleIds"
+                            render={ah => <>
+                                <BForm.Label>
+                                    Role
+                                </BForm.Label>
+                                <div className="mb-3">
+                                    {rolesToAddFrom.map((r, idx) => <div key={idx}>
+                                        <Field name={`roledIds[${idx}]`} type="checkbox" value={r.roleId}
+                                            checked={values.roleIds.includes(r.roleId)}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                if (e.target.checked)
                                                 ah.insert(idx, r.roleId)
                                             else
-                                                ah.remove(values.roleIds.findIndex(x => x === r.roleId))
-                                        }}
-                                    />
-                                </React.Fragment>)}
-                            </div>
-                        </>}
-                    />
-                    <ErrorMessage name="password" component="div" />
-                </div>
-                <nav>
-                    <button type="submit">Dodaj</button>
-                    <button type="button" onClick={close}>Anuluj</button>
-                </nav>
+                                            ah.remove(values.roleIds.findIndex(x => x === r.roleId))
+                                        }}/>
+                                        &nbsp;
+                                        <BForm.Label>
+                                            {r.name}
+                                        </BForm.Label>
+                                    </div>)}
+                                </div>
+                            </>}
+                        />
+                        <ErrorMessage name="roleIds" component="div" />
+                    </BForm.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button type="submit">
+                        Dodaj
+                    </Button>
+                    &nbsp;
+                    <Button type="button" variant="danger" onClick={close}>
+                        Anuluj
+                    </Button>
+                </Modal.Footer>
             </Form>}
         </Formik>
-    </div>
+    </Modal>
 }

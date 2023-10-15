@@ -119,5 +119,11 @@ export default function UserMainPage() {
                 })}
             </tbody>
         </table>
+        <br/>
+        <div className="col-sm-3">
+            <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addUserButton' })}>
+                Dodaj nowego użytkownika
+            </button>
+        </div>
     </>
 }
