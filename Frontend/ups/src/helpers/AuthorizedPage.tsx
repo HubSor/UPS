@@ -4,6 +4,7 @@ import { AuthHelpers } from "./AuthHelper";
 import { Paths } from "../App";
 import Header from "../components/Header";
 import { Api } from "../api/Api";
+import { UPSToastContainer } from "./ToastHelpers";
 
 type AuththorizedPageProps = {
     page: JSX.Element
@@ -32,6 +33,7 @@ export function AuthorizedPage({ page }: AuththorizedPageProps) {
             <Header />
         </header>
         <main className='app container'>
+            <UPSToastContainer/>
             {page}   
         </main>
     </>

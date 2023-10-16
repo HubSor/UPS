@@ -5,6 +5,7 @@ import { ChangeEvent } from "react";
 import { Button, Modal, Form as BForm } from "react-bootstrap";
 import { InputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
+import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 
 type AddOrEditUserModalProps = {
     onSuccess: () => void
@@ -36,19 +37,21 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
         <Formik
             initialValues={initialValues}
             onSubmit={(v, fh) => {
-                const handleApiResponse = (res: ApiResponse<undefined>) => {
+                const handleApiResponse = (res: ApiResponse<undefined>, edit: boolean) => {
                     if (res.success && res.data){
                         onSuccess()
                         close()
+                        edit ? toastInfo('Edytowano użytkownika') : toastInfo('Dodano użytkownika')
                     }
-                    else {
+                    else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
-                    }
+                    else
+                        toastDefaultError()
                 }
 
                 editMode ?
-                    Api.EditUser({ ...v, id: editedUser.id }).then(handleApiResponse) :
-                    Api.AddUser(v).then(handleApiResponse)
+                    Api.EditUser({ ...v, id: editedUser.id }).then(res => handleApiResponse(res, true)) :
+                    Api.AddUser(v).then(res => handleApiResponse(res, false))
             }}
         >
             {({values}) => <Form>

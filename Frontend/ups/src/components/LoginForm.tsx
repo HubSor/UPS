@@ -6,6 +6,7 @@ import { AuthHelpers } from "../helpers/AuthHelper";
 import { LoginRequest } from "../api/ApiRequests";
 import { object, string } from "yup";
 import { ValidationMessage } from "../helpers/FormHelpers";
+import { toastDefaultError } from "../helpers/ToastHelpers";
 
 const initialValues: LoginRequest = {
     username: "",
@@ -36,8 +37,11 @@ export default function LoginForm(){
                         AuthHelpers.StoreUserData(res.data.userDto);
                     }
                     else {
-                        fh.setErrors(res.errors);
                         fh.setFieldValue('password', '', false);
+                        if (res.errors)
+                            fh.setErrors(res.errors);
+                        else
+                            toastDefaultError()
                     }
                 })
             }}

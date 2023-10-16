@@ -5,6 +5,7 @@ import { SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { DeleteUserRequest } from "../../api/ApiRequests";
 import { UserDto } from "../../api/Dtos";
+import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 
 type DeleteUserModalProps = {
     onSuccess: () => void
@@ -25,10 +26,12 @@ export function DeleteUserModal({ onSuccess, close, deletedUser }: DeleteUserMod
                     if (res.success && res.data){
                         onSuccess()
                         close()
+                        toastInfo('Usunięto użytkownika')
                     }
-                    else {
+                    else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
-                    }
+                    else
+                        toastDefaultError()
                 }
 
                 Api.DeleteUser(v).then(handleApiResponse)

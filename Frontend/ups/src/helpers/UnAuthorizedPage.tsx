@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthHelpers } from "./AuthHelper";
 import { Paths } from "../App";
 import { Api } from "../api/Api";
+import { UPSToastContainer } from "./ToastHelpers";
 
 type UnAuththorizedPageProps = {
     page: JSX.Element
@@ -30,9 +31,10 @@ export function UnAuthorizedPage({ page }: UnAuththorizedPageProps) {
 
     return <>
         <header>
-
+            
         </header>
         <main className="app container">
+            <UPSToastContainer/>
             {page}
         </main>
     </>

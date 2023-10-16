@@ -50,3 +50,8 @@
   background-color: #212529;
   color: white;
 }
+
+.Toastify__toast-container--top-right {
+  top: 4em;
+  width: 350px;
+}

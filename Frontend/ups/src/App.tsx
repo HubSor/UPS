@@ -1,4 +1,3 @@
-import './style/App.css';
 import Footer from './components/Footer';
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
@@ -7,6 +6,8 @@ import { AuthorizedPage } from './helpers/AuthorizedPage';
 import { UnAuthorizedPage } from './helpers/UnAuthorizedPage';
 import UserMainPage from './pages/UserMainPage';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-toastify/dist/ReactToastify.css';
+import './style/App.css';
 
 export const Paths = {
     login: "/login",
