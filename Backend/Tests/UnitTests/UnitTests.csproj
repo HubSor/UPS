@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\Messages\Messages.csproj" />
     <ProjectReference Include="..\..\Models\Models.csproj" />
     <ProjectReference Include="..\..\Consumers\Consumers.csproj" />
+    <ProjectReference Include="..\..\Validators\Validators.csproj" />
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 

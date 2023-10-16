@@ -1,6 +1,9 @@
-
 export default function Footer(){
     return <div className="footer">
-        <h1>Footer</h1>
+        <div className="container">
+            <span className="text-muted">
+                Uniwersalna Platforma Sprzedażowa {process.env.REACT_APP_VERSION}
+            </span>
+        </div>
     </div>
 }

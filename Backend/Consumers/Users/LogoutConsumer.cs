@@ -4,13 +4,12 @@ using Messages.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Services;
 
 namespace Consumers.Users;
 public class LogoutConsumer : BaseConsumer<LogoutOrder, LogoutResponse>
 {
 	private IHttpContextAccessor httpContextAccessor;
-	public LogoutConsumer(IHttpContextAccessor httpContextAccessor, ILogger<LogoutConsumer> logger, IPasswordService passwordService)
+	public LogoutConsumer(IHttpContextAccessor httpContextAccessor, ILogger<LogoutConsumer> logger)
 		: base(logger)
 	{
 		this.httpContextAccessor = httpContextAccessor;

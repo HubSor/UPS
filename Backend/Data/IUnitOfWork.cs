@@ -1,6 +1,6 @@
 namespace Data
 {
-	public interface IUnitOfWork
+	public interface IUnitOfWork : IDisposable
 	{
 		public Task BeginTransasctionAsync(CancellationToken cancellationToken = default);
 		public Task CommitTransasctionAsync(CancellationToken cancellationToken = default);

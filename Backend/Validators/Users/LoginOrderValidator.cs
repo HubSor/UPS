@@ -3,9 +3,9 @@ using Messages.Users;
 
 namespace Validators.Users
 {
-	public class LoginValidator: AbstractValidator<LoginOrder>
+	public class LoginOrderValidator: AbstractValidator<LoginOrder>
 	{
-		public LoginValidator()
+		public LoginOrderValidator()
 		{
 			RuleFor(x => x.Password)
 				.NotEmpty().WithMessage("Należy podać hasło")

@@ -1,13 +1,15 @@
 ﻿using System.Security.Claims;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Models.Entities;
 using Moq;
 
 namespace Helpers;
 public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 {
 	public bool SignedIn { get; set; }
+	public ICollection<Claim> Claims { get; set; } = new List<Claim>();
+	
 	public MockHttpContextAccessor()
 	{
 		var authenticationServiceMock = new Mock<IAuthenticationService>();
@@ -20,11 +22,26 @@ public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 		serviceProviderMock
 			.Setup(s => s.GetService(typeof(IAuthenticationService)))
 			.Returns(authenticationServiceMock.Object);
+			
+		var claimsPrincipalMock = new Mock<ClaimsPrincipal>();
+		claimsPrincipalMock
+			.Setup(s => s.FindFirst(It.IsAny<string>()))
+			.Returns<string>(type => Claims.FirstOrDefault(c => c.Type == type));
+		claimsPrincipalMock
+			.Setup(s => s.Claims)
+			.Returns(() => Claims);	
 		
 		var mockHttpContext = new Mock<HttpContext>();
 		mockHttpContext
 			.Setup(s => s.RequestServices).Returns(serviceProviderMock.Object);
+		mockHttpContext
+			.Setup(s => s.User).Returns(claimsPrincipalMock.Object);
 			
 		Setup(x => x.HttpContext).Returns(mockHttpContext.Object);
+	}
+	
+	public void SetClaims(User user) 
+	{
+		Claims = user.GetClaims();
 	}
 }

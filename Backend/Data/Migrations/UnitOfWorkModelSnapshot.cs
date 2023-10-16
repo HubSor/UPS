@@ -24,7 +24,10 @@ namespace Data.Migrations
             modelBuilder.Entity("Models.Entities.RoleEntity", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -68,7 +71,7 @@ namespace Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RoleEntityUser", b =>
+            modelBuilder.Entity("UserRoles", b =>
                 {
                     b.Property<int>("RolesId")
                         .HasColumnType("integer");
@@ -80,10 +83,10 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RoleEntityUser");
+                    b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("RoleEntityUser", b =>
+            modelBuilder.Entity("UserRoles", b =>
                 {
                     b.HasOne("Models.Entities.RoleEntity", null)
                         .WithMany()

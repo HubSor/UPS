@@ -53,7 +53,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginValidator));
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(conf => 

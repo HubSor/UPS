@@ -7,7 +7,7 @@ namespace Data
 	{
 		public bool InTransaction => Database.CurrentTransaction != null;
 		public DbSet<User> Users { get; set; }
-		public DbSet<RoleEntity> Roles { get; set; }
+		public DbSet<Role> Roles { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{
