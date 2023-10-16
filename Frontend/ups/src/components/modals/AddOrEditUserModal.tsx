@@ -1,22 +1,15 @@
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { Api } from "../../api/Api";
-import { AddUserRequest } from "../../api/ApiRequests";
-import { RoleEnum } from "../../api/Dtos";
+import { RoleEnum, UserDto } from "../../api/Dtos";
 import { ChangeEvent } from "react";
 import { Button, Modal, Form as BForm } from "react-bootstrap";
-import { InputGroup, SeparateErrors } from "../../helpers/FormHelpers";
+import { InputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { ApiResponse } from "../../api/ApiResponses";
 
-const initialValues: AddUserRequest = {
-    username: "",
-    password: "",
-    roleIds: [ 
-        RoleEnum.Seller
-    ]
-}
-
-type AddUserModalProps = {
+type AddOrEditUserModalProps = {
     onSuccess: () => void
     close: () => void
+    editedUser?: UserDto
 }
 
 const rolesToAddFrom = [
@@ -25,12 +18,25 @@ const rolesToAddFrom = [
     { roleId: RoleEnum.Seller, name: "Sprzedawca" }
 ];
 
-export function AddUserModal({ onSuccess, close }: AddUserModalProps) {
+export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUserModalProps) {
+    const editMode = !!editedUser;
+
+    const editedUserRoles = editedUser?.roles.map(r => RoleEnum[r as keyof typeof RoleEnum])
+
+    const initialValues = {
+        username: editedUser?.username ?? "",
+        password: "",
+        roleIds: editedUserRoles ?? [ 
+            RoleEnum.Seller
+        ],
+        id: editedUser?.id ?? -1
+    }
+
     return <Modal show size="lg">
         <Formik
             initialValues={initialValues}
             onSubmit={(v, fh) => {
-                Api.AddUser(v).then(res => {
+                const handleApiResponse = (res: ApiResponse<undefined>) => {
                     if (res.success && res.data){
                         onSuccess()
                         close()
@@ -38,13 +44,17 @@ export function AddUserModal({ onSuccess, close }: AddUserModalProps) {
                     else {
                         fh.setErrors(SeparateErrors(res.errors));
                     }
-                })
+                }
+
+                editMode ?
+                    Api.EditUser({ ...v, id: editedUser.id }).then(handleApiResponse) :
+                    Api.AddUser(v).then(handleApiResponse)
             }}
         >
             {({values}) => <Form>
-                <Modal.Header>
+                <Modal.Header className="darkblue">
                     <Modal.Title>
-                        Dodaj użytkownika
+                        {editMode ? "Edytuj użytkownika" : "Dodaj użytkownika"}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -74,12 +84,12 @@ export function AddUserModal({ onSuccess, close }: AddUserModalProps) {
                                 </div>
                             </>}
                         />
-                        <ErrorMessage name="roleIds" component="div" />
+                        <ValidationMessage fieldName="roleIds" />
                     </BForm.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="submit">
-                        Dodaj
+                        Zapisz
                     </Button>
                     &nbsp;
                     <Button type="button" variant="danger" onClick={close}>

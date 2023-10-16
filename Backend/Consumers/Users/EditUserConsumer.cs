@@ -46,7 +46,7 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 			return false;
 		}
 		
-		if (isAdmin && !context.Message.RoleIds.Contains(RoleEnum.Administrator))
+		if (isAdmin && !context.Message.RoleIds.Contains(RoleEnum.Administrator) && httpContextAccessor.GetUserId() == context.Message.Id)
 		{
 			await RespondWithValidationFailAsync(context, "RoleIds", "Administrator nie może odebrać sobie uprawnień administratora");
 			return false;

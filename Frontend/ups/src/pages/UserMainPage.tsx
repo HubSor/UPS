@@ -1,13 +1,14 @@
 import { useEffect, useReducer } from "react"
-import { AddUserModal } from "../components/modals/AddUserModal"
+import { AddOrEditUserModal } from "../components/modals/AddOrEditUserModal"
 import { Api } from "../api/Api"
 import { PaginationDto, RoleEnum, UserDto } from "../api/Dtos"
 import { RoleEnumDisplayName } from "../helpers/FormHelpers"
+import { DeleteUserModal } from "../components/modals/DeleteUserModal"
 
 type UserMainPageState =  {
     addUserModalOpen: boolean,
-    editUserModal: number | null,
-    deleteUserModal: number | null,
+    editUserModal: UserDto | null,
+    deleteUserModal: UserDto | null,
     refresh: boolean
     users: UserDto[]
 }
@@ -22,8 +23,8 @@ const initalState: UserMainPageState = {
 
 type UserMainPageAction =
     | { type: 'addUserButton' }
-    | { type: 'editUserButton', id: number }
-    | { type: 'deleteUserButton', id: number }
+    | { type: 'editUserButton', user: UserDto }
+    | { type: 'deleteUserButton', user: UserDto }
     | { type: 'closeModal' }
     | { type: 'refresh' }
     | { type: 'fetchedUsers', users: UserDto[] }
@@ -33,11 +34,11 @@ function reducer (state: UserMainPageState, action: UserMainPageAction): UserMai
         case 'addUserButton':
             return { ...state, addUserModalOpen: true }
         case 'editUserButton':
-            return { ...state, editUserModal: action.id }
+            return { ...state, editUserModal: action.user }
         case 'deleteUserButton':
-            return { ...state, deleteUserModal: action.id }
+            return { ...state, deleteUserModal: action.user }
         case 'closeModal':
-            return { ...state, addUserModalOpen: false, editUserModal: null }
+            return { ...state, addUserModalOpen: false, editUserModal: null, deleteUserModal: null }
         case 'refresh':
             return { ...state, refresh: true }
         case 'fetchedUsers':
@@ -70,14 +71,29 @@ export default function UserMainPage() {
     }, [state.refresh])
 
     return <>
-        {state.addUserModalOpen && <AddUserModal 
+        {state.addUserModalOpen && <AddOrEditUserModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
         />}
-
+        {!!state.editUserModal && <AddOrEditUserModal 
+            onSuccess={() => {
+                dispatch({ type: 'refresh' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            editedUser={state.editUserModal}
+        />}
+        {!!state.deleteUserModal && <DeleteUserModal 
+            onSuccess={() => {
+                dispatch({ type: 'refresh' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            deletedUser={state.deleteUserModal}
+        />}
         <h3>Użytkownicy</h3>
         <br/>
         <table className="table table-striped">
@@ -103,14 +119,14 @@ export default function UserMainPage() {
                         </td>
                         <td className="col-2">
                             <button type="button" className="btn btn-sm btn-primary" onClick={() => {
-                                dispatch({ type: 'editUserButton', id: u.id })
+                                dispatch({ type: 'editUserButton', user: u })
                             }}>
                                 Edytuj
                             </button>
                             &nbsp;
                             &nbsp;
                             <button type="button" className="btn btn-sm btn-danger" onClick={() => {
-                                dispatch({ type: 'deleteUserButton', id: u.id })
+                                dispatch({ type: 'deleteUserButton', user: u })
                             }}>
                                 Usuń
                             </button>
