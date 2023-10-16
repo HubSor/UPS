@@ -1,9 +1,10 @@
-import { useEffect, useReducer } from "react"
+import { useCallback, useEffect, useReducer } from "react"
 import { AddOrEditUserModal } from "../components/modals/AddOrEditUserModal"
 import { Api } from "../api/Api"
-import { PaginationDto, RoleEnum, UserDto } from "../api/Dtos"
-import { RoleEnumDisplayName } from "../helpers/FormHelpers"
+import { ResultPaginationDto, RoleEnum, UserDto } from "../api/Dtos"
+import { PaginationBar, RoleEnumDisplayName } from "../helpers/FormHelpers"
 import { DeleteUserModal } from "../components/modals/DeleteUserModal"
+import { toastDefaultError } from "../helpers/ToastHelpers"
 
 type UserMainPageState =  {
     addUserModalOpen: boolean,
@@ -11,6 +12,7 @@ type UserMainPageState =  {
     deleteUserModal: UserDto | null,
     refresh: boolean
     users: UserDto[]
+    pagination: ResultPaginationDto
 }
 
 const initalState: UserMainPageState = {
@@ -19,6 +21,13 @@ const initalState: UserMainPageState = {
     users: [],
     editUserModal: null,
     deleteUserModal: null,
+    pagination: {
+        pageSize: 3,
+        pageIndex: 0,
+        totalCount: 0,
+        totalPages: 1,
+        count: 0
+    },
 }
 
 type UserMainPageAction =
@@ -27,7 +36,8 @@ type UserMainPageAction =
     | { type: 'deleteUserButton', user: UserDto }
     | { type: 'closeModal' }
     | { type: 'refresh' }
-    | { type: 'fetchedUsers', users: UserDto[] }
+    | { type: 'changedPage', pageIndex: number }
+    | { type: 'fetchedUsers', users: UserDto[], pagination: ResultPaginationDto }
 
 function reducer (state: UserMainPageState, action: UserMainPageAction): UserMainPageState {
     switch(action.type){
@@ -41,34 +51,29 @@ function reducer (state: UserMainPageState, action: UserMainPageAction): UserMai
             return { ...state, addUserModalOpen: false, editUserModal: null, deleteUserModal: null }
         case 'refresh':
             return { ...state, refresh: true }
+        case 'changedPage':
+            return { ...state, refresh: true, pagination: { ...state.pagination, pageIndex: action.pageIndex }}
         case 'fetchedUsers':
-            return { ...state, refresh: false, users: action.users }
+            return { ...state, refresh: false, users: action.users, pagination: action.pagination }
     }
-}
-
-const defaultPagination: PaginationDto = {
-    pageSize: 10,
-    pageIndex: 0
 }
 
 export default function UserMainPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
 
-    const fetchData = () => {
-        Api.ListUsers({ pagination: defaultPagination }).then(res => {
+    const fetchData = useCallback(() => {
+        Api.ListUsers({ pagination: state.pagination }).then(res => {
             if (res.success && res.data){
-                dispatch({ type: 'fetchedUsers', users: res.data.users.items })
+                dispatch({ type: 'fetchedUsers', users: res.data.users.items, pagination: res.data.users.pagination })
             }
-            else {
-                // generic toast
-            }
+            else toastDefaultError();
         })
-    }
+    }, [state.pagination])
 
     useEffect(() => {
         if (state.refresh)
             fetchData();
-    }, [state.refresh])
+    }, [state.refresh, fetchData])
 
     return <>
         {state.addUserModalOpen && <AddOrEditUserModal 
@@ -135,6 +140,10 @@ export default function UserMainPage() {
                 })}
             </tbody>
         </table>
+        <PaginationBar currentIndex={state.pagination.pageIndex} maxIndex={state.pagination.totalPages - 1} 
+            onNext={next => dispatch({ type: 'changedPage', pageIndex: next })}
+            onPrev={prev => dispatch({ type: 'changedPage', pageIndex: prev })}
+        />
         <br/>
         <div className="col-sm-3">
             <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addUserButton' })}>
