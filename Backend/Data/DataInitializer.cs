@@ -8,8 +8,7 @@ namespace Data
 	{
 		public static void Initialize(UnitOfWork context, IPasswordService passwordService)
 		{
-			
-			context.Database.EnsureCreated();
+			//context.Database.EnsureCreated();
 						
 			if (context.Database.GetPendingMigrations().Any())
 			{
@@ -46,6 +45,23 @@ namespace Data
 				Roles = roles.Where(r => r.Id == RoleEnum.Seller).ToList(),
 				Salt = salt,
 				Hash = hash
+			});
+			
+			context.ProductStatuses.AddRange(new List<ProductStatus>()
+			{
+				new (){ Id = ProductStatusEnum.NotOffered, Description = "Sprzedaż tego produktu nie będzie możliwa."},
+				new (){ Id = ProductStatusEnum.Offered, Description = "Sprzedaż tego produktu jest dozwolona"},
+				new (){ Id = ProductStatusEnum.Withdrawn, Description = "Produkt wycofany ze sprzedaży. Sprzedaż niemożliwa."},
+			});
+				
+			context.Products.Add(new()
+			{
+				Name = "Produkt testowy",
+				Code = "TEST1",
+				Status = ProductStatusEnum.Offered,
+				AnonymousSaleAllowed = false,
+				Description = "Testowy produkt",
+				Price = 99.99m
 			});
 
 			context.SaveChanges();

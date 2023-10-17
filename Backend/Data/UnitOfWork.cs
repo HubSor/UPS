@@ -8,6 +8,8 @@ namespace Data
 		public bool InTransaction => Database.CurrentTransaction != null;
 		public DbSet<User> Users { get; set; }
 		public DbSet<Role> Roles { get; set; }
+		public DbSet<ProductStatus> ProductStatuses { get; set; }
+		public DbSet<Product> Products { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{

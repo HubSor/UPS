@@ -19,4 +19,12 @@ namespace Models
 			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
 		}
 	}
+	
+	public class ProductStatusMapping : IEntityTypeConfiguration<ProductStatus>
+	{
+		public void Configure(EntityTypeBuilder<ProductStatus> builder)
+		{
+			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
+		}
+	}
 }
