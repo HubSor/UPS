@@ -61,7 +61,21 @@ namespace Data
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Testowy produkt",
-				Price = 99.99m
+				BasePrice = 99.99m
+			});
+			
+			context.SubProducts.Add(new() 
+			{
+				Name = "Podprodukt testowy 1",
+				Description = "Testowy podprodukt 1",
+				BasePrice = 15.99m,
+			});
+			
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 1,
+				SubProductId = 1,
+				InProductPrice = 9.99m
 			});
 
 			context.SaveChanges();

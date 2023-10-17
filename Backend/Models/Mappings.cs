@@ -12,6 +12,30 @@ namespace Models
 		}
 	}
 	
+	public class ProductMapping : IEntityTypeConfiguration<Product>
+	{
+		public void Configure(EntityTypeBuilder<Product> builder)
+		{
+			builder.HasMany(x => x.SubProductInProducts).WithOne(x => x.Product).HasForeignKey(x => x.ProductId);
+		}
+	}
+	
+	public class SubProductInProductMapping : IEntityTypeConfiguration<SubProductInProduct>
+	{
+		public void Configure(EntityTypeBuilder<SubProductInProduct> builder)
+		{
+			builder.HasKey(x => new { x.ProductId, x.SubProductId });
+		}
+	}
+	
+	public class SubProductMapping : IEntityTypeConfiguration<SubProduct>
+	{
+		public void Configure(EntityTypeBuilder<SubProduct> builder)
+		{
+			builder.HasMany(x => x.SubProductInProducts).WithOne(x => x.SubProduct).HasForeignKey(x => x.SubProductId);
+		}
+	}
+	
 	public class RoleMapping : IEntityTypeConfiguration<Role>
 	{
 		public void Configure(EntityTypeBuilder<Role> builder)

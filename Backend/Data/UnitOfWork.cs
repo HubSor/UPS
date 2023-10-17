@@ -10,6 +10,8 @@ namespace Data
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<ProductStatus> ProductStatuses { get; set; }
 		public DbSet<Product> Products { get; set; }
+		public DbSet<SubProduct> SubProducts { get; set; }
+		public DbSet<SubProductInProduct> SubProductsInProducts { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{
