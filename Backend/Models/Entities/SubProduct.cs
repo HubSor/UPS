@@ -12,5 +12,6 @@ namespace Models.Entities
 		[MaxLength(1000)]
 		public string? Description { get; set; }
 		public IEnumerable<SubProductInProduct> SubProductInProducts { get; set; } = default!;
+		public IEnumerable<Parameter> Parameters { get; set; } = default!;
 	}
 }

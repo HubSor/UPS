@@ -22,7 +22,7 @@ const initalState: UserMainPageState = {
     editUserModal: null,
     deleteUserModal: null,
     pagination: {
-        pageSize: 3,
+        pageSize: 10,
         pageIndex: 0,
         totalCount: 0,
         totalPages: 1,

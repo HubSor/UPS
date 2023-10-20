@@ -12,11 +12,24 @@ namespace Models
 		}
 	}
 	
+	public class ParameterMapping : IEntityTypeConfiguration<Parameter>
+	{
+		public void Configure(EntityTypeBuilder<Parameter> builder)
+		{
+			builder.HasOne(x => x.Product).WithMany(x => x.Parameters).HasForeignKey(x => x.ProductId);
+			builder.HasOne(x => x.SubProduct).WithMany(x => x.Parameters).HasForeignKey(x => x.SubProductId);
+			builder.HasMany(x => x.Options).WithOne(x => x.Parameter).HasForeignKey(x => x.ParameterId);
+			builder.HasOne(x => x.TypeObject).WithMany().HasForeignKey(x => x.Type);
+			// builder.ToTable("Parameters", opt => opt.HasCheckConstraint("CH_Parameters_ProductOrSubProduct", "num_nonnulls(SubProductId, ProductId) = 1"));
+		}
+	}
+	
 	public class ProductMapping : IEntityTypeConfiguration<Product>
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)
 		{
 			builder.HasMany(x => x.SubProductInProducts).WithOne(x => x.Product).HasForeignKey(x => x.ProductId);
+			builder.HasOne(x => x.StatusObject).WithMany().HasForeignKey(x => x.Status);
 		}
 	}
 	
@@ -33,6 +46,14 @@ namespace Models
 		public void Configure(EntityTypeBuilder<SubProduct> builder)
 		{
 			builder.HasMany(x => x.SubProductInProducts).WithOne(x => x.SubProduct).HasForeignKey(x => x.SubProductId);
+		}
+	}
+	
+	public class ParameterTypeMapping : IEntityTypeConfiguration<ParameterType>
+	{
+		public void Configure(EntityTypeBuilder<ParameterType> builder)
+		{
+			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
 		}
 	}
 	

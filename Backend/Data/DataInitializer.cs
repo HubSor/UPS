@@ -15,6 +15,8 @@ namespace Data
 				context.Database.Migrate();
 			}
 			
+			context.SaveChanges();
+			
 			Clear(context);
 					
 			var roles = new List<Role>()
@@ -71,12 +73,61 @@ namespace Data
 				BasePrice = 15.99m,
 			});
 			
+			context.SaveChanges();
+			
 			context.SubProductsInProducts.Add(new()
 			{
 				ProductId = 1,
 				SubProductId = 1,
 				InProductPrice = 9.99m
 			});
+			
+			var parameterTypes = new List<ParameterType>()
+			{
+				new (){ Id = ParameterTypeEnum.Text, Name="Tekst" },
+				new (){ Id = ParameterTypeEnum.Integer, Name="Liczba całkowita" },
+				new (){ Id = ParameterTypeEnum.Select, Name="Wybór z listy" },
+				new (){ Id = ParameterTypeEnum.TextArea, Name="Pole tekstowe" },
+				new (){ Id = ParameterTypeEnum.Decimal, Name="Liczba dziesiętna" },
+				new (){ Id = ParameterTypeEnum.Checkbox, Name="Flaga" },
+			};
+			
+			context.ParameterTypes.AddRange(parameterTypes);
+			
+			context.Parameters.Add(new()
+			{
+				Name = "Imię zwierzęcia domowego",
+				Type = ParameterTypeEnum.Text,
+				IsRequired = false,
+				ProductId = 1
+			});
+			
+			context.Parameters.Add(new()
+			{
+				Name = "Dzień tygodnia",
+				Type = ParameterTypeEnum.Select,
+				IsRequired = true,
+				SubProductId = 1
+			});
+			
+			context.SaveChanges();
+			
+			var days = new List<string>()
+			{
+				"Poniedziałek",
+				"Wtorek",
+				"Środa",
+				"Czwartek",
+				"Piątek",
+				"Sobota",
+				"Niedziela"
+			};
+			
+			context.ParameterOptions.AddRange(days.Select(d => new ParameterOption() 
+			{
+				ParameterId = 1,
+				Value = d,
+			}));
 
 			context.SaveChanges();
 		}
@@ -89,7 +140,7 @@ namespace Data
 				.ToList()
 				.ForEach(tableName => 
 				{
-					context.Database.ExecuteSqlRaw($"TRUNCATE \"{tableName}\" RESTART IDENTITY CASCADE ");					
+					context.Database.ExecuteSqlRaw($"TRUNCATE \"{tableName}\" RESTART IDENTITY CASCADE;");					
 				});
 				
 			context.SaveChanges();

@@ -32,7 +32,7 @@ builder.Services.AddCors(op =>
 {
 	op.AddPolicy("AllowFrontend", pol =>
 	{
-		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "http://frontend:3000", "http://localhost:3000")
+		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "https://localhost:3000", "http://localhost:3000")
 			.AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 	});
 });

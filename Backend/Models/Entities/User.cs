@@ -10,7 +10,7 @@ namespace Models.Entities
 	{
 		[NotMapped]
 		public static readonly string IdClaimType = "Id"; 
-		
+		[MaxLength(128)]
 		public string Name { get; set; } = default!;
 		[MaxLength(64)]
 		public byte[] Hash { get; set; } = default!;
