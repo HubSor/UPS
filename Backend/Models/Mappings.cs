@@ -24,6 +24,36 @@ namespace Models
 		}
 	}
 	
+	public class SaleMapping : IEntityTypeConfiguration<Sale>
+	{
+		public void Configure(EntityTypeBuilder<Sale> builder)
+		{
+			builder.HasMany(x => x.SubProducts).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
+			builder.HasMany(x => x.SaleParameters).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
+			builder.HasOne(x => x.Seller).WithMany().HasForeignKey(x => x.SellerId);
+			builder.HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId);
+		}
+	}
+	
+	public class SubProductInSaleMapping : IEntityTypeConfiguration<SubProductInSale>
+	{
+		public void Configure(EntityTypeBuilder<SubProductInSale> builder)
+		{
+			builder.HasKey(x => new { x.SaleId, x.SubProductId });
+			builder.HasOne(x => x.SubProduct).WithMany().HasForeignKey(x => x.SubProductId);
+		}
+	}
+	
+	public class SaleParameterMapping : IEntityTypeConfiguration<SaleParameter>
+	{
+		public void Configure(EntityTypeBuilder<SaleParameter> builder)
+		{
+			builder.HasKey(x => new { x.SaleId, x.ParameterId });
+			builder.HasOne(x => x.Parameter).WithMany().HasForeignKey(x => x.ParameterId);
+			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId);
+		}
+	}
+	
 	public class ProductMapping : IEntityTypeConfiguration<Product>
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)

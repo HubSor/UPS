@@ -15,6 +15,9 @@ namespace Data
 		public DbSet<Parameter> Parameters { get; set; }
 		public DbSet<ParameterOption> ParameterOptions { get; set; }
 		public DbSet<ParameterType> ParameterTypes { get; set; }
+		public DbSet<Sale> Sales { get; set; }
+		public DbSet<SaleParameter> SaleParameters { get; set; }
+		public DbSet<SubProductInSale> SubProductsInSales { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{
