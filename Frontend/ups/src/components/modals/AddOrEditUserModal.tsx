@@ -16,7 +16,8 @@ type AddOrEditUserModalProps = {
 const rolesToAddFrom = [
     { roleId: RoleEnum.Administrator, name: "Administrator" },
     { roleId: RoleEnum.UserManager, name: "Zarządca użytkowników" },
-    { roleId: RoleEnum.Seller, name: "Sprzedawca" }
+    { roleId: RoleEnum.Seller, name: "Sprzedawca" },
+    { roleId: RoleEnum.ProductManager, name: "Zarządca użytkowników" },
 ];
 
 export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUserModalProps) {

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Consumers.Users;
 public class LogoutConsumer : BaseConsumer<LogoutOrder, LogoutResponse>
 {
-	private IHttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor httpContextAccessor;
 	public LogoutConsumer(IHttpContextAccessor httpContextAccessor, ILogger<LogoutConsumer> logger)
 		: base(logger)
 	{

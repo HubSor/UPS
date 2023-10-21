@@ -7,7 +7,8 @@ export type UserDto = {
 export enum RoleEnum {
     Administrator = 0,
     Seller = 1,
-    UserManager = 2
+    UserManager = 2,
+    ProductManager = 3,
 } 
 
 export type PaginationDto = {

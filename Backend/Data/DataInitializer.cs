@@ -24,6 +24,7 @@ namespace Data
 				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko." },
 				new (){ Id = RoleEnum.Seller, Description = null },
 				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników." },
+				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami." },
 			};
 			
 			context.Roles.AddRange(roles);
@@ -59,7 +60,7 @@ namespace Data
 			context.Products.Add(new()
 			{
 				Name = "Produkt testowy",
-				Code = "TEST1",
+				Code = "PTEST",
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Testowy produkt",
@@ -70,6 +71,7 @@ namespace Data
 			{
 				Name = "Podprodukt testowy 1",
 				Description = "Testowy podprodukt 1",
+				Code = "PPTEST",
 				BasePrice = 15.99m,
 			});
 			
