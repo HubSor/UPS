@@ -49,11 +49,11 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 	{	
 		if (context.Message.ProductId.HasValue)
 		{
-			var order = new AssignSubProductToProductOrder(context.Message.ProductId.Value, subProduct.Id, subProduct.BasePrice);
+			var order = new AssignSubProductOrder(context.Message.ProductId.Value, subProduct.Id, subProduct.BasePrice);
 			try
 			{
-				var client = mediator.CreateRequestClient<AssignSubProductToProductOrder>();
-				var response = await client.GetResponse<ApiResponse<AssignSubProductToProductResponse>>(order);
+				var client = mediator.CreateRequestClient<AssignSubProductOrder>();
+				var response = await client.GetResponse<ApiResponse<AssignSubProductResponse>>(order);
 				
 				if (response.Message.Success)
 					await RespondAsync(context, new AddSubProductResponse());

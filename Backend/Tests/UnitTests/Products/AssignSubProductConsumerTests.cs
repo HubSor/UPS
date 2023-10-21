@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AssignSubProductToProductConsumerTests : ConsumerTestCase<AssignSubProductToProductConsumer, AssignSubProductToProductOrder, AssignSubProductToProductResponse>
+public class AssignSubProductConsumerTests : ConsumerTestCase<AssignSubProductConsumer, AssignSubProductOrder, AssignSubProductResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -29,7 +29,7 @@ public class AssignSubProductToProductConsumerTests : ConsumerTestCase<AssignSub
 		
 		intersection = new MockRepository<SubProductInProduct>();
 
-		consumer = new AssignSubProductToProductConsumer(mockLogger.Object, subProducts.Object, 
+		consumer = new AssignSubProductConsumer(mockLogger.Object, subProducts.Object, 
 			products.Object, intersection.Object, mockUnitOfWork.Object);
 		return Task.CompletedTask;
 	}
@@ -37,7 +37,7 @@ public class AssignSubProductToProductConsumerTests : ConsumerTestCase<AssignSub
 	[Test]
 	public async Task Consume_Ok_AssignToProduct()
 	{
-		var order = new AssignSubProductToProductOrder(1, 1, 0.75m);
+		var order = new AssignSubProductOrder(1, 1, 0.75m);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -57,7 +57,7 @@ public class AssignSubProductToProductConsumerTests : ConsumerTestCase<AssignSub
 			SubProductId = 1,
 			InProductPrice = 0.99m
 		});
-		var order = new AssignSubProductToProductOrder(1, 1, 0.75m);
+		var order = new AssignSubProductOrder(1, 1, 0.75m);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

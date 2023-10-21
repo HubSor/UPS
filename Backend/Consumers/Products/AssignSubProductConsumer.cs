@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Products;
-public class AssignSubProductToProductConsumer : TransactionConsumer<AssignSubProductToProductOrder, AssignSubProductToProductResponse>
+public class AssignSubProductConsumer : TransactionConsumer<AssignSubProductOrder, AssignSubProductResponse>
 {
 	private readonly IRepository<SubProduct> subProducts;
 	private readonly IRepository<Product> products;
 	private readonly IRepository<SubProductInProduct> subProductsInProducts;
 	
-	public AssignSubProductToProductConsumer(ILogger<AssignSubProductToProductConsumer> logger, IRepository<SubProduct> subProducts,
+	public AssignSubProductConsumer(ILogger<AssignSubProductConsumer> logger, IRepository<SubProduct> subProducts,
 		IRepository<Product> products, IRepository<SubProductInProduct> subProductsInProducts, IUnitOfWork unitOfWork)
 		: base(unitOfWork, logger)
 	{
@@ -22,7 +22,7 @@ public class AssignSubProductToProductConsumer : TransactionConsumer<AssignSubPr
 		this.subProductsInProducts = subProductsInProducts;
 	}
 
-	public override async Task<bool> PreTransaction(ConsumeContext<AssignSubProductToProductOrder> context)
+	public override async Task<bool> PreTransaction(ConsumeContext<AssignSubProductOrder> context)
 	{
 		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductId))
 		{
@@ -45,7 +45,7 @@ public class AssignSubProductToProductConsumer : TransactionConsumer<AssignSubPr
 		return true;
 	}
 
-	public override async Task InTransaction(ConsumeContext<AssignSubProductToProductOrder> context)
+	public override async Task InTransaction(ConsumeContext<AssignSubProductOrder> context)
 	{
 		var subProductInProduct = new SubProductInProduct()
 		{
@@ -57,8 +57,8 @@ public class AssignSubProductToProductConsumer : TransactionConsumer<AssignSubPr
 		await subProductsInProducts.AddAsync(subProductInProduct);
 	}
 
-	public override async Task PostTransaction(ConsumeContext<AssignSubProductToProductOrder> context)
+	public override async Task PostTransaction(ConsumeContext<AssignSubProductOrder> context)
 	{
-		await RespondAsync(context, new AssignSubProductToProductResponse());
+		await RespondAsync(context, new AssignSubProductResponse());
 	}
 }

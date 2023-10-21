@@ -2,5 +2,5 @@
 
 public class AddProductResponse {}
 public class AddSubProductResponse {}
-public class AssignSubProductToProductResponse {}
+public class AssignSubProductResponse {}
 public class UnAssignSubProductsFromProductResponse {}

@@ -33,9 +33,9 @@ namespace UPS.Controllers
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("subproducts/assign")]
-		public async Task<IActionResult> AssignSubProduct([FromBody] AssignSubProductToProductOrder order)
+		public async Task<IActionResult> AssignSubProduct([FromBody] AssignSubProductOrder order)
 		{
-			return await RespondAsync<AssignSubProductToProductOrder, AssignSubProductToProductResponse>(order);
+			return await RespondAsync<AssignSubProductOrder, AssignSubProductResponse>(order);
 		}
 	}
 }

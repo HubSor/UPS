@@ -41,7 +41,7 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_AddSubProductToProductNoRequestClient()
+	public async Task Consume_BadRequest_AddSubProductNoRequestClient()
 	{
 		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 1);
 		

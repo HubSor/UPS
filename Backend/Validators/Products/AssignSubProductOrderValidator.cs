@@ -3,9 +3,9 @@ using Messages.Products;
 
 namespace Validators.Products
 {
-	public class AssignSubProductToProductOrderValidator: AbstractValidator<AssignSubProductToProductOrder>
+	public class AssignSubProductOrderValidator: AbstractValidator<AssignSubProductOrder>
 	{
-		public AssignSubProductToProductOrderValidator()
+		public AssignSubProductOrderValidator()
 		{
 			RuleFor(x => x.ProductId)
 				.NotNull().WithMessage("Należy podać identyfikator produktu")
