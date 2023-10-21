@@ -1,7 +1,9 @@
 ﻿using Consumers.Products;
 using Helpers;
+using MassTransit.Mediator;
 using Messages.Products;
 using Models.Entities;
+using Moq;
 using NUnit.Framework;
 
 namespace UnitTests.Products;
@@ -9,25 +11,27 @@ namespace UnitTests.Products;
 [TestFixture]
 public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer, AddSubProductOrder, AddSubProductResponse>
 {
-	private MockRepository<SubProduct> products = default!;
+	private MockRepository<SubProduct> subProducts = default!;
 
 	protected override Task SetUp()
 	{
-		products = new MockRepository<SubProduct>();
+		subProducts = new MockRepository<SubProduct>();
+		
+		var mediator = new Mock<IMediator>();
 
-		consumer = new AddSubProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		consumer = new AddSubProductConsumer(mockLogger.Object, subProducts.Object, mockUnitOfWork.Object, mediator.Object);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_Ok_AddSimpleSubProduct()
 	{
-		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis");
+		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
 		
-		var newProduct = products.Entities.SingleOrDefault();
+		var newProduct = subProducts.Entities.SingleOrDefault();
 		Assert.That(newProduct, Is.Not.Null);
 	
 		Assert.That(newProduct!.Code, Is.EqualTo("TEST1"));
@@ -37,15 +41,24 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 	}
 	
 	[Test]
+	public async Task Consume_BadRequest_AddSubProductToProductNoRequestClient()
+	{
+		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 1);
+		
+		await consumer.Consume(GetConsumeContext(order));
+		AssertBadRequest();
+	}
+	
+	[Test]
 	public async Task Consume_BadRequest_CodeTaken()
 	{
-		products.Entities.Add(new() 
+		subProducts.Entities.Add(new() 
 		{
 			Name = "drugi podprodukt",
 			Code = "TEST1"
 		});
 		
-		var order = new AddSubProductOrder("test1", "Nowy podprodukt", 99.99m, null);
+		var order = new AddSubProductOrder("test1", "Nowy podprodukt", 99.99m, null, null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

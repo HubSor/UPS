@@ -21,6 +21,12 @@ namespace Validators.Products
 				
 			RuleFor(x => x.Description)
 				.MaximumLength(1000).WithMessage("Opis zbyt długi");
+				
+			When(x => x.ProductId.HasValue, () => 
+			{
+				RuleFor(x => x.ProductId)
+					.GreaterThan(0).WithMessage("Identyfikator produktu musi być dodatni");
+			});
 		}
 	}
 }
