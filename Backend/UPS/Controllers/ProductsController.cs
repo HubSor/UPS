@@ -3,6 +3,7 @@ using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
 using Messages.Products;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UPS.Controllers
 {
@@ -44,6 +45,14 @@ namespace UPS.Controllers
 		public async Task<IActionResult> UnassignSubProducts([FromBody] UnassignSubProductsOrder order)
 		{
 			return await RespondAsync<UnassignSubProductsOrder, UnassignSubProductsResponse>(order);
+		}
+		
+		[HttpPost]
+		[Authorize]
+		[Route("list")]
+		public async Task<IActionResult> List([FromBody] ListProductsOrder order)
+		{
+			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
 		}
 	}
 }
