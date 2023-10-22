@@ -11,3 +11,4 @@ public record ListProductsOrder(ProductStatusEnum[] Statuses);
 public record ListSubProductsOrder(int? ProductId);
 public record EditProductOrder(ProductDto ProductDto);
 public record EditSubProductOrder(SubProductDto SubProductDto);
+public record EditSubProductAssignmentOrder(int ProductId, int SubProductId, decimal NewPrice);
