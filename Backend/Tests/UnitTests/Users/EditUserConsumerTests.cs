@@ -136,7 +136,7 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	{
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
-		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ });
+		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ });
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

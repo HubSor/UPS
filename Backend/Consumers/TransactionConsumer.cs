@@ -33,6 +33,7 @@ public abstract class TransactionConsumer<Order, Response> : BaseConsumer<Order,
 			{
 				await unitOfWork.RollbackTransactionAsync();
 				logger.LogInformation(ex, "Exception in TransactionConsumer");
+				throw;
 			}
 		}
 		else

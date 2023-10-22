@@ -9,6 +9,19 @@ namespace Core
 		public IDictionary<string, List<string>>? Errors { get; set; }
 		public Response? Data { get; set; }
 		public bool Success => Errors == null && Data != null;
+		
+		public static ApiResponse<Response> FromApiResponse<T>(ApiResponse<T> apiResponse)
+			where T : class
+		{
+			return new ApiResponse<Response>(apiResponse.StatusCode, apiResponse.Errors);
+		}
+		
+		public ApiResponse(HttpStatusCode code, IDictionary<string, List<string>>? errors)
+		{
+			StatusCode = code;
+			Errors = errors;
+		}
+		
 		public ApiResponse(Response resp)
 		{
 			StatusCode = HttpStatusCode.OK;
