@@ -14,3 +14,5 @@ public class ListSubProductsResponse
 {
 	public ICollection<SubProductDto> SubProducts { get; set; } = new List<SubProductDto>();
 }
+public class EditProductResponse {}
+public class EditSubProductResponse {}

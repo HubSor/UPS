@@ -60,10 +60,10 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 				else 
 					await context.RespondAsync(ApiResponse<AddSubProductResponse>.FromApiResponse(response.Message));
 			}
-			catch 
+			catch (Exception ex)
 			{
 				await RespondWithValidationFailAsync(context, "ProductId", "Powiązanie z produktem nie powiodło się");
-				throw;
+				logger.LogError(ex, "Error while assigning subproduct");
 			}
 		}
 		else

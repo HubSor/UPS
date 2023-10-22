@@ -1,3 +1,4 @@
+using Dtos.Products;
 using Models.Entities;
 
 namespace Messages.Products;
@@ -8,3 +9,5 @@ public record AssignSubProductOrder(int ProductId, int SubProductId, decimal Pri
 public record UnassignSubProductsOrder(int ProductId, int[] SubProductIds);
 public record ListProductsOrder(ProductStatusEnum[] Statuses);
 public record ListSubProductsOrder(int? ProductId);
+public record EditProductOrder(ProductDto ProductDto);
+public record EditSubProductOrder(SubProductDto SubProductDto);
