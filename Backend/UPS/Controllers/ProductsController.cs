@@ -24,6 +24,14 @@ namespace UPS.Controllers
 		}
 		
 		[HttpPost]
+		[Authorize]
+		[Route("list")]
+		public async Task<IActionResult> List([FromBody] ListProductsOrder order)
+		{
+			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
+		}
+		
+		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("subproducts/add")]
 		public async Task<IActionResult> AddSubProduct([FromBody] AddSubProductOrder order)
@@ -49,10 +57,11 @@ namespace UPS.Controllers
 		
 		[HttpPost]
 		[Authorize]
-		[Route("list")]
-		public async Task<IActionResult> List([FromBody] ListProductsOrder order)
+		[Route("subproducts/list")]
+		public async Task<IActionResult> ListSubProducts([FromBody] ListSubProductsOrder order)
 		{
-			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
+			return await RespondAsync<ListSubProductsOrder, ListSubProductsResponse>(order);
 		}
+		
 	}
 }

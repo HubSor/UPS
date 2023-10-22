@@ -7,3 +7,4 @@ public record AddSubProductOrder(string Code, string Name, decimal BasePrice, st
 public record AssignSubProductOrder(int ProductId, int SubProductId, decimal Price);
 public record UnassignSubProductsOrder(int ProductId, int[] SubProductIds);
 public record ListProductsOrder(ProductStatusEnum[] Statuses);
+public record ListSubProductsOrder(int? ProductId);
