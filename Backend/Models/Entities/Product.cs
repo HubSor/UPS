@@ -18,8 +18,10 @@ namespace Models.Entities
 		public virtual ProductStatus StatusObject { get; set; } = default!;
 		[MaxLength(1000)]
 		public string? Description { get; set; }
-		public IEnumerable<SubProductInProduct> SubProductInProducts { get; set; } = default!;
-		public IEnumerable<Parameter> Parameters { get; set; } = default!;
+		public ICollection<SubProductInProduct> SubProductInProducts { get; set; } = default!;
+		public ICollection<Parameter> Parameters { get; set; } = default!;
+		public ICollection<Sale> Sales { get; set; } = default!;
+		public bool Deleted { get; set; }
 	}
 	
 	public enum ProductStatusEnum 

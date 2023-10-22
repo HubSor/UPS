@@ -10,7 +10,7 @@ namespace Models.Entities
 		public virtual Product Product { get; set; } = default!;
 		public int SellerId { get; set; }
 		public virtual User Seller { get; set; } = default!;
-		public IEnumerable<SubProductInSale> SubProducts { get; set; } = default!;
-		public IEnumerable<SaleParameter> SaleParameters { get; set; } = default!;
+		public ICollection<SubProductInSale> SubProducts { get; set; } = default!;
+		public ICollection<SaleParameter> SaleParameters { get; set; } = default!;
 	}
 }

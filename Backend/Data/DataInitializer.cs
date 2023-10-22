@@ -22,7 +22,7 @@ namespace Data
 			var roles = new List<Role>()
 			{
 				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko." },
-				new (){ Id = RoleEnum.Seller, Description = null },
+				new (){ Id = RoleEnum.Seller, Description = "Prawa do sprzedaży na ścieżce sprzedaży." },
 				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników." },
 				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami." },
 			};
@@ -64,7 +64,7 @@ namespace Data
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Testowy produkt",
-				BasePrice = 99.99m
+				BasePrice = 99.99m,
 			});
 			
 			context.SubProducts.Add(new() 
@@ -84,6 +84,13 @@ namespace Data
 				InProductPrice = 9.99m
 			});
 			
+			context.Sales.Add(new()
+			{
+				ProductId = 1,
+				FinalPrice = 100.99m,
+				SellerId = 1,
+			});
+			
 			var parameterTypes = new List<ParameterType>()
 			{
 				new (){ Id = ParameterTypeEnum.Text, Name="Tekst" },
@@ -100,19 +107,29 @@ namespace Data
 			{
 				Name = "Imię zwierzęcia domowego",
 				Type = ParameterTypeEnum.Text,
-				IsRequired = false,
+				Required = false,
 				ProductId = 1
 			});
 			
-			context.Parameters.Add(new()
+			var dayParam = new Parameter()
 			{
 				Name = "Dzień tygodnia",
 				Type = ParameterTypeEnum.Select,
-				IsRequired = true,
+				Required = true,
 				SubProductId = 1
-			});
+			};
+
+			context.Parameters.Add(dayParam);
 			
 			context.SaveChanges();
+			
+			context.SubProductsInSales.Add(new()
+			{
+				SaleId = 1,
+				SubProductId = 1,
+				InSalePrice = 99.99m,
+				ManualOverride = true,
+			});
 			
 			var days = new List<string>()
 			{
@@ -127,7 +144,7 @@ namespace Data
 			
 			context.ParameterOptions.AddRange(days.Select(d => new ParameterOption() 
 			{
-				ParameterId = 1,
+				ParameterId = dayParam.Id,
 				Value = d,
 			}));
 

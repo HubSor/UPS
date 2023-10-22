@@ -17,3 +17,5 @@ public class ListSubProductsResponse
 public class EditProductResponse {}
 public class EditSubProductResponse {}
 public class EditSubProductAssignmentResponse {}
+public class DeleteProductResponse { }
+public class DeleteSubProductResponse { }

@@ -32,6 +32,14 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("delete")]
+		public async Task<IActionResult> Delete([FromBody] DeleteProductOrder order)
+		{
+			return await RespondAsync<DeleteProductOrder, DeleteProductResponse>(order);
+		}
+
+		[HttpPost]
 		[Authorize]
 		[Route("list")]
 		public async Task<IActionResult> List([FromBody] ListProductsOrder order)
@@ -53,6 +61,14 @@ namespace UPS.Controllers
 		public async Task<IActionResult> EditSubProduct([FromBody] EditSubProductOrder order)
 		{
 			return await RespondAsync<EditSubProductOrder, EditSubProductResponse>(order);
+		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("subproducts/delete")]
+		public async Task<IActionResult> DeleteSubProduct([FromBody] DeleteSubProductOrder order)
+		{
+			return await RespondAsync<DeleteSubProductOrder, DeleteSubProductResponse>(order);
 		}
 
 		[HttpPost]

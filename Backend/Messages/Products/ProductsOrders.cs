@@ -12,3 +12,5 @@ public record ListSubProductsOrder(int? ProductId);
 public record EditProductOrder(ProductDto ProductDto);
 public record EditSubProductOrder(SubProductDto SubProductDto);
 public record EditSubProductAssignmentOrder(int ProductId, int SubProductId, decimal NewPrice);
+public record DeleteProductOrder(int ProductId);
+public record DeleteSubProductOrder(int SubProductId);

@@ -20,7 +20,7 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 
 	public override Task InTransaction(ConsumeContext<ListProductsOrder> context)
 	{
-		var dtos = products.GetAll().Where(x => context.Message.Statuses.Contains(x.Status))
+		var dtos = products.GetAll().Where(x => context.Message.Statuses.Contains(x.Status) && !x.Deleted)
 			.Select(p => new ProductDto() 
 			{
 				Id = p.Id,

@@ -31,7 +31,7 @@ namespace Models
 			builder.HasMany(x => x.SubProducts).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
 			builder.HasMany(x => x.SaleParameters).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
 			builder.HasOne(x => x.Seller).WithMany().HasForeignKey(x => x.SellerId);
-			builder.HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId);
+			builder.HasOne(x => x.Product).WithMany(x => x.Sales).HasForeignKey(x => x.ProductId);
 		}
 	}
 	
@@ -40,7 +40,7 @@ namespace Models
 		public void Configure(EntityTypeBuilder<SubProductInSale> builder)
 		{
 			builder.HasKey(x => new { x.SaleId, x.SubProductId });
-			builder.HasOne(x => x.SubProduct).WithMany().HasForeignKey(x => x.SubProductId);
+			builder.HasOne(x => x.SubProduct).WithMany(x => x.SubProductInSales).HasForeignKey(x => x.SubProductId);
 		}
 	}
 	
@@ -49,7 +49,7 @@ namespace Models
 		public void Configure(EntityTypeBuilder<SaleParameter> builder)
 		{
 			builder.HasKey(x => new { x.SaleId, x.ParameterId });
-			builder.HasOne(x => x.Parameter).WithMany().HasForeignKey(x => x.ParameterId);
+			builder.HasOne(x => x.Parameter).WithMany(x => x.SaleParameters).HasForeignKey(x => x.ParameterId);
 			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId);
 		}
 	}

@@ -35,7 +35,7 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 
 	public override async Task InTransaction(ConsumeContext<ListSubProductsOrder> context)
 	{
-		var query = subProducts.GetAll();
+		var query = subProducts.GetAll().Where(sp => !sp.Deleted);
 		if (context.Message.ProductId.HasValue)
 		{
 			query = query

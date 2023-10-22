@@ -25,7 +25,7 @@ public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, E
 			return false;
 		}
 		
-		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductDto.Id))
+		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductDto.Id && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie znaleziono podproduktu");
 			return false;

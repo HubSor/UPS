@@ -25,7 +25,7 @@ public class EditProductConsumer : TransactionConsumer<EditProductOrder, EditPro
 			return false;
 		}
 		
-		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductDto.Id))
+		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductDto.Id && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie znaleziono produktu");
 			return false;

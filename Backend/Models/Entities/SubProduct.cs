@@ -15,7 +15,9 @@ namespace Models.Entities
 		public decimal BasePrice { get; set; }
 		[MaxLength(1000)]
 		public string? Description { get; set; }
-		public IEnumerable<SubProductInProduct> SubProductInProducts { get; set; } = default!;
-		public IEnumerable<Parameter> Parameters { get; set; } = default!;
+		public ICollection<SubProductInProduct> SubProductInProducts { get; set; } = default!;
+		public ICollection<SubProductInSale> SubProductInSales { get; set; } = default!;
+		public ICollection<Parameter> Parameters { get; set; } = default!;
+		public bool Deleted { get; set; }
 	}
 }

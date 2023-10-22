@@ -6,14 +6,16 @@ namespace Models.Entities
 	{
 		[MaxLength(128)]
 		public string Name { get; set; } = default!;
-		public bool IsRequired { get; set; }
+		public bool Required { get; set; }
 		public ParameterTypeEnum Type { get; set; }
 		public ParameterType TypeObject { get; set; } = default!;
-		public IEnumerable<ParameterOption> Options { get; set; } = default!;
+		public ICollection<ParameterOption> Options { get; set; } = default!;
+		public ICollection<SaleParameter> SaleParameters { get; set; } = default!;
 		public int? ProductId { get; set; }
 		public virtual Product? Product { get; set; }
 		public int? SubProductId { get; set; }
-		public virtual SubProduct? SubProduct { get; set; } 
+		public virtual SubProduct? SubProduct { get; set; }
+		public bool Deleted { get; set; }
 	}
 	
 	public class ParameterOption : Entity<int>

@@ -24,13 +24,13 @@ public class AssignSubProductConsumer : TransactionConsumer<AssignSubProductOrde
 
 	public override async Task<bool> PreTransaction(ConsumeContext<AssignSubProductOrder> context)
 	{
-		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductId))
+		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductId && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "SubProductId", "Nie znaleziono podproduktu");
 			return false;
 		}
 		
-		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductId))
+		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductId && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "ProductId", "Nie znaleziono produktu");
 			return false;
