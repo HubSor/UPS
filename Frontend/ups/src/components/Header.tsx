@@ -11,6 +11,9 @@ export default function Header(){
         <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
+                    <a className="nav-link" href={Paths.products}>Produkty</a>
+                </li>
+                <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
                 </li>
             </ul>

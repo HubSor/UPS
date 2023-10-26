@@ -1,4 +1,5 @@
 ﻿using Consumers.Products;
+using Dtos;
 using Helpers;
 using Messages.Products;
 using Models.Entities;
@@ -10,7 +11,7 @@ namespace UnitTests.Products;
 public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, ListProductsOrder, ListProductsResponse>
 {
 	private MockRepository<Product> products = default!;
-
+	private readonly PaginationDto pagination = new (){ PageIndex = 0, PageSize = 10 };
 	protected override Task SetUp()
 	{
 		products = new MockRepository<Product>();
@@ -40,12 +41,12 @@ public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, 
 	[Test]
 	public async Task Consume_Ok_ListSome()
 	{
-		var order = new ListProductsOrder(new ProductStatusEnum[] { ProductStatusEnum.NotOffered });
+		var order = new ListProductsOrder(new ProductStatusEnum[] { ProductStatusEnum.NotOffered }, pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
 		
-		var product = responses.Single().Data?.Products.FirstOrDefault();
+		var product = responses.Single().Data?.Products.Items.FirstOrDefault();
 		Assert.That(product, Is.Not.Null);
 		Assert.That(product?.Id, Is.EqualTo(1));
 		Assert.That(product?.Name, Is.EqualTo("test"));

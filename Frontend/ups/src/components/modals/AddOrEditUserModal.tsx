@@ -42,7 +42,7 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                     if (res.success && res.data){
                         onSuccess()
                         close()
-                        edit ? toastInfo('Edytowano użytkownika') : toastInfo('Dodano użytkownika')
+                        edit ? toastInfo('Edytowano użytkownika ' + editedUser?.username) : toastInfo('Dodano użytkownika')
                     }
                     else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
@@ -63,6 +63,7 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                 </Modal.Header>
                 <Modal.Body>
                     <InputGroup name="username" label="Login" type="text"/>
+                    <ValidationMessage fieldName="id" />
                     <InputGroup name="password" label="Hasło" type="password"/>
                     <BForm.Group>
                         <FieldArray name="roleIds"

@@ -19,13 +19,13 @@ public class EditProductConsumer : TransactionConsumer<EditProductOrder, EditPro
 
 	public override async Task<bool> PreTransaction(ConsumeContext<EditProductOrder> context)
 	{
-		if (await products.GetAll().AnyAsync(x => x.Code == context.Message.ProductDto.Code.ToUpper() && x.Id != context.Message.ProductDto.Id))
+		if (await products.GetAll().AnyAsync(x => x.Code == context.Message.Code.ToUpper() && x.Id != context.Message.Id))
 		{
 			await RespondWithValidationFailAsync(context, "Code", "Istnieje już inny produkt o takim kodzie");
 			return false;
 		}
 		
-		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductDto.Id && !x.Deleted))
+		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.Id && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie znaleziono produktu");
 			return false;
@@ -36,14 +36,14 @@ public class EditProductConsumer : TransactionConsumer<EditProductOrder, EditPro
 
 	public override async Task InTransaction(ConsumeContext<EditProductOrder> context)
 	{
-		var product = await products.GetAll().FirstAsync(p => p.Id == context.Message.ProductDto.Id);
+		var product = await products.GetAll().FirstAsync(p => p.Id == context.Message.Id);
 		
-		product.Description = context.Message.ProductDto.Description;
-		product.Name = context.Message.ProductDto.Name;
-		product.Code = context.Message.ProductDto.Code;
-		product.BasePrice = context.Message.ProductDto.BasePrice;
-		product.AnonymousSaleAllowed = context.Message.ProductDto.AnonymousSaleAllowed;
-		product.Status = context.Message.ProductDto.Status;
+		product.Description = context.Message.Description;
+		product.Name = context.Message.Name;
+		product.Code = context.Message.Code;
+		product.BasePrice = context.Message.BasePrice;
+		product.AnonymousSaleAllowed = context.Message.AnonymousSaleAllowed;
+		product.Status = context.Message.Status;
 		
 		await products.UpdateAsync(product);
 	}

@@ -35,7 +35,8 @@ export const RoleEnumDisplayName = (role: RoleEnum) => {
 type InputGroupProps = {
     name: string,
     label: string,
-    type: string
+    type: string,
+    options?: Option[]
 }
 
 export function InputGroup(props: InputGroupProps){
@@ -44,6 +45,11 @@ export function InputGroup(props: InputGroupProps){
             {props.label}
         </Form.Label>
         <Field type={props.type} name={props.name} className="form-control"/>
+        {!!props.options && props.options.map(o => {
+            return <>
+                <option value={o.value} key={o.value}>{o.label}</option>
+            </>
+        })}
         <ValidationMessage fieldName={props.name}/>
     </Form.Group>
 }

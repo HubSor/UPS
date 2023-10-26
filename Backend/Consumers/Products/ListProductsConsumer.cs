@@ -1,8 +1,10 @@
 using Core;
 using Data;
+using Dtos;
 using Dtos.Products;
 using MassTransit;
 using Messages.Products;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
@@ -18,9 +20,14 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 		this.products = products;
 	}
 
-	public override Task InTransaction(ConsumeContext<ListProductsOrder> context)
+	public override async Task InTransaction(ConsumeContext<ListProductsOrder> context)
 	{
-		var dtos = products.GetAll().Where(x => context.Message.Statuses.Contains(x.Status) && !x.Deleted)
+		var query = products.GetAll().Where(x => context.Message.Statuses.Contains(x.Status) && !x.Deleted);
+		
+		var totalCount = await query.CountAsync();
+		var dtos = await query
+			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
+			.Take(context.Message.Pagination.PageSize)
 			.Select(p => new ProductDto() 
 			{
 				Id = p.Id,
@@ -30,14 +37,12 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 				Status = p.Status,
 				AnonymousSaleAllowed = p.AnonymousSaleAllowed,
 				BasePrice = p.BasePrice
-			}).ToList();
+			}).ToListAsync();
 			
 		response = new ListProductsResponse()
 		{
-			Products = dtos	
+			Products = new PagedList<ProductDto>(dtos, totalCount, context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)	
 		};
-		
-		return Task.CompletedTask;
 	}
 
 	public override async Task PostTransaction(ConsumeContext<ListProductsOrder> context)

@@ -1,4 +1,4 @@
-import { PagedList, UserDto } from "./Dtos"
+import { PagedList, ProductDto, SubProductDto, UserDto } from "./Dtos"
 
 export type ApiResponse<T> = {
     statusCode: number,
@@ -15,3 +15,10 @@ export type ListUsersResponse = {
     users: PagedList<UserDto>
 }
 
+export type ListProductsResponse = {
+    products: PagedList<ProductDto>
+}
+
+export type ListSubProductsResponse = {
+    subProducts: PagedList<SubProductDto>
+}

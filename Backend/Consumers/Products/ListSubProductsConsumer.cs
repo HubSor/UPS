@@ -1,5 +1,6 @@
 using Core;
 using Data;
+using Dtos;
 using Dtos.Products;
 using MassTransit;
 using Messages.Products;
@@ -43,7 +44,12 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 				.Where(s => !s.SubProductInProducts.Any(sp => sp.ProductId == context.Message.ProductId));
 		}
 		
-		var dtos = (await query.ToListAsync()).Select(p => new SubProductDto() 
+		var totalCount = await query.CountAsync();
+		
+		var dtos = (await query.ToListAsync())
+			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
+			.Take(context.Message.Pagination.PageSize)
+			.Select(p => new SubProductDto() 
 			{
 				Id = p.Id,
 				Name = p.Name,
@@ -54,7 +60,7 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 			
 		response = new ListSubProductsResponse()
 		{
-			SubProducts = dtos	
+			SubProducts = new PagedList<SubProductDto>(dtos, totalCount, context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)
 		};
 	}
 

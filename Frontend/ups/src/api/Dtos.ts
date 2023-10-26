@@ -26,3 +26,27 @@ export type PagedList<T> = {
     items: T[]
     pagination: ResultPaginationDto
 }
+
+export enum ProductStatusEnum {
+    NotOffered = 0,
+    Offered = 1,
+    Withdrawn = 2
+}
+
+export type ProductDto = {
+    id: number,
+    anonymousSaleAllowed: boolean,
+    name: string,
+    code: string,
+    basePrice: number,
+    description?: string,
+    status: ProductStatusEnum
+}
+
+export type SubProductDto = {
+    id: number,
+    name: string,
+    code: string,
+    basePrice: number,
+    description?: string,
+}
