@@ -3,7 +3,7 @@ import { Api } from "../../api/Api";
 import { RoleEnum, UserDto } from "../../api/Dtos";
 import { ChangeEvent } from "react";
 import { Button, Modal, Form as BForm } from "react-bootstrap";
-import { InputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { TypeInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 
@@ -55,16 +55,16 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                     Api.AddUser(v).then(res => handleApiResponse(res, false))
             }}
         >
-            {({values}) => <Form>
+            {({values, isSubmitting}) => <Form>
                 <Modal.Header className="darkblue">
                     <Modal.Title>
                         {editMode ? "Edytuj użytkownika" : "Dodaj użytkownika"}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <InputGroup name="username" label="Login" type="text"/>
+                    <TypeInputGroup name="username" label="Login" type="text"/>
                     <ValidationMessage fieldName="id" />
-                    <InputGroup name="password" label="Hasło" type="password"/>
+                    <TypeInputGroup name="password" label="Hasło" type="password"/>
                     <BForm.Group>
                         <FieldArray name="roleIds"
                             render={ah => <>
@@ -93,7 +93,7 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                     </BForm.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isSubmitting}>
                         Zapisz
                     </Button>
                     &nbsp;

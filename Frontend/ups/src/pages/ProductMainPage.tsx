@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
-import { PaginationBar } from "../helpers/FormHelpers"
-import { DeleteUserModal } from "../components/modals/DeleteUserModal"
+import { PaginationBar, ProductStatusEnumDisplayName } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 
@@ -93,14 +92,14 @@ export default function ProductMainPage() {
             close={() => dispatch({ type: 'closeModal' })}
             editedProduct={state.editProductModal}
         />}
-        {/* {!!state.deleteProductModal && <DeleteUserModal 
+        {!!state.deleteProductModal && <DeleteUserModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
             deletedUser={state.deleteProductModal}
-        />} */}
+        />}
         <h3>Produkty</h3>
         <br/>
         <table className="table table-striped">
@@ -123,7 +122,7 @@ export default function ProductMainPage() {
                             {p.name}
                         </td>
                         <td>
-                            {p.status}
+                            {ProductStatusEnumDisplayName(p.status)}
                         </td>
                         <td>
                             {p.basePrice}

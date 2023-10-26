@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { Api } from "../../api/Api";
 import { ProductDto, ProductStatusEnum } from "../../api/Dtos";
 import { Button, Modal } from "react-bootstrap";
-import { InputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { TypeInputGroup, Option, ProductStatusEnumDisplayName, AsInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { EditProductRequest } from "../../api/ApiRequests";
@@ -29,8 +29,15 @@ const addOrEditProductSchema = object<EditProductRequest>().shape({
         .required("Pole wymagane")
         .min(0, "Zbyt niska cena"),
     description: string()
+        .nullable()
         .max(1000, "Opis zbyt długi")
 })
+
+const ProductOptions: Option[] = [
+    { label: ProductStatusEnumDisplayName(ProductStatusEnum.NotOffered), value: ProductStatusEnum.NotOffered },
+    { label: ProductStatusEnumDisplayName(ProductStatusEnum.Offered), value: ProductStatusEnum.Offered },
+    { label: ProductStatusEnumDisplayName(ProductStatusEnum.Withdrawn), value: ProductStatusEnum.Withdrawn },
+]
 
 export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOrEditProductModalProps) {
     const editMode = !!editedProduct;
@@ -61,28 +68,29 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                     else
                         toastDefaultError()
                 }
-
+                
+                const values = { ...v, status: +v.status};
                 editMode ?
-                    Api.EditProduct(v).then(res => handleApiResponse(res, true)) :
-                    Api.AddProduct(v).then(res => handleApiResponse(res, false))
+                    Api.EditProduct(values).then(res => handleApiResponse(res, true)) :
+                    Api.AddProduct(values).then(res => handleApiResponse(res, false))
             }}
         >
-            {({values}) => <Form>
+            {({ isSubmitting }) => <Form>
                 <Modal.Header className="darkblue">
                     <Modal.Title>
                         {editMode ? "Edytuj produkt" : "Dodaj produkt"}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <InputGroup name="name" label="Nazwa" type="text"/>
+                    <TypeInputGroup name="name" label="Nazwa" type="text"/>
                     <ValidationMessage fieldName="id" />
-                    <InputGroup name="code" label="Kod" type="text"/>
-                    <InputGroup name="basePrice" label="Podstawowa cena" type="number"/>
-                    <InputGroup name="status" label="Status" type="select"/>
-                    <InputGroup name="description" label="Opis" type="textarea" />
+                    <TypeInputGroup name="code" label="Kod" type="text"/>
+                    <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
+                    {editMode && <AsInputGroup name="status" label="Status" as="select" options={ProductOptions}/>}
+                    <AsInputGroup name="description" label="Opis" as="textarea"/>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isSubmitting}>
                         Zapisz
                     </Button>
                     &nbsp;

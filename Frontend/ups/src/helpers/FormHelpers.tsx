@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from "formik"
-import { RoleEnum } from "../api/Dtos"
+import { ProductStatusEnum, RoleEnum } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 
 export type Option = {
@@ -32,27 +32,62 @@ export const RoleEnumDisplayName = (role: RoleEnum) => {
     }
 }
 
+export const ProductStatusEnumDisplayName = (role: ProductStatusEnum) => {
+    switch (role) {
+        case ProductStatusEnum.NotOffered:
+            return "Nieoferowany";
+        case ProductStatusEnum.Withdrawn:
+            return "Wycofany";
+        case ProductStatusEnum.Offered:
+            return "Oferowany";
+    }
+}
+
 type InputGroupProps = {
     name: string,
     label: string,
-    type: string,
-    options?: Option[]
 }
 
-export function InputGroup(props: InputGroupProps){
+type TypeInputGroupProps = InputGroupProps & {
+    type?: string,
+}
+
+type AsInputGroupProps = InputGroupProps & {
+    options?: Option[],
+    as?: string,
+}
+
+export function TypeInputGroup(props: TypeInputGroupProps){
     return <Form.Group className="mb-3">
         <Form.Label>
             {props.label}
         </Form.Label>
         <Field type={props.type} name={props.name} className="form-control"/>
-        {!!props.options && props.options.map(o => {
-            return <>
-                <option value={o.value} key={o.value}>{o.label}</option>
-            </>
-        })}
         <ValidationMessage fieldName={props.name}/>
     </Form.Group>
 }
+
+export function AsInputGroup(props: AsInputGroupProps) {
+    return <Form.Group className="mb-3">
+        <Form.Label>
+            {props.label}
+        </Form.Label>
+        {props.as === 'textarea' ?
+            <TestAreaField {...props} /> :
+            <Field as={props.as} name={props.name} value={undefined} className="form-control">
+                {!!props.options && props.options.map(o => {
+                    return <>
+                        <option value={o.value} key={o.value}>{o.label}</option>
+                    </>
+                })}
+            </Field>
+        }
+        <ValidationMessage fieldName={props.name} />
+    </Form.Group>
+}
+
+const TestAreaField = (props: AsInputGroupProps) =>
+    <Field as={props.as} values={undefined} className="form-control" name={props.name} />
 
 export type PaginationBarProps = {
     onNext: (next: number) => void
