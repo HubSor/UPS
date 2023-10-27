@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiResponse, ListProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
+import { ApiResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
 import { AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 
@@ -106,7 +106,7 @@ export class Api {
     }
 
     static async ListSubProducts(request: ListSubProductsRequest) {
-        return await getApiResponse<ListSubProductsRequest, ListUsersResponse>(request, this.url + '/products/subproducts/list')
+        return await getApiResponse<ListSubProductsRequest, ListSubProductsResponse>(request, this.url + '/products/subproducts/list')
     }
 
     static async AssignSubProduct(request: AssignSubProductRequest) {

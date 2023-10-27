@@ -47,6 +47,7 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 		var totalCount = await query.CountAsync();
 		
 		var dtos = (await query.ToListAsync())
+			.OrderBy(x => x.Id)
 			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
 			.Take(context.Message.Pagination.PageSize)
 			.Select(p => new SubProductDto() 

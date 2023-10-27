@@ -14,6 +14,9 @@ export default function Header(){
                     <a className="nav-link" href={Paths.products}>Produkty</a>
                 </li>
                 <li className="nav-item">
+                    <a className="nav-link" href={Paths.subProducts}>Podprodukty</a>
+                </li>
+                <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
                 </li>
             </ul>
