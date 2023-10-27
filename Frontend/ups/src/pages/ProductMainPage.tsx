@@ -4,6 +4,7 @@ import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
 import { PaginationBar, ProductStatusEnumDisplayName } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
+import { DeleteProductModal } from "../components/modals/DeleteProductModal"
 
 type ProductMainPageState =  {
     addProductModalOpen: boolean,
@@ -92,13 +93,13 @@ export default function ProductMainPage() {
             close={() => dispatch({ type: 'closeModal' })}
             editedProduct={state.editProductModal}
         />}
-        {!!state.deleteProductModal && <DeleteUserModal 
+        {!!state.deleteProductModal && <DeleteProductModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
-            deletedUser={state.deleteProductModal}
+            deletedProduct={state.deleteProductModal}
         />}
         <h3>Produkty</h3>
         <br/>
