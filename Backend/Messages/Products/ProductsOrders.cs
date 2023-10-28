@@ -14,3 +14,4 @@ public record EditSubProductOrder(string Code, string Name, decimal BasePrice, s
 public record EditSubProductAssignmentOrder(int ProductId, int SubProductId, decimal NewPrice);
 public record DeleteProductOrder(int ProductId);
 public record DeleteSubProductOrder(int SubProductId);
+public record GetProductOrder(int ProductId);

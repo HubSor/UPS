@@ -43,6 +43,10 @@ export type ProductDto = {
     status: ProductStatusEnum
 }
 
+export type ExtendedProductDto = ProductDto & {
+    subProducts: []
+}
+
 export type SubProductDto = {
     id: number,
     name: string,

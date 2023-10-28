@@ -61,7 +61,7 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 		
 		var result = responses.SingleOrDefault()?.Data?.SubProducts;
 		Assert.That(result, Is.Not.Null);
-		Assert.That(result, Has.Count.EqualTo(2));
+		Assert.That(result?.Items, Has.Count.EqualTo(2));
 	}
 	
 	[Test]
@@ -74,7 +74,7 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 		
 		var result = responses.SingleOrDefault()?.Data?.SubProducts;
 		Assert.That(result, Is.Not.Null);
-		Assert.That(result, Has.Count.EqualTo(1));
+		Assert.That(result?.Items, Has.Count.EqualTo(1));
 		Assert.That(result?.Items.Single().Id, Is.EqualTo(2));
 	}
 }

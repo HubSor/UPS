@@ -11,5 +11,28 @@ namespace Dtos.Products
 		public decimal BasePrice { get; set; }
 		public string? Description { get; set; }
 		public ProductStatusEnum Status { get; set; }
+		
+		public ProductDto(Product p)
+		{
+			Id = p.Id;
+			Name = p.Name;
+			Description = p.Description;
+			Code = p.Code;
+			Status = p.Status;
+			AnonymousSaleAllowed = p.AnonymousSaleAllowed;
+			BasePrice = p.BasePrice;
+		}
+	}
+	
+	public class ExtendedProductDto : ProductDto
+	{
+		public ICollection<SubProductDto> SubProducts { get; set; } = default!;
+		
+		public ExtendedProductDto(Product p) : base(p)
+		{
+			SubProducts = p.SubProductInProducts
+				.Select(x => new SubProductDto(x.SubProduct))
+				.ToList();
+		}
 	}
 }

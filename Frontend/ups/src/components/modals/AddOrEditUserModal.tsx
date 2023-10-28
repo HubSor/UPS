@@ -6,12 +6,23 @@ import { Button, Modal, Form as BForm } from "react-bootstrap";
 import { TypeInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
+import { EditUserRequest } from "../../api/ApiRequests";
+import { object, string } from "yup";
 
 type AddOrEditUserModalProps = {
     onSuccess: () => void
     close: () => void
     editedUser?: UserDto
 }
+
+const addOrEditUserSchema = object<EditUserRequest>().shape({
+    username: string()
+        .max(64, "Zbyt długi login")
+        .min(4, "Zbyt krótki login")
+        .required("Należy podać login"),
+    password: string()
+        .max(128, "Zbyt długie hasło")
+})
 
 const rolesToAddFrom = [
     { roleId: RoleEnum.Administrator, name: "Administrator" },
@@ -37,6 +48,7 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
     return <Modal show size="lg">
         <Formik
             initialValues={initialValues}
+            validationSchema={addOrEditUserSchema}
             onSubmit={(v, fh) => {
                 const handleApiResponse = (res: ApiResponse<undefined>, edit: boolean) => {
                     if (res.success && res.data){

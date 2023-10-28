@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ApiResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
-import { AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
+import { ApiResponse, GetProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
+import { AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 
 axios.defaults.withCredentials = true;
@@ -119,6 +119,10 @@ export class Api {
 
     static async EditSubProductAssignment(request: EditSubProductAssignmentRequest) {
         return await getApiResponse<EditSubProductAssignmentRequest, undefined>(request, this.url + "/products/subproducts/assignments/edit")
+    }
+
+    static async GetProduct(request: GetProductRequest) {
+        return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/" + request.productId.toString())
     }
 
     static async Session() {

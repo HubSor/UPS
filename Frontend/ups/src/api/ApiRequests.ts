@@ -94,3 +94,7 @@ export type DeleteProductRequest = {
 export type DeleteSubProductRequest = {
     subProductId: number
 }
+
+export type GetProductRequest = {
+    productId: number
+}

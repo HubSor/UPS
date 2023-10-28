@@ -26,18 +26,11 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 		
 		var totalCount = await query.CountAsync();
 		var dtos = await query
+			.OrderBy(x => x.Id)
 			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
 			.Take(context.Message.Pagination.PageSize)
-			.Select(p => new ProductDto() 
-			{
-				Id = p.Id,
-				Name = p.Name,
-				Description = p.Description,
-				Code = p.Code,
-				Status = p.Status,
-				AnonymousSaleAllowed = p.AnonymousSaleAllowed,
-				BasePrice = p.BasePrice
-			}).ToListAsync();
+			.Select(p => new ProductDto(p))
+			.ToListAsync();
 			
 		response = new ListProductsResponse()
 		{

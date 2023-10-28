@@ -20,3 +20,7 @@ public class EditSubProductResponse {}
 public class EditSubProductAssignmentResponse {}
 public class DeleteProductResponse { }
 public class DeleteSubProductResponse { }
+public class GetProductResponse
+{
+	public ExtendedProductDto Product { get; set; } = default!;
+};

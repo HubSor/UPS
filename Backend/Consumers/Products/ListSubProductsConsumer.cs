@@ -50,14 +50,8 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 			.OrderBy(x => x.Id)
 			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
 			.Take(context.Message.Pagination.PageSize)
-			.Select(p => new SubProductDto() 
-			{
-				Id = p.Id,
-				Name = p.Name,
-				Description = p.Description,
-				Code = p.Code,
-				BasePrice = p.BasePrice
-			}).ToList();
+			.Select(p => new SubProductDto(p))
+			.ToList();
 			
 		response = new ListSubProductsResponse()
 		{
