@@ -10,12 +10,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import './style/App.css';
 import ProductMainPage from './pages/ProductMainPage';
 import SubSubProductMainPage from './pages/SubProductMainPage';
+import ProductPage from './pages/ProductPage';
 
 export const Paths = {
     login: "/login",
     main: "/",
     users: "/users",
     products: "/products",
+    product: "/product/:id",
     subProducts: "/subproducts"
 }
 
@@ -26,6 +28,7 @@ const router = createBrowserRouter(
             <Route path={Paths.main} element={<AuthorizedPage page={<MainPage/>} />} />
             <Route path={Paths.users} element={<AuthorizedPage page={<UserMainPage />} />} />
             <Route path={Paths.products} element={<AuthorizedPage page={<ProductMainPage />} />} />
+            <Route path={Paths.product} element={<AuthorizedPage page={<ProductPage />} />} />
             <Route path={Paths.subProducts} element={<AuthorizedPage page={<SubSubProductMainPage />} />} />
         </Route>
     )

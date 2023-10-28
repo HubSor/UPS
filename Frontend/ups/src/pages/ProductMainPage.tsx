@@ -5,6 +5,8 @@ import { PaginationBar, ProductStatusEnumDisplayName } from "../helpers/FormHelp
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
+import { useNavigate } from "react-router-dom"
+import { Paths } from "../App"
 
 type ProductMainPageState =  {
     addProductModalOpen: boolean,
@@ -62,6 +64,7 @@ function reducer (state: ProductMainPageState, action: ProductMainPageAction): P
 
 export default function ProductMainPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
+    const nav = useNavigate();
 
     const fetchData = useCallback(() => {
         Api.ListProducts({ pagination: state.pagination, statuses: state.statuses }).then(res => {
@@ -115,7 +118,7 @@ export default function ProductMainPage() {
             </thead>
             <tbody>
                 {state.products.map(p => {
-                    return <tr key={p.id}>
+                    return <tr key={p.id} onClick={() => nav(Paths.product.replace(":id", p.id.toString()))}>
                         <td>
                             {p.code}
                         </td>

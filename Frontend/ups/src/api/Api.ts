@@ -122,7 +122,7 @@ export class Api {
     }
 
     static async GetProduct(request: GetProductRequest) {
-        return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/" + request.productId.toString())
+        return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/get")
     }
 
     static async Session() {
