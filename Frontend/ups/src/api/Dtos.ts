@@ -44,7 +44,7 @@ export type ProductDto = {
 }
 
 export type ExtendedProductDto = ProductDto & {
-    subProducts: []
+    subProducts: ExtendedSubProductDto[]
 }
 
 export type SubProductDto = {
@@ -53,4 +53,8 @@ export type SubProductDto = {
     code: string,
     basePrice: number,
     description?: string,
+}
+
+export type ExtendedSubProductDto = SubProductDto & {
+    price: number
 }

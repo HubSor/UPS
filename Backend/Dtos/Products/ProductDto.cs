@@ -26,12 +26,12 @@ namespace Dtos.Products
 	
 	public class ExtendedProductDto : ProductDto
 	{
-		public ICollection<SubProductDto> SubProducts { get; set; } = default!;
+		public ICollection<ExtendedSubProductDto> SubProducts { get; set; } = default!;
 		
 		public ExtendedProductDto(Product p) : base(p)
 		{
 			SubProducts = p.SubProductInProducts
-				.Select(x => new SubProductDto(x.SubProduct))
+				.Select(x => new ExtendedSubProductDto(x.SubProduct, x.InProductPrice))
 				.ToList();
 		}
 	}

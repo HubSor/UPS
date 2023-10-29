@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer } from "react"
 import { AddOrEditUserModal } from "../components/modals/AddOrEditUserModal"
 import { Api } from "../api/Api"
 import { ResultPaginationDto, RoleEnum, UserDto } from "../api/Dtos"
-import { PaginationBar, RoleEnumDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar, GetRoleDisplayName } from "../helpers/FormHelpers"
 import { DeleteUserModal } from "../components/modals/DeleteUserModal"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 
@@ -119,7 +119,7 @@ export default function UserMainPage() {
                             {u.roles.map(u => {
                                 const enumKey = u as keyof typeof RoleEnum;
                                 const enumValue = RoleEnum[enumKey]
-                                return RoleEnumDisplayName(enumValue);
+                                return GetRoleDisplayName(enumValue);
                             }).join(', ')}
                         </td>
                         <td className="col-2">

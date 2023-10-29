@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
-import { PaginationBar, ProductStatusEnumDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar, GetProductStatusDisplayName } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
@@ -113,12 +113,12 @@ export default function ProductMainPage() {
                     <th scope="col">Nazwa</th>
                     <th scope="col">Status</th>
                     <th scope="col">Bazowa cena</th>
-                    <th scope="col-2"></th>
+                    <th scope="col-3"></th>
                 </tr>
             </thead>
             <tbody>
                 {state.products.map(p => {
-                    return <tr key={p.id} onClick={() => nav(Paths.product.replace(":id", p.id.toString()))}>
+                    return <tr key={p.id}>
                         <td>
                             {p.code}
                         </td>
@@ -126,18 +126,23 @@ export default function ProductMainPage() {
                             {p.name}
                         </td>
                         <td>
-                            {ProductStatusEnumDisplayName(p.status)}
+                            {GetProductStatusDisplayName(p.status)}
                         </td>
                         <td>
                             {p.basePrice}
                         </td>
-                        <td className="col-2">
+                        <td className="col-3">
+                            <button type="button" className="btn btn-sm btn-secondary" onClick={() => {
+                                nav(Paths.product.replace(":id", p.id.toString()))
+                            }}>
+                                Szczegóły
+                            </button>
+                            &nbsp;
                             <button type="button" className="btn btn-sm btn-primary" onClick={() => {
                                 dispatch({ type: 'editProductButton', product: p })
                             }}>
                                 Edytuj
                             </button>
-                            &nbsp;
                             &nbsp;
                             <button type="button" className="btn btn-sm btn-danger" onClick={() => {
                                 dispatch({ type: 'deleteProductButton', product: p })

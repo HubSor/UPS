@@ -55,3 +55,8 @@
   top: 4em;
   width: 350px;
 }
+
+.align-left {
+  display: flex;
+  margin-top: 1rem;
+}

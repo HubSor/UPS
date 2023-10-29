@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { Api } from "../../api/Api";
 import { ProductDto, ProductStatusEnum } from "../../api/Dtos";
 import { Button, Modal } from "react-bootstrap";
-import { TypeInputGroup, Option, ProductStatusEnumDisplayName, AsInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { TypeInputGroup, Option, GetProductStatusDisplayName, AsInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { EditProductRequest } from "../../api/ApiRequests";
@@ -34,9 +34,9 @@ const addOrEditProductSchema = object<EditProductRequest>().shape({
 })
 
 const ProductOptions: Option[] = [
-    { label: ProductStatusEnumDisplayName(ProductStatusEnum.NotOffered), value: ProductStatusEnum.NotOffered },
-    { label: ProductStatusEnumDisplayName(ProductStatusEnum.Offered), value: ProductStatusEnum.Offered },
-    { label: ProductStatusEnumDisplayName(ProductStatusEnum.Withdrawn), value: ProductStatusEnum.Withdrawn },
+    { label: GetProductStatusDisplayName(ProductStatusEnum.NotOffered), value: ProductStatusEnum.NotOffered },
+    { label: GetProductStatusDisplayName(ProductStatusEnum.Offered), value: ProductStatusEnum.Offered },
+    { label: GetProductStatusDisplayName(ProductStatusEnum.Withdrawn), value: ProductStatusEnum.Withdrawn },
 ]
 
 export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOrEditProductModalProps) {

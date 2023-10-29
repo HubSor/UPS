@@ -19,4 +19,14 @@ namespace Dtos.Products
 			BasePrice = sp.BasePrice;
 		}
 	}
+	
+	public class ExtendedSubProductDto : SubProductDto 
+	{
+		public decimal Price { get; set; }
+		
+		public ExtendedSubProductDto(SubProduct sp, decimal price) : base(sp)
+		{
+			Price = price;
+		}
+	}
 }

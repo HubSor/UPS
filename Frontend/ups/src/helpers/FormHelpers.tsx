@@ -19,7 +19,7 @@ export const SeparateErrors = (errors: { [key: string]: string[] }) => {
     return newObj;
 }
 
-export const RoleEnumDisplayName = (role: RoleEnum) => {
+export const GetRoleDisplayName = (role: RoleEnum) => {
     switch (role) {
         case RoleEnum.Administrator:
             return "Administrator";
@@ -32,7 +32,7 @@ export const RoleEnumDisplayName = (role: RoleEnum) => {
     }
 }
 
-export const ProductStatusEnumDisplayName = (role: ProductStatusEnum) => {
+export const GetProductStatusDisplayName = (role?: ProductStatusEnum) => {
     switch (role) {
         case ProductStatusEnum.NotOffered:
             return "Nieoferowany";
@@ -40,6 +40,8 @@ export const ProductStatusEnumDisplayName = (role: ProductStatusEnum) => {
             return "Wycofany";
         case ProductStatusEnum.Offered:
             return "Oferowany";
+        default:
+            return ""
     }
 }
 
