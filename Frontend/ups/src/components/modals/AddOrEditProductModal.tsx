@@ -95,7 +95,7 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                         <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
                         {editMode && <AsInputGroup name="status" label="Status" as="select" options={ProductOptions}/>}
                         <CheckboxInputGroup name="anonymousSaleAllowed" label="Anonimowa sprzedaż"/>
-                        <AsInputGroup name="description" label="Opis" as="textarea"/>
+                        <AsInputGroup rows={3} name="description" label="Opis" as="textarea"/>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button type="submit" disabled={isSubmitting}>

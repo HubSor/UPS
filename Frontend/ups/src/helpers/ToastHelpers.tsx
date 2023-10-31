@@ -26,3 +26,4 @@ export function toastError(msg: string) {
 }
 
 export const toastDefaultError = () => toastError("Coś poszło nie tak")
+export const toastAuthError = () => toastError("Brak uprawnień do wykonania operacji")

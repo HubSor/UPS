@@ -2,6 +2,7 @@ import axios from "axios";
 import { ApiResponse, GetProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
 import { AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
+import { toastAuthError } from "../helpers/ToastHelpers";
 
 axios.defaults.withCredentials = true;
 
@@ -27,7 +28,7 @@ async function getApiResponse<R, T>(request: R, url: string): Promise<ApiRespons
         validateStatus: status => status <= 500,    
         headers: {
             "Content-Type": "application/json"
-        }    
+        }
     }).then(res => {
         response = {
             statusCode: res.status ?? 400,
@@ -46,6 +47,9 @@ async function getApiResponse<R, T>(request: R, url: string): Promise<ApiRespons
         else
             console.error('Api Error: ', error.message)
     });
+
+    if (response.statusCode === 401)
+        toastAuthError();
 
     return response;
 }

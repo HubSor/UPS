@@ -60,3 +60,7 @@
   display: flex;
   margin-top: 1rem;
 }
+
+.info-label {
+  text-align: right;
+}

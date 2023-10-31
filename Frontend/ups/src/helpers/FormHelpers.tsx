@@ -58,6 +58,7 @@ type TypeInputGroupProps = InputGroupProps & {
 type AsInputGroupProps = InputGroupProps & {
     options?: Option[],
     as?: string,
+    rows?: number
 }
 
 export function TypeInputGroup(props: TypeInputGroupProps){

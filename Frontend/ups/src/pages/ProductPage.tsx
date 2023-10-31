@@ -8,6 +8,7 @@ import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpe
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
+import { Form } from "react-bootstrap"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -104,6 +105,15 @@ type ProductPageProps = {
     productId: number
 }
 
+const InfoRow = ({name, value}: {name: string, value?: string}) => {
+    return <div className="form-group row justify-content-center">
+        <label className="col-sm-6 col-form-label info-label">{name}</label>
+        <div className="col-6">
+            <input type="text" readOnly className="form-control-plaintext info-value" value={value ?? ""} />
+        </div>
+    </div>
+}
+
 export function ProductPageInner({ productId }: ProductPageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
 
@@ -179,56 +189,27 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         />}
         <h3>{state.product?.code} {state.product?.name}</h3>
         <br />
-        <div className="product-info">
-            <form>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Nazwa</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.name ?? ""}/>
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Kod</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.code ?? ""} />
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Bazowa cena</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.basePrice ?? ""} />
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Anonimowa sprzedaż</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" 
-                            value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} 
-                        />
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Status</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" 
-                            value={GetProductStatusDisplayName(state.product?.status)} 
-                        />
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Opis</label>
-                    <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.description ?? ""} />
-                    </div>
-                </div>
+        <div className="card">
+            <form className="card-body product-info">
+                <InfoRow value={state.product?.code} name="Kod"/>
+                <InfoRow value={state.product?.name} name="Nazwa"/>
+                <InfoRow value={state.product?.basePrice?.toString()} name="Podstawowa cena"/>
+                <InfoRow value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} name="Anonimowa sprzedaż"/>
+                <InfoRow value={GetProductStatusDisplayName(state.product?.status)} name="Status"/>
             </form>
-            <div className="align-left">
-                <button type="button" className="btn btn-sm btn-primary" onClick={() => {
-                    dispatch({ type: 'editProductButton' })
-                }}>
-                    Edytuj produkt
-                </button>
-            </div>
+        </div>
+        <Form.Group className="mb-3">
+            <Form.Label className="align-left">
+                Opis
+            </Form.Label>
+            <textarea name="description" rows={4} disabled readOnly className="form-control" value={state.product?.description ?? ""}/>
+        </Form.Group>
+        <div className="align-left">
+            <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                dispatch({ type: 'editProductButton' })
+            }}>
+                Edytuj produkt
+            </button>
         </div>
         <br/>
         <div className="row">

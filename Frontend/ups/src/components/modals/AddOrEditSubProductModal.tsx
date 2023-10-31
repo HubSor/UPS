@@ -82,7 +82,7 @@ export function AddOrEditSubProductModal({ onSuccess, close, editedSubProduct }:
                         <ValidationMessage fieldName="id" />
                         <TypeInputGroup name="code" label="Kod" type="text"/>
                         <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
-                        <AsInputGroup name="description" label="Opis" as="textarea"/>
+                        <AsInputGroup rows={3} name="description" label="Opis" as="textarea"/>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button type="submit" disabled={isSubmitting}>
