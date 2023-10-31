@@ -40,7 +40,7 @@ export function DeleteProductModal({ onSuccess, close, deletedProduct }: DeleteP
             {({ isSubmitting }) => <Form>
                 <Modal.Header className="darkred">
                     <Modal.Title>
-                        Usuń produkt {deletedProduct.name} {deletedProduct.code}
+                        Usuń produkt {deletedProduct.code}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

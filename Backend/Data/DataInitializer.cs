@@ -60,7 +60,7 @@ namespace Data
 			context.Products.Add(new()
 			{
 				Name = "Produkt testowy",
-				Code = "PTEST",
+				Code = "P1",
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Testowy produkt",
@@ -71,10 +71,26 @@ namespace Data
 			{
 				Name = "Podprodukt testowy 1",
 				Description = "Testowy podprodukt 1",
-				Code = "PPTEST",
+				Code = "PP1",
 				BasePrice = 15.99m,
 			});
-			
+
+			context.SubProducts.Add(new()
+			{
+				Name = "Podprodukt testowy 2",
+				Description = "Testowy podprodukt 2",
+				Code = "PP2",
+				BasePrice = 0.99m,
+			});
+
+			context.SubProducts.Add(new()
+			{
+				Name = "Podprodukt testowy 3",
+				Description = "Testowy podprodukt 3",
+				Code = "PP3",
+				BasePrice = 4.99m,
+			});
+
 			context.SaveChanges();
 			
 			context.SubProductsInProducts.Add(new()

@@ -1,6 +1,7 @@
 import { ErrorMessage, Field } from "formik"
 import { ProductStatusEnum, RoleEnum } from "../api/Dtos"
 import { Form } from "react-bootstrap"
+import React from "react"
 
 export type Option = {
     value: any,
@@ -78,9 +79,9 @@ export function AsInputGroup(props: AsInputGroupProps) {
             <TestAreaField {...props} /> :
             <Field as={props.as} name={props.name} value={undefined} className="form-control">
                 {!!props.options && props.options.map(o => {
-                    return <>
-                        <option value={o.value} key={o.value}>{o.label}</option>
-                    </>
+                    return <React.Fragment key={o.value}>
+                        <option value={o.value}>{o.label}</option>
+                    </React.Fragment>
                 })}
             </Field>
         }

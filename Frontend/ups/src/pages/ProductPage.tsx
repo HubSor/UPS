@@ -4,8 +4,10 @@ import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { GetProductStatusDisplayName } from "../helpers/FormHelpers"
+import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
+import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
+import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -26,57 +28,75 @@ const defaultPagination: ResultPaginationDto = {
 type ProductPageState = {
     product: ExtendedProductDto | null,
     otherSubProducts: SubProductDto[]
-    refresh: boolean
-    subProductsPagination: ResultPaginationDto
+    refreshSubProducts: boolean,
+    refreshProduct: boolean
     otherSubProductsPagination: ResultPaginationDto
     showOtherSubProducts: boolean
     editProductModal: boolean
     editSubProductModal: ExtendedSubProductDto | null
     unassignSubProductModal: ExtendedSubProductDto | null,
+    assignSubProductModal: SubProductDto | null,
 }
 
 const initalState: ProductPageState = {
     product: null,
-    refresh: true,
+    refreshProduct: true,
+    refreshSubProducts: false,
     otherSubProducts: [],
-    subProductsPagination: defaultPagination,
     otherSubProductsPagination: defaultPagination,
     showOtherSubProducts: false,
     editProductModal: false,
     editSubProductModal: null,
     unassignSubProductModal: null,
+    assignSubProductModal: null,
 }
 
 type ProductPageAction =
     | { type: 'closeModal' }
-    | { type: 'refresh' }
+    | { type: 'changedPage', pageIndex: number }
+    | { type: 'refreshProduct' }
+    | { type: 'refreshSubProducts' }
     | { type: 'fetchedSubProducts', subProducts: SubProductDto[], pagination: ResultPaginationDto }
     | { type: 'fetchedProduct', product: ExtendedProductDto }
     | { type: 'editProductButton' }
+    | { type: 'showOtherSubProductsButton' }
     | { type: 'editSubProductButton', subProduct: ExtendedSubProductDto }
     | { type: 'unassignSubProductButton', subProduct: ExtendedSubProductDto }
+    | { type: 'assignSubProductButton', subProduct: SubProductDto }
 
 function reducer(state: ProductPageState, action: ProductPageAction): ProductPageState {
     switch (action.type) {
+        case 'showOtherSubProductsButton':
+            return { ...state, showOtherSubProducts: true, refreshSubProducts: true }
         case 'closeModal':
-            return { ...state, editProductModal: false, editSubProductModal: null, unassignSubProductModal: null }
+            return { 
+                ...state, editProductModal: false, editSubProductModal: null, 
+                unassignSubProductModal: null, assignSubProductModal: null 
+            }
         case 'editProductButton':
             return { ...state, editProductModal: true }
-        case 'refresh':
-            return { ...state, refresh: true }
+        case 'refreshProduct':
+            return { ...state, refreshProduct: true }
+        case 'refreshSubProducts':
+            return { ...state, refreshSubProducts: true }
         case 'editSubProductButton':
             return { ...state, editSubProductModal: action.subProduct }
+        case 'changedPage':
+            return { ...state, refreshSubProducts: true, 
+                otherSubProductsPagination: { ...state.otherSubProductsPagination, pageIndex: action.pageIndex } }
         case 'unassignSubProductButton':
             return { ...state, unassignSubProductModal: action.subProduct }
+        case 'assignSubProductButton':
+            return { ...state, assignSubProductModal: action.subProduct }
         case 'fetchedSubProducts':
             return { 
                 ...state,
-                refresh: false, 
+                refreshSubProducts: false, 
                 otherSubProducts: action.subProducts,
                 otherSubProductsPagination: action.pagination 
             }
         case 'fetchedProduct':
-            return { ...state, product: action.product, refresh: false }
+            return { ...state, product: action.product, refreshProduct: false }
     }
 }
 
@@ -90,35 +110,59 @@ export function ProductPageInner({ productId }: ProductPageProps) {
     const fetchOtherSubProduts = useCallback(() => {
         Api.ListSubProducts({ pagination: state.otherSubProductsPagination, productId: productId }).then(res => {
             if (res.success && res.data) {
-                dispatch({ type: 'fetchedSubProducts', subProducts: res.data.subProducts.items, pagination: res.data.subProducts.pagination })
+                dispatch({ 
+                    type: 'fetchedSubProducts', 
+                    subProducts: res.data.subProducts.items, 
+                    pagination: res.data.subProducts.pagination 
+                })
             }
             else toastDefaultError();
         })
     }, [productId, state.otherSubProductsPagination])
 
-    const fetchProduct = useCallback(() => {
-        Api.GetProduct({ productId: productId }).then(res => {
-            if (res.success && res.data) {
-                dispatch({ type: 'fetchedProduct', product: res.data.product })
-            }
-            else toastDefaultError();
-        })
-    }, [productId])
-
     useEffect(() => {
-        if (state.refresh)
+        const fetchProduct = () => {
+            Api.GetProduct({ productId: productId }).then(res => {
+                if (res.success && res.data) {
+                    dispatch({ type: 'fetchedProduct', product: res.data.product })
+                }
+                else toastDefaultError();
+            })
+        }
+
+        if (state.refreshProduct)
             fetchProduct();
-    }, [productId, state.refresh, fetchProduct])
+    }, [productId, state.refreshProduct])
 
     useEffect(() => {
-        if (state.refresh && state.showOtherSubProducts)
+        if (state.refreshSubProducts && state.showOtherSubProducts)
             fetchOtherSubProduts();
-    }, [state.showOtherSubProducts, state.refresh, fetchOtherSubProduts])
+    }, [state.showOtherSubProducts, state.refreshSubProducts, fetchOtherSubProduts])
 
     return <>
+        {!!state.assignSubProductModal && <AssignSubProductModal
+            onSuccess={() => {
+                dispatch({ type: 'refreshSubProducts' })
+                dispatch({ type: 'refreshProduct' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            productId={productId}
+            assignedSubProduct={state.assignSubProductModal}
+        />}
+        {!!state.unassignSubProductModal && state.product && <UnassignSubProductModal
+            onSuccess={() => {
+                dispatch({ type: 'refreshSubProducts' })
+                dispatch({ type: 'refreshProduct' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            product={state.product}
+            subProduct={state.unassignSubProductModal}
+        />}
         {!!state.editProductModal && state.product && <AddOrEditProductModal
             onSuccess={() => {
-                dispatch({ type: 'refresh' })
+                dispatch({ type: 'refreshProduct' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
@@ -126,7 +170,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         />}
         {!!state.editSubProductModal && state.product && <EditAssignedSubProductModal
             onSuccess={() => {
-                dispatch({ type: 'refresh' })
+                dispatch({ type: 'refreshProduct' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
@@ -140,19 +184,19 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Nazwa</label>
                     <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.name}/>
+                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.name ?? ""}/>
                     </div>
                 </div>
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Kod</label>
                     <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.code} />
+                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.code ?? ""} />
                     </div>
                 </div>
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Bazowa cena</label>
                     <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.basePrice} />
+                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.basePrice ?? ""} />
                     </div>
                 </div>
                 <div className="form-group row">
@@ -174,7 +218,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Opis</label>
                     <div className="col-sm-10">
-                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.description} />
+                        <input type="text" readOnly className="form-control-plaintext" value={state.product?.description ?? ""} />
                     </div>
                 </div>
             </form>
@@ -230,22 +274,54 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                     </tbody>
                 </table>
             </div>
-            {productId === 59 && <div className="col-lg-6 col-md-6 col-sm-12">
-                <h4>Dostępne podprodukty</h4>
-                <table className="table table-stripped">
-                    <thead>
-                        <tr>
-                            <th>Kod</th>
-                            <th>Nazwa</th>
-                            <th>Bazowa cena</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-            </div>}
+            <div className="col-lg-6 col-md-6 col-sm-12">
+                {state.showOtherSubProducts ? <>
+                    <h4>Dostępne podprodukty</h4>
+                    <table className="table table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Kod</th>
+                                <th>Nazwa</th>
+                                <th>Bazowa cena</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {state.otherSubProducts?.map(s => {
+                                return <tr key={s.id}>
+                                    <td>
+                                        {s.code}
+                                    </td>
+                                    <td>
+                                        {s.name}
+                                    </td>
+                                    <td>
+                                        {s.basePrice}
+                                    </td>
+                                    <td>
+                                        <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                            dispatch({ type: 'assignSubProductButton', subProduct: s })
+                                        }}>
+                                            Przypisz
+                                        </button>
+                                    </td>
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+                    <PaginationBar currentIndex={state.otherSubProductsPagination.pageIndex} 
+                        maxIndex={state.otherSubProductsPagination.totalPages - 1}
+                        onNext={next => dispatch({ type: 'changedPage', pageIndex: next })}
+                        onPrev={prev => dispatch({ type: 'changedPage', pageIndex: prev })}
+                    />
+                </> : <>
+                    <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                        dispatch({ type: 'showOtherSubProductsButton' })
+                    }}>
+                        Pokaż dostępne podprodukty
+                    </button>
+                </>}
+            </div>
         </div>
     </>
 }

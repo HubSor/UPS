@@ -3,19 +3,20 @@ import { Api } from "../../api/Api";
 import { Button, Modal } from "react-bootstrap";
 import { SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
-import { DeleteSubProductRequest } from "../../api/ApiRequests";
-import { SubProductDto } from "../../api/Dtos";
+import { UnassignSubProductsRequest } from "../../api/ApiRequests";
+import { ProductDto, SubProductDto } from "../../api/Dtos";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 
-type DeleteSubProductModalProps = {
+type UnassignSubProductModalProps = {
     onSuccess: () => void
     close: () => void
-    deletedSubProduct: SubProductDto
+    subProduct: SubProductDto
+    product: ProductDto
 }
 
-export function DeleteSubProductModal({ onSuccess, close, deletedSubProduct }: DeleteSubProductModalProps) {
-    const initialValues: DeleteSubProductRequest = {
-        subProductId: deletedSubProduct.id
+export function UnassignSubProductModal({ onSuccess, close, subProduct, product }: UnassignSubProductModalProps) {
+    const initialValues = {
+        subProductId: subProduct.id
     }
 
     return <Modal show size="lg">
@@ -26,7 +27,7 @@ export function DeleteSubProductModal({ onSuccess, close, deletedSubProduct }: D
                     if (res.success && res.data){
                         onSuccess()
                         close()
-                        toastInfo('Usunięto podprodukt')
+                        toastInfo('Usunięto przypisanie podproduktu')
                     }
                     else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
@@ -34,19 +35,25 @@ export function DeleteSubProductModal({ onSuccess, close, deletedSubProduct }: D
                         toastDefaultError()
                 }
 
-                Api.DeleteSubProduct(v).then(handleApiResponse)
+                const values: UnassignSubProductsRequest = {
+                    subProductIds: [ v.subProductId ],
+                    productId: product.id
+                }
+
+                Api.UnassignSubProducts(values).then(handleApiResponse)
             }}
         >
             {({ isSubmitting }) => <Form>
                 <Modal.Header className="darkred">
                     <Modal.Title>
-                        Usuń podprodukt {deletedSubProduct.code}
+                        Usuń przypisanie {subProduct.code} do {product.code}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Czy na pewno chcesz usunąć podprodukt {deletedSubProduct.name} wraz z jego parametrami? Produkty, do których jest przypisany nie zostaną usunięte. 
+                    Czy na pewno chcesz usunąć przypisanie podproduktu {subProduct.name} do produktu {product.name}? Nie spowoduje to całkowitego usunięcia podproduktu ani produktu.
                     <br/>
-                    <ValidationMessage fieldName="subProductId" />
+                    <ValidationMessage fieldName="subProductIds" />
+                    <ValidationMessage fieldName="productId" />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="submit" disabled={isSubmitting}>
