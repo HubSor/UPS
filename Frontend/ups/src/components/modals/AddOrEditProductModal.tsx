@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { Api } from "../../api/Api";
 import { ProductDto, ProductStatusEnum } from "../../api/Dtos";
 import { Button, Modal } from "react-bootstrap";
-import { TypeInputGroup, Option, GetProductStatusDisplayName, AsInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { TypeInputGroup, Option, GetProductStatusDisplayName, AsInputGroup, SeparateErrors, ValidationMessage, CheckboxInputGroup } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { EditProductRequest } from "../../api/ApiRequests";
@@ -87,6 +87,7 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                     <TypeInputGroup name="code" label="Kod" type="text"/>
                     <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
                     {editMode && <AsInputGroup name="status" label="Status" as="select" options={ProductOptions}/>}
+                    <CheckboxInputGroup name="anonymousSaleAllowed" label="Anonimowa sprzedaż"/>
                     <AsInputGroup name="description" label="Opis" as="textarea"/>
                 </Modal.Body>
                 <Modal.Footer>

@@ -70,6 +70,17 @@ export function TypeInputGroup(props: TypeInputGroupProps){
     </Form.Group>
 }
 
+export function CheckboxInputGroup(props: InputGroupProps) {
+    return <Form.Check className="mb-3">
+        <Field type="checkbox" name={props.name} className="form-check-input" />
+        &nbsp;
+        <Form.Label className="form-check-label">
+            {props.label}
+        </Form.Label>
+        <ValidationMessage fieldName={props.name} />
+    </Form.Check>
+}
+
 export function AsInputGroup(props: AsInputGroupProps) {
     return <Form.Group className="mb-3">
         <Form.Label>
@@ -103,10 +114,13 @@ export function PaginationBar(props: PaginationBarProps) {
     const next = () => props.onNext(props.currentIndex + 1);
     const prev = () => props.onNext(props.currentIndex - 1);
 
+    const disableLeft = props.currentIndex <= 0;
+    const disableRight = props.currentIndex >= props.maxIndex;
+
     return <nav className="m-2">
         <ul className="pagination justify-content-center">
             <li className="page-item">
-                <button disabled={props.currentIndex <= 0} type="button" className="page-link" onClick={prev}>
+                <button disabled={disableLeft} type="button" className={"page-link " + (disableLeft ? "disabled" : "")} onClick={prev}>
                     {"<"}
                 </button>
             </li>
@@ -122,7 +136,7 @@ export function PaginationBar(props: PaginationBarProps) {
                 </button>
             </li>}
             <li className="page-item">
-                <button disabled={props.currentIndex >= props.maxIndex} className="page-link" onClick={next}>
+                <button disabled={disableRight} className={"page-link " + (disableRight ? "disabled" : "")} onClick={next}>
                     {">"}
                 </button>
             </li>
