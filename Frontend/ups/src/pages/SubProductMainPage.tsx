@@ -5,6 +5,7 @@ import { PaginationBar } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditSubProductModal } from "../components/modals/AddOrEditSubProductModal"
 import { DeleteSubProductModal } from "../components/modals/DeleteSubProductModal"
+import { AuthHelpers } from "../helpers/AuthHelper"
 
 type SubProductMainPageState =  {
     addSubProductModalOpen: boolean,
@@ -78,6 +79,8 @@ export default function SubSubProductMainPage() {
             fetchData();
     }, [state.refresh, fetchData])
 
+    const hasProductRoles = AuthHelpers.HasProductRoles();
+
     return <>
         {state.addSubProductModalOpen && <AddOrEditSubProductModal 
             onSuccess={() => {
@@ -126,18 +129,20 @@ export default function SubSubProductMainPage() {
                             {p.basePrice}
                         </td>
                         <td className="col-2">
-                            <button type="button" className="btn btn-sm btn-primary" onClick={() => {
-                                dispatch({ type: 'editSubProductButton', subProduct: p })
-                            }}>
-                                Edytuj
-                            </button>
-                            &nbsp;
-                            &nbsp;
-                            <button type="button" className="btn btn-sm btn-danger" onClick={() => {
-                                dispatch({ type: 'deleteSubProductButton', subProduct: p })
-                            }}>
-                                Usuń
-                            </button>
+                            {hasProductRoles && <>
+                                <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                    dispatch({ type: 'editSubProductButton', subProduct: p })
+                                }}>
+                                    Edytuj
+                                </button>
+                                &nbsp;
+                                &nbsp;
+                                <button type="button" className="btn btn-sm btn-danger" onClick={() => {
+                                    dispatch({ type: 'deleteSubProductButton', subProduct: p })
+                                }}>
+                                    Usuń
+                                </button>
+                            </>}
                         </td>
                     </tr>
                 })}
@@ -148,10 +153,10 @@ export default function SubSubProductMainPage() {
             onPrev={prev => dispatch({ type: 'changedPage', pageIndex: prev })}
         />
         <br/>
-        <div className="col-sm-3">
+        {hasProductRoles && <div className="col-sm-3">
             <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addSubProductButton' })}>
                 Dodaj nowy podprodukt
             </button>
-        </div>
+        </div>}
     </>
 }

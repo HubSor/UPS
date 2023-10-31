@@ -6,6 +6,8 @@ import { Paths } from "../App";
 export default function Header(){
     const nav = useNavigate();
 
+    const showUsers = AuthHelpers.HasUserRoles();
+
     return <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
         <a href={Paths.main} className="navbar-title">UPS</a>
         <div className="collapse navbar-collapse">
@@ -16,9 +18,9 @@ export default function Header(){
                 <li className="nav-item">
                     <a className="nav-link" href={Paths.subProducts}>Podprodukty</a>
                 </li>
-                <li className="nav-item">
+                {showUsers && <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
-                </li>
+                </li>}
             </ul>
         </div>
         <div className="navbar-login">

@@ -9,7 +9,11 @@ export enum RoleEnum {
     Seller = 1,
     UserManager = 2,
     ProductManager = 3,
-} 
+}
+
+export const GetRoleKey = (role: RoleEnum): string => {
+    return RoleEnum[role];
+}
 
 export type PaginationDto = {
     pageSize: number,

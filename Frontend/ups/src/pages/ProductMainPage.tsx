@@ -7,6 +7,7 @@ import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModa
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
+import { AuthHelpers } from "../helpers/AuthHelper"
 
 type ProductMainPageState =  {
     addProductModalOpen: boolean,
@@ -80,6 +81,8 @@ export default function ProductMainPage() {
             fetchData();
     }, [state.refresh, fetchData])
 
+    const hasProductRoles = AuthHelpers.HasProductRoles(); 
+
     return <>
         {state.addProductModalOpen && <AddOrEditProductModal 
             onSuccess={() => {
@@ -132,23 +135,25 @@ export default function ProductMainPage() {
                             {p.basePrice}
                         </td>
                         <td className="col-3">
-                            <button type="button" className="btn btn-sm btn-secondary" onClick={() => {
-                                nav(Paths.product.replace(":id", p.id.toString()))
-                            }}>
-                                Szczegóły
-                            </button>
-                            &nbsp;
-                            <button type="button" className="btn btn-sm btn-primary" onClick={() => {
-                                dispatch({ type: 'editProductButton', product: p })
-                            }}>
-                                Edytuj
-                            </button>
-                            &nbsp;
-                            <button type="button" className="btn btn-sm btn-danger" onClick={() => {
-                                dispatch({ type: 'deleteProductButton', product: p })
-                            }}>
-                                Usuń
-                            </button>
+                            {hasProductRoles && <>
+                                <button type="button" className="btn btn-sm btn-secondary" onClick={() => {
+                                    nav(Paths.product.replace(":id", p.id.toString()))
+                                }}>
+                                    Szczegóły
+                                </button>
+                                &nbsp;
+                                <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                    dispatch({ type: 'editProductButton', product: p })
+                                }}>
+                                    Edytuj
+                                </button>
+                                &nbsp;
+                                <button type="button" className="btn btn-sm btn-danger" onClick={() => {
+                                    dispatch({ type: 'deleteProductButton', product: p })
+                                }}>
+                                    Usuń
+                                </button>
+                            </>}
                         </td>
                     </tr>
                 })}
@@ -159,10 +164,10 @@ export default function ProductMainPage() {
             onPrev={prev => dispatch({ type: 'changedPage', pageIndex: prev })}
         />
         <br/>
-        <div className="col-sm-3">
+        {hasProductRoles && <div className="col-sm-3">
             <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addProductButton' })}>
                 Dodaj nowy produkt
             </button>
-        </div>
+        </div>}
     </>
 }
