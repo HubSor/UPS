@@ -5,7 +5,6 @@ import { ResultPaginationDto, RoleEnum, UserDto } from "../api/Dtos"
 import { PaginationBar, GetRoleDisplayName } from "../helpers/FormHelpers"
 import { DeleteUserModal } from "../components/modals/DeleteUserModal"
 import { toastDefaultError } from "../helpers/ToastHelpers"
-import { AuthHelpers } from "../helpers/AuthHelper"
 
 type UserMainPageState =  {
     addUserModalOpen: boolean,

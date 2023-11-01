@@ -41,4 +41,12 @@ namespace Models.Entities
 		[MaxLength(64)]
 		public string Name { get; set; } = default!;
 	}
+	
+	public static class ParameterTypeEnumExtensions
+	{
+		public static bool AllowsOptions(this ParameterTypeEnum type)
+		{
+			return type == ParameterTypeEnum.Select;
+		}
+	}
 }
