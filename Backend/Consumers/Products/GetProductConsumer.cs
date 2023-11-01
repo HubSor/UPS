@@ -21,7 +21,7 @@ public class GetProductConsumer : TransactionConsumer<GetProductOrder, GetProduc
 
 	public override async Task<bool> PreTransaction(ConsumeContext<GetProductOrder> context)
 	{	
-		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductId))
+		if (!await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductId && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "ProductId", "Nie znaleziono produktu");
 			return false;

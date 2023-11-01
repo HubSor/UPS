@@ -21,5 +21,13 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<AddParameterOrder, AddParameterResponse>(order);
 		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("options/add")]
+		public async Task<IActionResult> AddOption([FromBody] AddOptionOrder order)
+		{
+			return await RespondAsync<AddOptionOrder, AddOptionResponse>(order);
+		}
 	}
 }
