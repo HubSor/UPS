@@ -41,28 +41,26 @@ public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, Edi
 		parameter.Required = context.Message.Required;
 		parameter.Name = context.Message.Name;
 		
-		if (parameter.Type != context.Message.Type)
-		{
-			var oldAllowsOptions = parameter.Type.AllowsOptions();
-			var newAllowsOptions = context.Message.Type.AllowsOptions();
-			parameter.Type = context.Message.Type;
+		var oldAllowsOptions = parameter.Type.AllowsOptions();
+		var newAllowsOptions = context.Message.Type.AllowsOptions();
+		parameter.Type = context.Message.Type;
 
-			if (oldAllowsOptions)
+		if (oldAllowsOptions)
+		{
+			foreach (var opt in parameter.Options.ToList())
 			{
-				foreach (var opt in parameter.Options)
-				{
-					await options.DeleteAsync(opt);
-				}
+				await options.DeleteAsync(opt);
+				parameter.Options.Remove(opt);
 			}
-			
-			if (newAllowsOptions)
+		}
+		
+		if (newAllowsOptions)
+		{
+			parameter.Options = context.Message.Options?.Select(x => new ParameterOption()
 			{
-				parameter.Options = context.Message.Options?.Select(x => new ParameterOption()
-				{
-					Value = x.Value,
-					Parameter = parameter
-				}).ToList() ?? new List<ParameterOption>();
-			}
+				Value = x.Value,
+				Parameter = parameter
+			}).ToList() ?? new List<ParameterOption>();
 		}
 
 		await parameters.UpdateAsync(parameter);

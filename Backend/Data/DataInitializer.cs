@@ -158,15 +158,27 @@ namespace Data
 				"Niedziela"
 			};
 			
-			context.ParameterOptions.AddRange(days.Select(d => new ParameterOption() 
+			var dayOptions = days.Select(d => new ParameterOption()
 			{
 				ParameterId = dayParam.Id,
 				Value = d,
-			}));
+			});
+
+			context.ParameterOptions.AddRange(dayOptions);
+
+			context.SaveChanges();
+			
+			context.SaleParameters.Add(new ()
+			{
+				SaleId = 1,
+				ParameterId = dayParam.Id,
+				Value = "Środa",
+				OptionId = context.ParameterOptions.FirstOrDefault(o => o.Value == "Środa")?.Id
+			});
 
 			context.SaveChanges();
 		}
-		
+
 		public static void Clear(UnitOfWork context)
 		{
 			context.Model.GetEntityTypes()
