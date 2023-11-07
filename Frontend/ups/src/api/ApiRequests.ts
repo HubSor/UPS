@@ -1,4 +1,4 @@
-import { PaginationDto, ProductStatusEnum } from "./Dtos"
+import { OptionDto, PaginationDto, ParameterTypeEnum, ProductStatusEnum } from "./Dtos"
 
 export type LoginRequest = {
     username: string,
@@ -97,4 +97,34 @@ export type DeleteSubProductRequest = {
 
 export type GetProductRequest = {
     productId: number
+}
+
+export type AddParameterRequest = {
+    name: string,
+    required: boolean,
+    type: ParameterTypeEnum,
+    productId?: number,
+    subProductId?: number,
+    options: OptionDto[]
+}
+
+export type EditParameterRequest = {
+    parameterId: number,
+    name: string,
+    required: boolean,
+    type: ParameterTypeEnum,
+    options: OptionDto[]
+}
+
+export type DeleteParameterRequest = {
+    parameterId: number
+}
+
+export type AddOptionRequest = {
+    parameterId: number,
+    value: string
+}
+
+export type DeleteOptionRequest = {
+    optionId: number
 }

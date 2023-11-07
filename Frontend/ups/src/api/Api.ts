@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiResponse, GetProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
-import { AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
+import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { toastAuthError } from "../helpers/ToastHelpers";
 
@@ -127,6 +127,26 @@ export class Api {
 
     static async GetProduct(request: GetProductRequest) {
         return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/get")
+    }
+
+    static async AddParameter(request: AddParameterRequest) {
+        return await getApiResponse<AddParameterRequest, null>(request, this.url + "/parameters/add")
+    }
+
+    static async EditParameter(request: EditParameterRequest) {
+        return await getApiResponse<EditParameterRequest, null>(request, this.url + "/parameters/edit")
+    }
+
+    static async DeleteParameter(request: DeleteParameterRequest) {
+        return await getApiResponse<DeleteParameterRequest, null>(request, this.url + "/parameters/delete")
+    }
+
+    static async AddOption(request: AddOptionRequest) {
+        return await getApiResponse<AddOptionRequest, null>(request, this.url + "/parameters/options/add")
+    }
+
+    static async DeleteOption(request: DeleteOptionRequest) {
+        return await getApiResponse<DeleteOptionRequest, null>(request, this.url + "/parameters/options/delete")
     }
 
     static async Session() {

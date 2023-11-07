@@ -49,6 +49,7 @@ export type ProductDto = {
 
 export type ExtendedProductDto = ProductDto & {
     subProducts: ExtendedSubProductDto[]
+    parameters: ParameterDto[]
 }
 
 export type SubProductDto = {
@@ -61,4 +62,30 @@ export type SubProductDto = {
 
 export type ExtendedSubProductDto = SubProductDto & {
     price: number
+}
+
+export enum ParameterTypeEnum {
+    Text = 0,
+    Integer = 1,
+    Decimal = 2,
+    Select = 3,
+    Checkbox = 4,
+    TextArea = 5
+}
+
+export type OptionDto = {
+    value: string
+}
+
+export type ExtendedOptionDto = OptionDto & {
+    id: number,
+    parameterId: number
+}
+
+export type ParameterDto = {
+    id: number,
+    name: string,
+    type: ParameterTypeEnum,
+    required: boolean,
+    options: ExtendedOptionDto[]
 }

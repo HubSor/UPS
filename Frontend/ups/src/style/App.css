@@ -1,10 +1,11 @@
 .app {
   text-align: center;
   padding-top: 70px;
+  padding-bottom: 30px;
 }
 
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   height: 60px;
@@ -63,4 +64,30 @@
 
 .info-label {
   text-align: right;
+}
+
+.param-label {
+  text-align: left;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.option-item {
+  border: lightgray solid thin;
+  font-size: 90%;
+  font-style: italic;
+  background-color: whitesmoke;
+  text-align: left;
+}
+
+.delete-option {
+  margin-right: -3%;
 }
