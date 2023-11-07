@@ -126,13 +126,29 @@ namespace Data
 				Required = false,
 				ProductId = 1
 			});
-			
+
+			context.Parameters.Add(new()
+			{
+				Name = "Wzrost kupującego (m)",
+				Type = ParameterTypeEnum.Decimal,
+				Required = false,
+				ProductId = 1
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Waga kupującego (kg)",
+				Type = ParameterTypeEnum.Integer,
+				Required = true,
+				ProductId = 1
+			});
+
 			var dayParam = new Parameter()
 			{
 				Name = "Dzień tygodnia",
 				Type = ParameterTypeEnum.Select,
 				Required = true,
-				SubProductId = 1
+				ProductId = 1
 			};
 
 			context.Parameters.Add(dayParam);

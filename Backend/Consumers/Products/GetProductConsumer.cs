@@ -33,6 +33,8 @@ public class GetProductConsumer : TransactionConsumer<GetProductOrder, GetProduc
 	public override async Task InTransaction(ConsumeContext<GetProductOrder> context)
 	{
 		var product = await products.GetAll()
+			.Include(p => p.Parameters)
+			.ThenInclude(o => o.Options)
 			.Include(p => p.SubProductInProducts)
 			.ThenInclude(sp => sp.SubProduct)
 			.FirstAsync(p => p.Id == context.Message.ProductId);

@@ -1,3 +1,4 @@
+using Dtos.Parameters;
 using Models.Entities;
 
 namespace Dtos.Products
@@ -27,12 +28,14 @@ namespace Dtos.Products
 	public class ExtendedProductDto : ProductDto
 	{
 		public ICollection<ExtendedSubProductDto> SubProducts { get; set; } = default!;
-		
+		public ICollection<ParameterDto> Parameters { get; set; } = default!;
 		public ExtendedProductDto(Product p) : base(p)
 		{
 			SubProducts = p.SubProductInProducts
 				.Select(x => new ExtendedSubProductDto(x.SubProduct, x.InProductPrice))
 				.ToList();
+				
+			Parameters = p.Parameters.Select(p => new ParameterDto(p)).ToList();
 		}
 	}
 }
