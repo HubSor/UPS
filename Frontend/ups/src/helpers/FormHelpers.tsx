@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from "formik"
-import { ProductStatusEnum, RoleEnum } from "../api/Dtos"
+import { ParameterTypeEnum, ProductStatusEnum, RoleEnum } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 import React from "react"
 
@@ -41,6 +41,25 @@ export const GetProductStatusDisplayName = (role?: ProductStatusEnum) => {
             return "Wycofany";
         case ProductStatusEnum.Offered:
             return "Oferowany";
+        default:
+            return ""
+    }
+}
+
+export const GetParameterTypeDisplayName = (type?: ParameterTypeEnum) => {
+    switch (type) {
+        case ParameterTypeEnum.Integer:
+            return "Liczba całkowita";
+        case ParameterTypeEnum.Checkbox:
+            return "Flaga";
+        case ParameterTypeEnum.Decimal:
+            return "Liczba dziesiętna";
+        case ParameterTypeEnum.Select:
+            return "Wybór jednokrotny";
+        case ParameterTypeEnum.Text:
+            return "Tekst";
+        case ParameterTypeEnum.TextArea:
+            return "Długi tekst";
         default:
             return ""
     }

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useReducer } from "react"
-import { ExtendedProductDto, ExtendedSubProductDto, ResultPaginationDto, SubProductDto } from "../api/Dtos"
+import { useCallback, useEffect, useReducer, useState } from "react"
+import { ExtendedProductDto, ExtendedSubProductDto, ParameterDto, ResultPaginationDto, SubProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
+import { GetParameterTypeDisplayName, GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
@@ -114,6 +114,32 @@ const InfoRow = ({name, value}: {name: string, value?: string}) => {
     </div>
 }
 
+const ParameterRow = ({ parameter }: { parameter: ParameterDto}) => {
+    const [showOptions, setShowOptions] = useState(false);
+
+    return <div>
+        <div className="list-group-item">
+            <div className="d-flex justify-content-between" onClick={() => setShowOptions(!showOptions)}>
+                <label key="id" className="m-2">{parameter.id}</label>
+                <label key="name" className="m-2 col-4 param-label">{parameter.name}</label>
+                <label key="type" className="m-2 col-2 param-label">{GetParameterTypeDisplayName(parameter.type)}</label>
+                <label key="required" className="m-2 col-2 param-label">{parameter.required ? "Wymagany" : "Opcjonalny"}</label>
+                <button className="m-1 col-1 btn btn-sm btn-outline-primary" type="button">Edytuj</button>
+                <button className="m-1 col-1 btn btn-sm btn-outline-danger" type="button">Usuń</button>
+            </div>
+        </div>
+        {parameter.options.length > 0 && showOptions && <div className="row row-cols-5 option-container m-2">
+            {parameter.options.map((o, idx) => <div key={idx} className="col option-item d-flex justify-content-between align-items-center">
+                <label className="m-1">{o.value}</label>
+                <button className="btn btn-sm btn-outline-danger delete-option">X</button>
+            </div>)}
+            <div key={-1} className="col">
+                <button className="m-1 btn btn-primary">Dodaj nową opcję</button>
+            </div>
+        </div>}
+    </div>
+}
+
 export function ProductPageInner({ productId }: ProductPageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
 
@@ -189,6 +215,9 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         />}
         <h3>{state.product?.code} {state.product?.name}</h3>
         <br />
+        <Form.Label className="align-left">
+            Dane
+        </Form.Label>
         <div className="card">
             <form className="card-body product-info">
                 <InfoRow value={state.product?.code} name="Kod"/>
@@ -198,12 +227,10 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                 <InfoRow value={GetProductStatusDisplayName(state.product?.status)} name="Status"/>
             </form>
         </div>
-        <Form.Group className="mb-3">
-            <Form.Label className="align-left">
-                Opis
-            </Form.Label>
-            <textarea name="description" rows={4} disabled readOnly className="form-control" value={state.product?.description ?? ""}/>
-        </Form.Group>
+        <Form.Label className="align-left">
+            Opis
+        </Form.Label>
+        <textarea name="description" rows={4} disabled readOnly className="form-control" value={state.product?.description ?? ""}/>
         <div className="align-left">
             <button type="button" className="btn btn-sm btn-primary" onClick={() => {
                 dispatch({ type: 'editProductButton' })
@@ -212,6 +239,16 @@ export function ProductPageInner({ productId }: ProductPageProps) {
             </button>
         </div>
         <br/>
+        <Form.Label className="align-left">
+            Parametry
+        </Form.Label>
+        <div className="list-group">
+            {state.product?.parameters.map(p => {
+                return <ParameterRow parameter={p} key={p.id} />
+            })}
+        </div>
+        <br/>
+        <br />
         <div className="row">
             <div className="col-lg-6 col-md-6 col-sm-12">
                 <h4>Przypisane podprodukty</h4>
@@ -237,14 +274,14 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                                     {s.price}
                                 </td>
                                 <td>
-                                    <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
                                         dispatch({ type: 'editSubProductButton', subProduct: s })
                                     }}>
                                         Edytuj
                                     </button>
                                     &nbsp;
                                     &nbsp;
-                                    <button type="button" className="btn btn-sm btn-danger" onClick={() => {
+                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
                                         dispatch({ type: 'unassignSubProductButton', subProduct: s })
                                     }}>
                                         Usuń
@@ -280,7 +317,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                                         {s.basePrice}
                                     </td>
                                     <td>
-                                        <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
                                             dispatch({ type: 'assignSubProductButton', subProduct: s })
                                         }}>
                                             Przypisz
