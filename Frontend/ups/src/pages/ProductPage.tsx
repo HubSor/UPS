@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useReducer, useState } from "react"
+import { Dispatch, useCallback, useEffect, useReducer, useState } from "react"
 import { ExtendedProductDto, ExtendedSubProductDto, ParameterDto, ResultPaginationDto, SubProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
-import { toastDefaultError } from "../helpers/ToastHelpers"
+import { toastDefaultError, toastError } from "../helpers/ToastHelpers"
 import { useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { GetParameterTypeDisplayName, GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
@@ -64,6 +64,7 @@ type ProductPageAction =
     | { type: 'editSubProductButton', subProduct: ExtendedSubProductDto }
     | { type: 'unassignSubProductButton', subProduct: ExtendedSubProductDto }
     | { type: 'assignSubProductButton', subProduct: SubProductDto }
+    | { type: 'deleteOptionButton', optionId: number }
 
 function reducer(state: ProductPageState, action: ProductPageAction): ProductPageState {
     switch (action.type) {
@@ -89,6 +90,14 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
             return { ...state, unassignSubProductModal: action.subProduct }
         case 'assignSubProductButton':
             return { ...state, assignSubProductModal: action.subProduct }
+        case 'deleteOptionButton':
+            let product = state.product;
+            if (!product)
+                return state;
+
+            product.parameters = product?.parameters.map(p => 
+                ({...p, options: p.options.filter(o => o.id !== action.optionId )}))
+            return { ...state, product: product}
         case 'fetchedSubProducts':
             return { 
                 ...state,
@@ -114,8 +123,10 @@ const InfoRow = ({name, value}: {name: string, value?: string}) => {
     </div>
 }
 
-const ParameterRow = ({ parameter }: { parameter: ParameterDto}) => {
+const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispatch: Dispatch<ProductPageAction> }) => {
     const [showOptions, setShowOptions] = useState(false);
+    const [addingNew, setAddingNew] = useState(false);
+    const [newOptionValue, setNewOptionValue] = useState("");
 
     return <div>
         <div className="list-group-item">
@@ -131,11 +142,58 @@ const ParameterRow = ({ parameter }: { parameter: ParameterDto}) => {
         {parameter.options.length > 0 && showOptions && <div className="row row-cols-5 option-container m-2">
             {parameter.options.map((o, idx) => <div key={idx} className="col option-item d-flex justify-content-between align-items-center">
                 <label className="m-1">{o.value}</label>
-                <button className="btn btn-sm btn-outline-danger delete-option">X</button>
+                <button type="button" className="btn btn-sm btn-danger mt-1 mb-1 delete-option"
+                    onClick={() => {
+                        Api.DeleteOption({ optionId: o.id }).then(res => {
+                            if (!res.success) {
+                                toastError("Nie udało się usunąć opcji " + o.value);
+                                dispatch({ type: "refreshProduct" })
+                            }
+                        })
+                        dispatch({type: 'deleteOptionButton', optionId: o.id})
+                    }}
+                >
+                    X
+                </button>
             </div>)}
-            <div key={-1} className="col">
-                <button className="m-1 btn btn-primary">Dodaj nową opcję</button>
-            </div>
+            {!addingNew ? 
+                <div key={-1} className="col">
+                    <button className="m-1 btn btn-primary" type="button" onClick={() => {
+                        setAddingNew(true)
+                    }}>
+                        Dodaj nową opcję
+                    </button>
+                </div> : 
+                <form key={-2} className="col option-item d-flex justify-content-between align-items-center"
+                    onSubmit={async (e) => {
+                        e.preventDefault()
+                        await Api.AddOption({ parameterId: parameter.id, value: newOptionValue }).then(res => {
+                            if (res.success && res.data) {
+                                dispatch({ type: 'refreshProduct' })
+                                setAddingNew(false)
+                                setNewOptionValue("")
+                            }
+                            else if (!!res.errors.optionId) {
+                                toastError(res.errors.optionId[0])
+                            }
+                            else if (!!res.errors.value) {
+                                toastError(res.errors.value[0])
+                            }
+                            else toastDefaultError();
+                        })
+                    }}
+                >
+                    <input type="text" name="value" className="form-control m-1"
+                        onChange={(e) => e.target.value.length <= 256 ? setNewOptionValue(e.target.value) : undefined}
+                        value={newOptionValue}
+                        autoFocus
+                    />
+                    <button disabled={!newOptionValue}
+                        type="submit" className="btn btn-sm btn-primary mt-1 mb-1 ml-1 delete-option">
+                        Zapisz
+                    </button>
+                </form>
+            }
         </div>}
     </div>
 }
@@ -244,7 +302,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         </Form.Label>
         <div className="list-group">
             {state.product?.parameters.map(p => {
-                return <ParameterRow parameter={p} key={p.id} />
+                return <ParameterRow parameter={p} key={p.id}  dispatch={dispatch} />
             })}
         </div>
         <br/>
