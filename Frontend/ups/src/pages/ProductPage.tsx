@@ -9,6 +9,7 @@ import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSu
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
+import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameterModal"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -37,6 +38,8 @@ type ProductPageState = {
     editSubProductModal: ExtendedSubProductDto | null
     unassignSubProductModal: ExtendedSubProductDto | null,
     assignSubProductModal: SubProductDto | null,
+    addParameterModal: boolean,
+    editParameterModal: ParameterDto | null
 }
 
 const initalState: ProductPageState = {
@@ -50,6 +53,8 @@ const initalState: ProductPageState = {
     editSubProductModal: null,
     unassignSubProductModal: null,
     assignSubProductModal: null,
+    addParameterModal: false,
+    editParameterModal: null,
 }
 
 type ProductPageAction =
@@ -60,6 +65,8 @@ type ProductPageAction =
     | { type: 'fetchedSubProducts', subProducts: SubProductDto[], pagination: ResultPaginationDto }
     | { type: 'fetchedProduct', product: ExtendedProductDto }
     | { type: 'editProductButton' }
+    | { type: 'addParameterButton' }
+    | { type: 'editParameterButton', parameter: ParameterDto }
     | { type: 'showOtherSubProductsButton' }
     | { type: 'editSubProductButton', subProduct: ExtendedSubProductDto }
     | { type: 'unassignSubProductButton', subProduct: ExtendedSubProductDto }
@@ -73,7 +80,8 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
         case 'closeModal':
             return { 
                 ...state, editProductModal: false, editSubProductModal: null, 
-                unassignSubProductModal: null, assignSubProductModal: null 
+                unassignSubProductModal: null, assignSubProductModal: null,
+                addParameterModal: false, editParameterModal: null
             }
         case 'editProductButton':
             return { ...state, editProductModal: true }
@@ -81,6 +89,10 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
             return { ...state, refreshProduct: true }
         case 'refreshSubProducts':
             return { ...state, refreshSubProducts: true }
+        case 'addParameterButton':
+            return { ...state, addParameterModal: true }
+        case 'editParameterButton':
+            return { ...state, editParameterModal: action.parameter }
         case 'editSubProductButton':
             return { ...state, editSubProductModal: action.subProduct }
         case 'changedPage':
@@ -130,13 +142,28 @@ const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispat
 
     return <div>
         <div className="list-group-item">
-            <div className="d-flex justify-content-between" onClick={() => setShowOptions(!showOptions)}>
+            <div className="d-flex justify-content-between" onClick={() => {
+                setShowOptions(!showOptions)
+            }}>
                 <label key="id" className="m-2">{parameter.id}</label>
                 <label key="name" className="m-2 col-4 param-label">{parameter.name}</label>
                 <label key="type" className="m-2 col-2 param-label">{GetParameterTypeDisplayName(parameter.type)}</label>
                 <label key="required" className="m-2 col-2 param-label">{parameter.required ? "Wymagany" : "Opcjonalny"}</label>
-                <button className="m-1 col-1 btn btn-sm btn-outline-primary" type="button">Edytuj</button>
-                <button className="m-1 col-1 btn btn-sm btn-outline-danger" type="button">Usuń</button>
+                <button className="m-1 col-1 btn btn-sm btn-outline-primary" type="button"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        dispatch({ type: 'editParameterButton', parameter: parameter })
+                    }}
+                >
+                    Edytuj
+                </button>
+                <button className="m-1 col-1 btn btn-sm btn-outline-danger" type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                >
+                    Usuń
+                </button>
             </div>
         </div>
         {parameter.options.length > 0 && showOptions && <div className="row row-cols-5 option-container m-2">
@@ -234,6 +261,23 @@ export function ProductPageInner({ productId }: ProductPageProps) {
     }, [state.showOtherSubProducts, state.refreshSubProducts, fetchOtherSubProduts])
 
     return <>
+        {!!state.addParameterModal && <AddOrEditParameterModal
+            onSuccess={() => {
+                dispatch({ type: 'refreshProduct' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            productId={productId}
+        />}
+        {!!state.editParameterModal && <AddOrEditParameterModal
+            onSuccess={() => {
+                dispatch({ type: 'refreshProduct' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            productId={productId}
+            editedParameter={state.editParameterModal}
+        />}
         {!!state.assignSubProductModal && <AssignSubProductModal
             onSuccess={() => {
                 dispatch({ type: 'refreshSubProducts' })
@@ -304,6 +348,13 @@ export function ProductPageInner({ productId }: ProductPageProps) {
             {state.product?.parameters.map(p => {
                 return <ParameterRow parameter={p} key={p.id}  dispatch={dispatch} />
             })}
+        </div>
+        <div className="align-left">
+            <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                dispatch({ type: 'addParameterButton' })
+            }}>
+                Dodaj parametr
+            </button>
         </div>
         <br/>
         <br />

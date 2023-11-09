@@ -34,7 +34,7 @@ const addOrEditProductSchema = object<EditProductRequest>().shape({
         .max(1000, "Opis zbyt długi")
 })
 
-const ProductOptions: Option[] = [
+const productOptions: Option[] = [
     { label: GetProductStatusDisplayName(ProductStatusEnum.NotOffered), value: ProductStatusEnum.NotOffered },
     { label: GetProductStatusDisplayName(ProductStatusEnum.Offered), value: ProductStatusEnum.Offered },
     { label: GetProductStatusDisplayName(ProductStatusEnum.Withdrawn), value: ProductStatusEnum.Withdrawn },
@@ -93,7 +93,7 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                         <ValidationMessage fieldName="id" />
                         <TypeInputGroup name="code" label="Kod" type="text"/>
                         <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
-                        {editMode && <AsInputGroup name="status" label="Status" as="select" options={ProductOptions}/>}
+                        {editMode && <AsInputGroup name="status" label="Status" as="select" options={productOptions}/>}
                         <CheckboxInputGroup name="anonymousSaleAllowed" label="Anonimowa sprzedaż"/>
                         <AsInputGroup rows={3} name="description" label="Opis" as="textarea"/>
                     </Modal.Body>

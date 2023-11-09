@@ -9,9 +9,9 @@ export type Option = {
 }
 
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
-    return <ErrorMessage name={fieldName} render={msg => <div className="error-msg">
+    return <ErrorMessage name={fieldName} render={msg => typeof msg === 'string' ? <div className="error-msg">
         {msg.split('\n').map(m => <>{m}<br/></>)}
-    </div>}/>
+    </div> : undefined}/>
 }
 
 export const SeparateErrors = (errors: { [key: string]: string[] }) => {

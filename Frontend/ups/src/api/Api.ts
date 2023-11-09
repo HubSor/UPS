@@ -130,23 +130,23 @@ export class Api {
     }
 
     static async AddParameter(request: AddParameterRequest) {
-        return await getApiResponse<AddParameterRequest, null>(request, this.url + "/parameters/add")
+        return await getApiResponse<AddParameterRequest, undefined>(request, this.url + "/parameters/add")
     }
 
     static async EditParameter(request: EditParameterRequest) {
-        return await getApiResponse<EditParameterRequest, null>(request, this.url + "/parameters/edit")
+        return await getApiResponse<EditParameterRequest, undefined>(request, this.url + "/parameters/edit")
     }
 
     static async DeleteParameter(request: DeleteParameterRequest) {
-        return await getApiResponse<DeleteParameterRequest, null>(request, this.url + "/parameters/delete")
+        return await getApiResponse<DeleteParameterRequest, undefined>(request, this.url + "/parameters/delete")
     }
 
     static async AddOption(request: AddOptionRequest) {
-        return await getApiResponse<AddOptionRequest, null>(request, this.url + "/parameters/options/add")
+        return await getApiResponse<AddOptionRequest, undefined>(request, this.url + "/parameters/options/add")
     }
 
     static async DeleteOption(request: DeleteOptionRequest) {
-        return await getApiResponse<DeleteOptionRequest, null>(request, this.url + "/parameters/options/delete")
+        return await getApiResponse<DeleteOptionRequest, undefined>(request, this.url + "/parameters/options/delete")
     }
 
     static async Session() {

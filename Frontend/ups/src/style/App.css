@@ -91,3 +91,7 @@ main {
 .delete-option {
   margin-right: -3%;
 }
+
+.option-row {
+  width: 100%;
+}
