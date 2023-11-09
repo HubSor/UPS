@@ -136,19 +136,19 @@ export default function ProductMainPage() {
                         </td>
                         <td className="col-3">
                             {hasProductRoles && <>
-                                <button type="button" className="btn btn-sm btn-secondary" onClick={() => {
+                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
                                     nav(Paths.product.replace(":id", p.id.toString()))
                                 }}>
                                     Szczegóły
                                 </button>
                                 &nbsp;
-                                <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
                                     dispatch({ type: 'editProductButton', product: p })
                                 }}>
                                     Edytuj
                                 </button>
                                 &nbsp;
-                                <button type="button" className="btn btn-sm btn-danger" onClick={() => {
+                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
                                     dispatch({ type: 'deleteProductButton', product: p })
                                 }}>
                                     Usuń

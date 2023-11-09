@@ -103,8 +103,9 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
                                         <div className="option-row">
                                             <Field name={`options.${idx}.value`} type="text" className="form-control" />
                                             <ValidationMessage fieldName={`options.${idx}.value`} />
+                                            { /* to waliduje tylko na blurze ???*/}
                                         </div>
-                                        <button className="btn btn-sm btn-danger m-1" type="button"
+                                        <button className="btn btn-sm btn-outline-danger m-1" type="button"
                                             onClick={() => helpers.remove(idx)}
                                         >
                                             Usuń

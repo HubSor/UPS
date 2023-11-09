@@ -123,14 +123,14 @@ export default function UserMainPage() {
                             }).join(', ')}
                         </td>
                         <td className="col-2">
-                            <button type="button" className="btn btn-sm btn-primary" onClick={() => {
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
                                 dispatch({ type: 'editUserButton', user: u })
                             }}>
                                 Edytuj
                             </button>
                             &nbsp;
                             &nbsp;
-                            <button type="button" className="btn btn-sm btn-danger" onClick={() => {
+                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
                                 dispatch({ type: 'deleteUserButton', user: u })
                             }}>
                                 Usuń
