@@ -10,6 +10,7 @@ import { AssignSubProductModal } from "../components/modals/AssignSubProductModa
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
 import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameterModal"
+import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -40,6 +41,7 @@ type ProductPageState = {
     assignSubProductModal: SubProductDto | null,
     addParameterModal: boolean,
     editParameterModal: ParameterDto | null
+    deleteParameterModal: ParameterDto | null
 }
 
 const initalState: ProductPageState = {
@@ -55,6 +57,7 @@ const initalState: ProductPageState = {
     assignSubProductModal: null,
     addParameterModal: false,
     editParameterModal: null,
+    deleteParameterModal: null
 }
 
 type ProductPageAction =
@@ -72,6 +75,7 @@ type ProductPageAction =
     | { type: 'unassignSubProductButton', subProduct: ExtendedSubProductDto }
     | { type: 'assignSubProductButton', subProduct: SubProductDto }
     | { type: 'deleteOptionButton', optionId: number }
+    | { type: 'deleteParameterButton', parameter: ParameterDto }
 
 function reducer(state: ProductPageState, action: ProductPageAction): ProductPageState {
     switch (action.type) {
@@ -81,7 +85,7 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
             return { 
                 ...state, editProductModal: false, editSubProductModal: null, 
                 unassignSubProductModal: null, assignSubProductModal: null,
-                addParameterModal: false, editParameterModal: null
+                addParameterModal: false, editParameterModal: null, deleteParameterModal: null
             }
         case 'editProductButton':
             return { ...state, editProductModal: true }
@@ -102,6 +106,8 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
             return { ...state, unassignSubProductModal: action.subProduct }
         case 'assignSubProductButton':
             return { ...state, assignSubProductModal: action.subProduct }
+        case 'deleteParameterButton':
+            return { ...state, deleteParameterModal: action.parameter }
         case 'deleteOptionButton':
             let product = state.product;
             if (!product)
@@ -160,6 +166,7 @@ const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispat
                 <button className="m-1 col-1 btn btn-sm btn-outline-danger" type="button"
                     onClick={(e) => {
                         e.stopPropagation();
+                        dispatch({ type: 'deleteParameterButton', parameter: parameter })
                     }}
                 >
                     Usuń
@@ -277,6 +284,14 @@ export function ProductPageInner({ productId }: ProductPageProps) {
             close={() => dispatch({ type: 'closeModal' })}
             productId={productId}
             editedParameter={state.editParameterModal}
+        />}
+        {!!state.deleteParameterModal && <DeleteParameterModal
+            onSuccess={() => {
+                dispatch({ type: 'refreshProduct' })
+                dispatch({ type: 'closeModal' })
+            }}
+            close={() => dispatch({ type: 'closeModal' })}
+            deletedParameter={state.deleteParameterModal}
         />}
         {!!state.assignSubProductModal && <AssignSubProductModal
             onSuccess={() => {
