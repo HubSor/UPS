@@ -24,3 +24,8 @@ public class GetProductResponse
 {
 	public ExtendedProductDto Product { get; set; } = default!;
 };
+
+public class GetSubProductResponse
+{
+	public ExtendedSubProductDto SubProduct { get; set; } = default!;
+};

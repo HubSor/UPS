@@ -15,3 +15,4 @@ public record EditSubProductAssignmentOrder(int ProductId, int SubProductId, dec
 public record DeleteProductOrder(int ProductId);
 public record DeleteSubProductOrder(int SubProductId);
 public record GetProductOrder(int ProductId);
+public record GetSubProductOrder(int SubProductId);

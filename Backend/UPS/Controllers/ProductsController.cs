@@ -54,7 +54,15 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
 		}
-		
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("subproducts/get")]
+		public async Task<IActionResult> GetSubProduct([FromBody] GetSubProductOrder order)
+		{
+			return await RespondAsync<GetSubProductOrder, GetSubProductResponse>(order);
+		}
+
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("subproducts/add")]
