@@ -43,7 +43,17 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 			Code = "CODE",
 			BasePrice = 99.65m,
 			AnonymousSaleAllowed = true,
-			Status = ProductStatusEnum.Offered
+			Status = ProductStatusEnum.Offered,
+			Parameters = new List<Parameter>()
+			{
+				new ()
+				{
+					Id = 1,
+					Name = "param",
+					Type = ParameterTypeEnum.Decimal,
+					Options = new List<ParameterOption>(),
+				}
+			}
 		});
 
 		consumer = new GetProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
@@ -51,7 +61,7 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 	}
 	
 	[Test]
-	public async Task Consume_Ok_GetWithSubproducts()
+	public async Task Consume_Ok_GetWithSubProducts()
 	{
 		var order = new GetProductOrder(1);
 		
@@ -67,5 +77,6 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 		Assert.That(product!.SubProducts.Any(x => x.Id == 1), Is.True);
 		Assert.That(product!.SubProducts.Any(x => x.Code == "CODE1"), Is.True);
 		Assert.That(product!.SubProducts.Any(x => x.Code == "CODE2"), Is.True);
+		Assert.That(product!.Parameters.Any(x => x.Name == "param"), Is.True);
 	}
 }
