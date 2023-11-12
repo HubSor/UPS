@@ -70,6 +70,11 @@
   text-align: left;
 }
 
+.param-label-options {
+  font-style: italic;
+  opacity: 0.7;
+}
+
 #root {
   display: flex;
   flex-direction: column;

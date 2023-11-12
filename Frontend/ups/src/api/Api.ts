@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ApiResponse, GetProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
-import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
+import { ApiResponse, GetProductResponse, GetSubProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
+import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, GetSubProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { toastAuthError } from "../helpers/ToastHelpers";
 
@@ -127,6 +127,10 @@ export class Api {
 
     static async GetProduct(request: GetProductRequest) {
         return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/get")
+    }
+
+    static async GetSubProduct(request: GetSubProductRequest) {
+        return await getApiResponse<GetSubProductRequest, GetSubProductResponse>(request, this.url + "/products/subproducts/get")
     }
 
     static async AddParameter(request: AddParameterRequest) {

@@ -6,6 +6,8 @@ import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditSubProductModal } from "../components/modals/AddOrEditSubProductModal"
 import { DeleteSubProductModal } from "../components/modals/DeleteSubProductModal"
 import { AuthHelpers } from "../helpers/AuthHelper"
+import { useNavigate } from "react-router-dom"
+import { Paths } from "../App"
 
 type SubProductMainPageState =  {
     addSubProductModalOpen: boolean,
@@ -31,7 +33,7 @@ const initalState: SubProductMainPageState = {
     },
 }
 
-type SubSubProductMainPageAction =
+type SubProductMainPageAction =
     | { type: 'addSubProductButton' }
     | { type: 'editSubProductButton', subProduct: SubProductDto }
     | { type: 'deleteSubProductButton', subProduct: SubProductDto }
@@ -40,7 +42,7 @@ type SubSubProductMainPageAction =
     | { type: 'changedPage', pageIndex: number }
     | { type: 'fetchedSubProducts', subProducts: SubProductDto[], pagination: ResultPaginationDto }
 
-function reducer (state: SubProductMainPageState, action: SubSubProductMainPageAction): SubProductMainPageState {
+function reducer (state: SubProductMainPageState, action: SubProductMainPageAction): SubProductMainPageState {
     switch(action.type){
         case 'addSubProductButton':
             return { ...state, addSubProductModalOpen: true }
@@ -59,8 +61,9 @@ function reducer (state: SubProductMainPageState, action: SubSubProductMainPageA
     }
 }
 
-export default function SubSubProductMainPage() {
+export default function SubProductMainPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
+    const nav = useNavigate();
 
     const fetchData = useCallback(() => {
         Api.ListSubProducts({ pagination: state.pagination }).then(res => {
@@ -128,14 +131,19 @@ export default function SubSubProductMainPage() {
                         <td>
                             {p.basePrice}
                         </td>
-                        <td className="col-2">
+                        <td className="col-3">
                             {hasProductRoles && <>
+                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
+                                    nav(Paths.subProduct.replace(":id", p.id.toString()))
+                                }}>
+                                    Szczegóły
+                                </button>
+                                &nbsp;
                                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
                                     dispatch({ type: 'editSubProductButton', subProduct: p })
                                 }}>
                                     Edytuj
                                 </button>
-                                &nbsp;
                                 &nbsp;
                                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
                                     dispatch({ type: 'deleteSubProductButton', subProduct: p })

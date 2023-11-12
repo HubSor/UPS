@@ -61,7 +61,9 @@ export type SubProductDto = {
 }
 
 export type ExtendedSubProductDto = SubProductDto & {
-    price: number
+    price: number,
+    parameters: ParameterDto[],
+    products: ProductDto[],
 }
 
 export enum ParameterTypeEnum {

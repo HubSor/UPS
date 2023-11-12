@@ -132,7 +132,7 @@ type ProductPageProps = {
     productId: number
 }
 
-const InfoRow = ({name, value}: {name: string, value?: string}) => {
+export const InfoRow = ({name, value}: {name: string, value?: string}) => {
     return <div className="form-group row justify-content-center">
         <label className="col-sm-6 col-form-label info-label">{name}</label>
         <div className="col-6">
@@ -142,7 +142,7 @@ const InfoRow = ({name, value}: {name: string, value?: string}) => {
 }
 
 const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispatch: Dispatch<ProductPageAction> }) => {
-    const [showOptions, setShowOptions] = useState(false);
+    const [showOptions, setShowOptions] = useState(true);
     const [addingNew, setAddingNew] = useState(false);
     const [newOptionValue, setNewOptionValue] = useState("");
 
@@ -154,7 +154,10 @@ const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispat
                 <label key="id" className="m-2">{parameter.id}</label>
                 <label key="name" className="m-2 col-4 param-label">{parameter.name}</label>
                 <label key="type" className="m-2 col-2 param-label">{GetParameterTypeDisplayName(parameter.type)}</label>
-                <label key="required" className="m-2 col-2 param-label">{parameter.required ? "Wymagany" : "Opcjonalny"}</label>
+                <label key="required" className="m-2 col-1 param-label">{parameter.required ? "Wymagany" : "Opcjonalny"}</label>
+                <label key="hasOptions" className="m-2 col-2 param-label-options">
+                    {parameter.options.length > 0 && !showOptions && "Dostępne opcje"}
+                </label>
                 <button className="m-1 col-1 btn btn-sm btn-outline-primary" type="button"
                     onClick={(e) => {
                         e.stopPropagation()
@@ -176,7 +179,7 @@ const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispat
         {parameter.options.length > 0 && showOptions && <div className="row row-cols-5 option-container m-2">
             {parameter.options.map((o, idx) => <div key={idx} className="col option-item d-flex justify-content-between align-items-center">
                 <label className="m-1">{o.value}</label>
-                <button type="button" className="btn btn-sm btn-danger mt-1 mb-1 delete-option"
+                {parameter.options.length > 1 && <button type="button" className="btn btn-sm btn-danger mt-1 mb-1 delete-option"
                     onClick={() => {
                         Api.DeleteOption({ optionId: o.id }).then(res => {
                             if (!res.success) {
@@ -188,7 +191,7 @@ const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispat
                     }}
                 >
                     X
-                </button>
+                </button>}
             </div>)}
             {!addingNew ? 
                 <div key={-1} className="col">

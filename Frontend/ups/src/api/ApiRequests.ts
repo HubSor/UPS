@@ -99,6 +99,10 @@ export type GetProductRequest = {
     productId: number
 }
 
+export type GetSubProductRequest = {
+    subProductId: number
+}
+
 export type AddParameterRequest = {
     name: string,
     required: boolean,
