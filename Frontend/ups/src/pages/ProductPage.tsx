@@ -1,16 +1,18 @@
-import { Dispatch, useCallback, useEffect, useReducer, useState } from "react"
+import { useCallback, useEffect, useReducer } from "react"
 import { ExtendedProductDto, ExtendedSubProductDto, ParameterDto, ResultPaginationDto, SubProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
-import { toastDefaultError, toastError } from "../helpers/ToastHelpers"
+import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { GetParameterTypeDisplayName, GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
+import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
 import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameterModal"
 import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
+import { InfoRow } from "../components/InfoRow"
+import { ParameterRow } from "../components/ParameterRow"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -130,109 +132,6 @@ function reducer(state: ProductPageState, action: ProductPageAction): ProductPag
 
 type ProductPageProps = {
     productId: number
-}
-
-export const InfoRow = ({name, value}: {name: string, value?: string}) => {
-    return <div className="form-group row justify-content-center">
-        <label className="col-sm-6 col-form-label info-label">{name}</label>
-        <div className="col-6">
-            <input type="text" readOnly className="form-control-plaintext info-value" value={value ?? ""} />
-        </div>
-    </div>
-}
-
-const ParameterRow = ({ parameter, dispatch }: { parameter: ParameterDto, dispatch: Dispatch<ProductPageAction> }) => {
-    const [showOptions, setShowOptions] = useState(true);
-    const [addingNew, setAddingNew] = useState(false);
-    const [newOptionValue, setNewOptionValue] = useState("");
-
-    return <div>
-        <div className="list-group-item">
-            <div className="d-flex justify-content-between" onClick={() => {
-                setShowOptions(!showOptions)
-            }}>
-                <label key="id" className="m-2">{parameter.id}</label>
-                <label key="name" className="m-2 col-4 param-label">{parameter.name}</label>
-                <label key="type" className="m-2 col-2 param-label">{GetParameterTypeDisplayName(parameter.type)}</label>
-                <label key="required" className="m-2 col-1 param-label">{parameter.required ? "Wymagany" : "Opcjonalny"}</label>
-                <label key="hasOptions" className="m-2 col-2 param-label-options">
-                    {parameter.options.length > 0 && !showOptions && "Dostępne opcje"}
-                </label>
-                <button className="m-1 col-1 btn btn-sm btn-outline-primary" type="button"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        dispatch({ type: 'editParameterButton', parameter: parameter })
-                    }}
-                >
-                    Edytuj
-                </button>
-                <button className="m-1 col-1 btn btn-sm btn-outline-danger" type="button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        dispatch({ type: 'deleteParameterButton', parameter: parameter })
-                    }}
-                >
-                    Usuń
-                </button>
-            </div>
-        </div>
-        {parameter.options.length > 0 && showOptions && <div className="row row-cols-5 option-container m-2">
-            {parameter.options.map((o, idx) => <div key={idx} className="col option-item d-flex justify-content-between align-items-center">
-                <label className="m-1">{o.value}</label>
-                {parameter.options.length > 1 && <button type="button" className="btn btn-sm btn-danger mt-1 mb-1 delete-option"
-                    onClick={() => {
-                        Api.DeleteOption({ optionId: o.id }).then(res => {
-                            if (!res.success) {
-                                toastError("Nie udało się usunąć opcji " + o.value);
-                                dispatch({ type: "refreshProduct" })
-                            }
-                        })
-                        dispatch({type: 'deleteOptionButton', optionId: o.id})
-                    }}
-                >
-                    X
-                </button>}
-            </div>)}
-            {!addingNew ? 
-                <div key={-1} className="col">
-                    <button className="m-1 btn btn-primary" type="button" onClick={() => {
-                        setAddingNew(true)
-                    }}>
-                        Dodaj nową opcję
-                    </button>
-                </div> : 
-                <form key={-2} className="col option-item d-flex justify-content-between align-items-center"
-                    onSubmit={async (e) => {
-                        e.preventDefault()
-                        await Api.AddOption({ parameterId: parameter.id, value: newOptionValue }).then(res => {
-                            if (res.success && res.data) {
-                                dispatch({ type: 'refreshProduct' })
-                                setAddingNew(false)
-                                setNewOptionValue("")
-                            }
-                            else if (!!res.errors.optionId) {
-                                toastError(res.errors.optionId[0])
-                            }
-                            else if (!!res.errors.value) {
-                                toastError(res.errors.value[0])
-                            }
-                            else toastDefaultError();
-                        })
-                    }}
-                >
-                    <input type="text" name="value" className="form-control m-1"
-                        onChange={(e) => e.target.value.length <= 256 ? setNewOptionValue(e.target.value) : undefined}
-                        value={newOptionValue}
-                        autoFocus
-                    />
-                    <button disabled={!newOptionValue}
-                        type="submit" className="btn btn-sm btn-primary mt-1 mb-1 ml-1 delete-option">
-                        Zapisz
-                    </button>
-                </form>
-            }
-        </div>}
-    </div>
 }
 
 export function ProductPageInner({ productId }: ProductPageProps) {
@@ -364,7 +263,12 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         </Form.Label>
         <div className="list-group">
             {state.product?.parameters.map(p => {
-                return <ParameterRow parameter={p} key={p.id}  dispatch={dispatch} />
+                return <ParameterRow parameter={p} key={p.id}   
+                    refresh={() => dispatch({type: 'refreshProduct' })}
+                    deleteParameter={(p) => dispatch({type: 'deleteParameterButton', parameter: p })}
+                    editParameter={(p) => dispatch({type: 'editParameterButton', parameter: p })}
+                    deleteOption={(id) => dispatch({type: 'deleteOptionButton', optionId: id })}
+                />
             })}
         </div>
         <div className="align-left">
