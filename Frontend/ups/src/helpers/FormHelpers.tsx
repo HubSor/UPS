@@ -9,9 +9,16 @@ export type Option = {
 }
 
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
-    return <ErrorMessage name={fieldName} render={msg => typeof msg === 'string' ? <div className="error-msg">
-        {msg.split('\n').map(m => <>{m}<br/></>)}
-    </div> : undefined}/>
+    return <ErrorMessage name={fieldName} render={msg => {
+        if (fieldName.startsWith('options'))
+            debugger;
+        return <div className="error-msg">
+            {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
+                {m}
+                <br/>
+            </React.Fragment>)}
+        </div>
+    }}/>
 }
 
 export const SeparateErrors = (errors: { [key: string]: string[] }) => {
@@ -108,7 +115,7 @@ export function AsInputGroup(props: AsInputGroupProps) {
         </Form.Label>
         {props.as === 'textarea' ?
             <TestAreaField {...props} /> :
-            <Field as={props.as} name={props.name} value={undefined} className="form-control">
+            <Field as={props.as} name={props.name} className="form-control">
                 {!!props.options && props.options.map(o => {
                     return <React.Fragment key={o.value}>
                         <option value={o.value}>{o.label}</option>

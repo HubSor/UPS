@@ -1,4 +1,4 @@
-import { Form as FForm, Field, FieldArray, Formik } from "formik";
+import { Form as FForm, Field, FieldArray, Formik, FormikErrors } from "formik";
 import { Api } from "../../api/Api";
 import { OptionDto, ParameterDto, ParameterTypeEnum } from "../../api/Dtos";
 import { Button, Form, Modal } from "react-bootstrap";
@@ -18,7 +18,7 @@ type AddOrEditParameterModalProps = {
 
 const optionSchema = object<OptionDto>().shape({
     value: string()
-        .required("Należy podac wartość")
+        .required("Należy podać wartość")
         .max(256, "Zbyt długa wartość")
 })
 
@@ -77,7 +77,6 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
             }}
         >
             {function FormInner({ isSubmitting, values, errors }) {
-                console.log(errors)
                 return <FForm>
                     <Modal.Header className="darkblue">
                         <Modal.Title>
@@ -95,15 +94,15 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
                             <Form.Label>
                                 Opcje
                             </Form.Label>
-                            <ValidationMessage fieldName="options" />
                             <FieldArray 
                                 name="options"
                                 render={helpers => <div>
                                     {values.options.map((o, idx) => <div className="m-1 d-flex" key={idx}>
                                         <div className="option-row">
                                             <Field name={`options.${idx}.value`} type="text" className="form-control" />
-                                            <ValidationMessage fieldName={`options.${idx}.value`} />
-                                            { /* to waliduje tylko na blurze ???*/}
+                                            {!!errors.options?.at(idx) && <div className="error-msg">
+                                                {(errors.options?.at(idx) as FormikErrors<OptionDto>).value}
+                                            </div>}
                                         </div>
                                         <button className="btn btn-sm btn-outline-danger m-1" type="button"
                                             onClick={() => helpers.remove(idx)}
