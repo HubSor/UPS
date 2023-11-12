@@ -121,7 +121,9 @@ export default function ProductMainPage() {
             </thead>
             <tbody>
                 {state.products.map(p => {
-                    return <tr key={p.id}>
+                    return <tr key={p.id} onClick={() => {
+                        nav(Paths.product.replace(":id", p.id.toString()))
+                    }}>
                         <td>
                             {p.code}
                         </td>
@@ -134,21 +136,17 @@ export default function ProductMainPage() {
                         <td>
                             {p.basePrice}
                         </td>
-                        <td className="col-3">
+                        <td className="col-2">
                             {hasProductRoles && <>
-                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
-                                    nav(Paths.product.replace(":id", p.id.toString()))
-                                }}>
-                                    Szczegóły
-                                </button>
-                                &nbsp;
-                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
+                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={(e) => {
+                                    e.stopPropagation()
                                     dispatch({ type: 'editProductButton', product: p })
                                 }}>
                                     Edytuj
                                 </button>
                                 &nbsp;
-                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
+                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={(e) => {
+                                    e.stopPropagation()
                                     dispatch({ type: 'deleteProductButton', product: p })
                                 }}>
                                     Usuń

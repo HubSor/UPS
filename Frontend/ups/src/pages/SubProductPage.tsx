@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react"
 import { ExtendedSubProductDto, ParameterDto, ProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { GetProductStatusDisplayName } from "../helpers/FormHelpers"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
@@ -11,6 +11,7 @@ import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
 import { AddOrEditSubProductModal } from "../components/modals/AddOrEditSubProductModal"
 import { InfoRow } from "../components/InfoRow"
 import { ParameterRow } from "../components/ParameterRow"
+import { Paths } from "../App"
 
 export default function SubProductPage() {
     const { id } = useParams();
@@ -89,6 +90,7 @@ type SubProductPageProps = {
 
 export function SubProductPageInner({ subProductId }: SubProductPageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
+    const nav = useNavigate();
 
     useEffect(() => {
         const fetchProduct = () => {
@@ -207,7 +209,9 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
                     </thead>
                     <tbody>
                         {state.subProduct?.products.map(p => {
-                            return <tr key={p.id}>
+                            return <tr key={p.id} onClick={() => {
+                                nav(Paths.product.replace(":id", p.id.toString()))
+                            }}>
                                 <td>
                                     {p.code}
                                 </td>
@@ -218,7 +222,8 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
                                     {GetProductStatusDisplayName(p.status)}
                                 </td>
                                 <td>
-                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
+                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={(e) => {
+                                        e.stopPropagation();
                                         dispatch({ type: 'unassignSubProductButton', product: p })
                                     }}>
                                         Usuń przypisanie

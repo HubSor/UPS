@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer } from "react"
 import { ExtendedProductDto, ExtendedSubProductDto, ParameterDto, ResultPaginationDto, SubProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
@@ -13,6 +13,7 @@ import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameter
 import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
 import { InfoRow } from "../components/InfoRow"
 import { ParameterRow } from "../components/ParameterRow"
+import { Paths } from "../App"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -136,6 +137,7 @@ type ProductPageProps = {
 
 export function ProductPageInner({ productId }: ProductPageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
+    const nav = useNavigate();
 
     const fetchOtherSubProduts = useCallback(() => {
         Api.ListSubProducts({ pagination: state.otherSubProductsPagination, productId: productId }).then(res => {
@@ -294,7 +296,9 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                     </thead>
                     <tbody>
                         {state.product?.subProducts.map(s => {
-                            return <tr key={s.id}>
+                            return <tr key={s.id} onClick={() => {
+                                nav(Paths.subProduct.replace(":id", s.id.toString()))
+                            }}>
                                 <td>
                                     {s.code}
                                 </td>
@@ -305,14 +309,16 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                                     {s.price}
                                 </td>
                                 <td>
-                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => {
+                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={(e) => {
+                                        e.stopPropagation()
                                         dispatch({ type: 'editSubProductButton', subProduct: s })
                                     }}>
                                         Edytuj
                                     </button>
                                     &nbsp;
                                     &nbsp;
-                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => {
+                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={(e) => {
+                                        e.stopPropagation()
                                         dispatch({ type: 'unassignSubProductButton', subProduct: s })
                                     }}>
                                         Usuń
