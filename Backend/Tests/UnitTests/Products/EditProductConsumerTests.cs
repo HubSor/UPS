@@ -32,16 +32,7 @@ public class EditProductConsumerTests : ConsumerTestCase<EditProductConsumer, Ed
 	[Test]
 	public async Task Consume_Ok_Edit()
 	{
-		var order = new EditProductOrder(new ProductDto()
-		{
-			Id = 1,
-			Name = "new",
-			Code = "CODE",
-			Description = "test",
-			Status = ProductStatusEnum.Withdrawn,
-			AnonymousSaleAllowed = false,
-			BasePrice = 10.99m
-		});
+		var order = new EditProductOrder(false, "CODE", "new", 10.99m, "test", 1, ProductStatusEnum.Withdrawn);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

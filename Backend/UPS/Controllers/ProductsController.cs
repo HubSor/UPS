@@ -17,6 +17,14 @@ namespace UPS.Controllers
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("get")]
+		public async Task<IActionResult> Get([FromBody] GetProductOrder order)
+		{
+			return await RespondAsync<GetProductOrder, GetProductResponse>(order);
+		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("add")]
 		public async Task<IActionResult> Add([FromBody] AddProductOrder order)
 		{
@@ -46,7 +54,15 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
 		}
-		
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
+		[Route("subproducts/get")]
+		public async Task<IActionResult> GetSubProduct([FromBody] GetSubProductOrder order)
+		{
+			return await RespondAsync<GetSubProductOrder, GetSubProductResponse>(order);
+		}
+
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("subproducts/add")]

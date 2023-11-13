@@ -19,13 +19,13 @@ public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, E
 
 	public override async Task<bool> PreTransaction(ConsumeContext<EditSubProductOrder> context)
 	{
-		if (await subProducts.GetAll().AnyAsync(x => x.Code == context.Message.SubProductDto.Code.ToUpper() && x.Id != context.Message.SubProductDto.Id))
+		if (await subProducts.GetAll().AnyAsync(x => x.Code == context.Message.Code.ToUpper() && x.Id != context.Message.Id))
 		{
 			await RespondWithValidationFailAsync(context, "Code", "Istnieje już inny podprodukt o takim kodzie");
 			return false;
 		}
 		
-		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.SubProductDto.Id && !x.Deleted))
+		if (!await subProducts.GetAll().AnyAsync(x => x.Id == context.Message.Id && !x.Deleted))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie znaleziono podproduktu");
 			return false;
@@ -36,12 +36,12 @@ public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, E
 
 	public override async Task InTransaction(ConsumeContext<EditSubProductOrder> context)
 	{
-		var subProduct = await subProducts.GetAll().FirstAsync(p => p.Id == context.Message.SubProductDto.Id);
+		var subProduct = await subProducts.GetAll().FirstAsync(p => p.Id == context.Message.Id);
 		
-		subProduct.Description = context.Message.SubProductDto.Description;
-		subProduct.Name = context.Message.SubProductDto.Name;
-		subProduct.Code = context.Message.SubProductDto.Code;
-		subProduct.BasePrice = context.Message.SubProductDto.BasePrice;
+		subProduct.Description = context.Message.Description;
+		subProduct.Name = context.Message.Name;
+		subProduct.Code = context.Message.Code;
+		subProduct.BasePrice = context.Message.BasePrice;
 		
 		await subProducts.UpdateAsync(subProduct);
 	}

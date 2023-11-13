@@ -3,15 +3,26 @@ import { Api } from "../../api/Api";
 import { RoleEnum, UserDto } from "../../api/Dtos";
 import { ChangeEvent } from "react";
 import { Button, Modal, Form as BForm } from "react-bootstrap";
-import { InputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
+import { TypeInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
+import { EditUserRequest } from "../../api/ApiRequests";
+import { object, string } from "yup";
 
 type AddOrEditUserModalProps = {
     onSuccess: () => void
     close: () => void
     editedUser?: UserDto
 }
+
+const addOrEditUserSchema = object<EditUserRequest>().shape({
+    username: string()
+        .max(64, "Zbyt długi login")
+        .min(4, "Zbyt krótki login")
+        .required("Należy podać login"),
+    password: string()
+        .max(128, "Zbyt długie hasło")
+})
 
 const rolesToAddFrom = [
     { roleId: RoleEnum.Administrator, name: "Administrator" },
@@ -37,12 +48,13 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
     return <Modal show size="lg">
         <Formik
             initialValues={initialValues}
+            validationSchema={addOrEditUserSchema}
             onSubmit={(v, fh) => {
                 const handleApiResponse = (res: ApiResponse<undefined>, edit: boolean) => {
                     if (res.success && res.data){
                         onSuccess()
                         close()
-                        edit ? toastInfo('Edytowano użytkownika') : toastInfo('Dodano użytkownika')
+                        edit ? toastInfo('Edytowano użytkownika ' + editedUser?.username) : toastInfo('Dodano użytkownika')
                     }
                     else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
@@ -55,15 +67,16 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                     Api.AddUser(v).then(res => handleApiResponse(res, false))
             }}
         >
-            {({values}) => <Form>
+            {({values, isSubmitting}) => <Form>
                 <Modal.Header className="darkblue">
                     <Modal.Title>
                         {editMode ? "Edytuj użytkownika" : "Dodaj użytkownika"}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <InputGroup name="username" label="Login" type="text"/>
-                    <InputGroup name="password" label="Hasło" type="password"/>
+                    <TypeInputGroup name="username" label="Login" type="text"/>
+                    <ValidationMessage fieldName="id" />
+                    <TypeInputGroup name="password" label="Hasło" type="password"/>
                     <BForm.Group>
                         <FieldArray name="roleIds"
                             render={ah => <>
@@ -92,7 +105,7 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                     </BForm.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isSubmitting}>
                         Zapisz
                     </Button>
                     &nbsp;

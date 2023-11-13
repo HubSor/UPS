@@ -1,4 +1,5 @@
 ﻿using Consumers.Products;
+using Dtos;
 using Helpers;
 using Messages.Products;
 using Models.Entities;
@@ -11,6 +12,7 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
+	private readonly PaginationDto pagination = new() { PageIndex = 0, PageSize = 10 };
 
 	protected override Task SetUp()
 	{
@@ -52,27 +54,27 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 	[Test]
 	public async Task Consume_Ok_WithoutProductId()
 	{
-		var order = new ListSubProductsOrder(null);
+		var order = new ListSubProductsOrder(null, pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
 		
 		var result = responses.SingleOrDefault()?.Data?.SubProducts;
 		Assert.That(result, Is.Not.Null);
-		Assert.That(result, Has.Count.EqualTo(2));
+		Assert.That(result?.Items, Has.Count.EqualTo(2));
 	}
 	
 	[Test]
 	public async Task Consume_Ok_WithProductId()
 	{
-		var order = new ListSubProductsOrder(1);
+		var order = new ListSubProductsOrder(1, pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
 		
 		var result = responses.SingleOrDefault()?.Data?.SubProducts;
 		Assert.That(result, Is.Not.Null);
-		Assert.That(result, Has.Count.EqualTo(1));
-		Assert.That(result?.Single().Id, Is.EqualTo(2));
+		Assert.That(result?.Items, Has.Count.EqualTo(1));
+		Assert.That(result?.Items.Single().Id, Is.EqualTo(2));
 	}
 }

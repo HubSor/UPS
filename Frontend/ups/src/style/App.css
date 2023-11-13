@@ -1,10 +1,11 @@
 .app {
   text-align: center;
   padding-top: 70px;
+  padding-bottom: 30px;
 }
 
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   height: 60px;
@@ -54,4 +55,48 @@
 .Toastify__toast-container--top-right {
   top: 4em;
   width: 350px;
+}
+
+.align-left {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.info-label {
+  text-align: right;
+}
+
+.param-label {
+  text-align: left;
+}
+
+.param-label-options {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.option-item {
+  border: lightgray solid thin;
+  font-size: 90%;
+  font-style: italic;
+  background-color: whitesmoke;
+  text-align: left;
+}
+
+.delete-option {
+  margin-right: -3%;
+}
+
+.option-row {
+  width: 100%;
 }

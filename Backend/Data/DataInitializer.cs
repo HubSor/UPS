@@ -60,10 +60,10 @@ namespace Data
 			context.Products.Add(new()
 			{
 				Name = "Produkt testowy",
-				Code = "PTEST",
+				Code = "P1",
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
-				Description = "Testowy produkt",
+				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 				BasePrice = 99.99m,
 			});
 			
@@ -71,10 +71,26 @@ namespace Data
 			{
 				Name = "Podprodukt testowy 1",
 				Description = "Testowy podprodukt 1",
-				Code = "PPTEST",
+				Code = "PP1",
 				BasePrice = 15.99m,
 			});
-			
+
+			context.SubProducts.Add(new()
+			{
+				Name = "Podprodukt testowy 2",
+				Description = "Testowy podprodukt 2",
+				Code = "PP2",
+				BasePrice = 0.99m,
+			});
+
+			context.SubProducts.Add(new()
+			{
+				Name = "Podprodukt testowy 3",
+				Description = "Testowy podprodukt 3",
+				Code = "PP3",
+				BasePrice = 4.99m,
+			});
+
 			context.SaveChanges();
 			
 			context.SubProductsInProducts.Add(new()
@@ -110,13 +126,29 @@ namespace Data
 				Required = false,
 				ProductId = 1
 			});
-			
+
+			context.Parameters.Add(new()
+			{
+				Name = "Wzrost kupującego (m)",
+				Type = ParameterTypeEnum.Decimal,
+				Required = false,
+				ProductId = 1
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Waga kupującego (kg)",
+				Type = ParameterTypeEnum.Integer,
+				Required = true,
+				ProductId = 1
+			});
+
 			var dayParam = new Parameter()
 			{
 				Name = "Dzień tygodnia",
 				Type = ParameterTypeEnum.Select,
 				Required = true,
-				SubProductId = 1
+				ProductId = 1
 			};
 
 			context.Parameters.Add(dayParam);
@@ -142,15 +174,27 @@ namespace Data
 				"Niedziela"
 			};
 			
-			context.ParameterOptions.AddRange(days.Select(d => new ParameterOption() 
+			var dayOptions = days.Select(d => new ParameterOption()
 			{
 				ParameterId = dayParam.Id,
 				Value = d,
-			}));
+			});
+
+			context.ParameterOptions.AddRange(dayOptions);
+
+			context.SaveChanges();
+			
+			context.SaleParameters.Add(new ()
+			{
+				SaleId = 1,
+				ParameterId = dayParam.Id,
+				Value = "Środa",
+				OptionId = context.ParameterOptions.FirstOrDefault(o => o.Value == "Środa")?.Id
+			});
 
 			context.SaveChanges();
 		}
-		
+
 		public static void Clear(UnitOfWork context)
 		{
 			context.Model.GetEntityTypes()

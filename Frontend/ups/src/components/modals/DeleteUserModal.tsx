@@ -37,7 +37,7 @@ export function DeleteUserModal({ onSuccess, close, deletedUser }: DeleteUserMod
                 Api.DeleteUser(v).then(handleApiResponse)
             }}
         >
-            {() => <Form>
+            {({ isSubmitting }) => <Form>
                 <Modal.Header className="darkred">
                     <Modal.Title>
                         Usuń użytkownika {deletedUser.username}
@@ -49,7 +49,7 @@ export function DeleteUserModal({ onSuccess, close, deletedUser }: DeleteUserMod
                     <ValidationMessage fieldName="id" />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isSubmitting}>
                         Zapisz
                     </Button>
                     &nbsp;

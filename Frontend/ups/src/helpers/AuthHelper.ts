@@ -1,5 +1,5 @@
 import secureLocalStorage from "react-secure-storage";
-import { UserDto } from "../api/Dtos";
+import { GetRoleKey, RoleEnum, UserDto } from "../api/Dtos";
 
 export class AuthHelpers {
     private static userKey = "userData";
@@ -16,8 +16,25 @@ export class AuthHelpers {
         return !!AuthHelpers.GetUserData();
     }
 
-    public static HasRole(role: string) {
-        return AuthHelpers.GetUserData()?.roles.includes(role);
+    public static HasRole(role: RoleEnum) {
+        return AuthHelpers.HasAnyRole([role]);
+    }
+
+    public static HasAnyRole(roles: RoleEnum[]){
+        const userData = AuthHelpers.GetUserData()?.roles;
+        return roles.some(role => userData?.includes(GetRoleKey(role)));
+    }
+
+    public static HasUserRoles(){
+        return AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.UserManager]);
+    }
+
+    public static HasProductRoles() {
+        return AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.ProductManager]);
+    }
+
+    public static HasSalesRoles() {
+        return AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.Seller]);
     }
 
     public static ClearAllData() {

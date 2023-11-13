@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Text.Json.Serialization;
-
 namespace Dtos;
 
 public class PagedList<T>

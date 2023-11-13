@@ -29,14 +29,7 @@ public class EditSubProductConsumerTests : ConsumerTestCase<EditSubProductConsum
 	[Test]
 	public async Task Consume_Ok_Edit()
 	{
-		var order = new EditSubProductOrder(new ()
-		{
-			Id = 1,
-			Name = "new",
-			Code = "CODE",
-			Description = "test",
-			BasePrice = 10.99m
-		});
+		var order = new EditSubProductOrder("CODE", "new", 10.99m, "test", 1);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

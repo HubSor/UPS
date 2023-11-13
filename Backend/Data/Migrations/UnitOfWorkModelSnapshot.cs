@@ -412,7 +412,8 @@ namespace Data.Migrations
                 {
                     b.HasOne("Models.Entities.ParameterOption", "Option")
                         .WithMany()
-                        .HasForeignKey("OptionId");
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Models.Entities.Parameter", "Parameter")
                         .WithMany("SaleParameters")

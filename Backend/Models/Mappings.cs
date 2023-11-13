@@ -50,7 +50,7 @@ namespace Models
 		{
 			builder.HasKey(x => new { x.SaleId, x.ParameterId });
 			builder.HasOne(x => x.Parameter).WithMany(x => x.SaleParameters).HasForeignKey(x => x.ParameterId);
-			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId);
+			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId).OnDelete(DeleteBehavior.SetNull);
 		}
 	}
 	

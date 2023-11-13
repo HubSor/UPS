@@ -46,7 +46,7 @@ export default function LoginForm(){
                 })
             }}
         >
-            {() => <Form className="form">
+            {({ isSubmitting }) => <Form className="form">
                 <div className="form-group row justify-content-center">
                     <label className="col-sm-1 col-form-label">Login</label>
                     <div className="col-sm-3">
@@ -66,7 +66,7 @@ export default function LoginForm(){
                 <div className="form-group row justify-content-center">
                     <label className="col-sm-1 col-form-label"/>
                     <div className="col-sm-3">
-                        <button className="btn btn-primary form-control" type="submit">Zaloguj</button>
+                        <button className="btn btn-primary form-control" type="submit" disabled={isSubmitting}>Zaloguj</button>
                     </div>
                 </div>
             </Form>}

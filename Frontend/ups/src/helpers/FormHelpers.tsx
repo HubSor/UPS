@@ -1,6 +1,7 @@
 import { ErrorMessage, Field } from "formik"
-import { RoleEnum } from "../api/Dtos"
+import { ParameterTypeEnum, ProductStatusEnum, RoleEnum } from "../api/Dtos"
 import { Form } from "react-bootstrap"
+import React from "react"
 
 export type Option = {
     value: any,
@@ -8,9 +9,16 @@ export type Option = {
 }
 
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
-    return <ErrorMessage name={fieldName} render={msg => <div className="error-msg">
-        {msg.split('\n').map(m => <>{m}<br/></>)}
-    </div>}/>
+    return <ErrorMessage name={fieldName} render={msg => {
+        if (fieldName.startsWith('options'))
+            debugger;
+        return <div className="error-msg">
+            {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
+                {m}
+                <br/>
+            </React.Fragment>)}
+        </div>
+    }}/>
 }
 
 export const SeparateErrors = (errors: { [key: string]: string[] }) => {
@@ -19,7 +27,7 @@ export const SeparateErrors = (errors: { [key: string]: string[] }) => {
     return newObj;
 }
 
-export const RoleEnumDisplayName = (role: RoleEnum) => {
+export const GetRoleDisplayName = (role: RoleEnum) => {
     switch (role) {
         case RoleEnum.Administrator:
             return "Administrator";
@@ -32,13 +40,54 @@ export const RoleEnumDisplayName = (role: RoleEnum) => {
     }
 }
 
+export const GetProductStatusDisplayName = (role?: ProductStatusEnum) => {
+    switch (role) {
+        case ProductStatusEnum.NotOffered:
+            return "Nieoferowany";
+        case ProductStatusEnum.Withdrawn:
+            return "Wycofany";
+        case ProductStatusEnum.Offered:
+            return "Oferowany";
+        default:
+            return ""
+    }
+}
+
+export const GetParameterTypeDisplayName = (type?: ParameterTypeEnum) => {
+    switch (type) {
+        case ParameterTypeEnum.Integer:
+            return "Liczba całkowita";
+        case ParameterTypeEnum.Checkbox:
+            return "Flaga";
+        case ParameterTypeEnum.Decimal:
+            return "Liczba dziesiętna";
+        case ParameterTypeEnum.Select:
+            return "Wybór jednokrotny";
+        case ParameterTypeEnum.Text:
+            return "Tekst";
+        case ParameterTypeEnum.TextArea:
+            return "Długi tekst";
+        default:
+            return ""
+    }
+}
+
 type InputGroupProps = {
     name: string,
     label: string,
-    type: string
 }
 
-export function InputGroup(props: InputGroupProps){
+type TypeInputGroupProps = InputGroupProps & {
+    type?: string,
+}
+
+type AsInputGroupProps = InputGroupProps & {
+    options?: Option[],
+    as?: string,
+    rows?: number
+}
+
+export function TypeInputGroup(props: TypeInputGroupProps){
     return <Form.Group className="mb-3">
         <Form.Label>
             {props.label}
@@ -47,6 +96,39 @@ export function InputGroup(props: InputGroupProps){
         <ValidationMessage fieldName={props.name}/>
     </Form.Group>
 }
+
+export function CheckboxInputGroup(props: InputGroupProps) {
+    return <Form.Check className="mb-3">
+        <Field type="checkbox" name={props.name} className="form-check-input" />
+        &nbsp;
+        <Form.Label className="form-check-label">
+            {props.label}
+        </Form.Label>
+        <ValidationMessage fieldName={props.name} />
+    </Form.Check>
+}
+
+export function AsInputGroup(props: AsInputGroupProps) {
+    return <Form.Group className="mb-3">
+        <Form.Label>
+            {props.label}
+        </Form.Label>
+        {props.as === 'textarea' ?
+            <TestAreaField {...props} /> :
+            <Field as={props.as} name={props.name} className="form-control">
+                {!!props.options && props.options.map(o => {
+                    return <React.Fragment key={o.value}>
+                        <option value={o.value}>{o.label}</option>
+                    </React.Fragment>
+                })}
+            </Field>
+        }
+        <ValidationMessage fieldName={props.name} />
+    </Form.Group>
+}
+
+const TestAreaField = (props: AsInputGroupProps) =>
+    <Field as={props.as} values={undefined} className="form-control" name={props.name} />
 
 export type PaginationBarProps = {
     onNext: (next: number) => void
@@ -59,10 +141,13 @@ export function PaginationBar(props: PaginationBarProps) {
     const next = () => props.onNext(props.currentIndex + 1);
     const prev = () => props.onNext(props.currentIndex - 1);
 
+    const disableLeft = props.currentIndex <= 0;
+    const disableRight = props.currentIndex >= props.maxIndex;
+
     return <nav className="m-2">
         <ul className="pagination justify-content-center">
             <li className="page-item">
-                <button disabled={props.currentIndex <= 0} type="button" className="page-link" onClick={prev}>
+                <button disabled={disableLeft} type="button" className={"page-link " + (disableLeft ? "disabled" : "")} onClick={prev}>
                     {"<"}
                 </button>
             </li>
@@ -78,7 +163,7 @@ export function PaginationBar(props: PaginationBarProps) {
                 </button>
             </li>}
             <li className="page-item">
-                <button disabled={props.currentIndex >= props.maxIndex} className="page-link" onClick={next}>
+                <button disabled={disableRight} className={"page-link " + (disableRight ? "disabled" : "")} onClick={next}>
                     {">"}
                 </button>
             </li>

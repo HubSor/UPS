@@ -1,7 +1,8 @@
 import axios from "axios";
-import { ApiResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
-import { AddUserRequest, DeleteUserRequest, EditUserRequest, ListUsersRequest, LoginRequest } from "./ApiRequests";
+import { ApiResponse, GetProductResponse, GetSubProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
+import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, GetSubProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
+import { toastAuthError } from "../helpers/ToastHelpers";
 
 axios.defaults.withCredentials = true;
 
@@ -27,7 +28,7 @@ async function getApiResponse<R, T>(request: R, url: string): Promise<ApiRespons
         validateStatus: status => status <= 500,    
         headers: {
             "Content-Type": "application/json"
-        }    
+        }
     }).then(res => {
         response = {
             statusCode: res.status ?? 400,
@@ -46,6 +47,9 @@ async function getApiResponse<R, T>(request: R, url: string): Promise<ApiRespons
         else
             console.error('Api Error: ', error.message)
     });
+
+    if (response.statusCode === 401)
+        toastAuthError();
 
     return response;
 }
@@ -75,6 +79,78 @@ export class Api {
 
     static async DeleteUser(request: DeleteUserRequest) {
         return await getApiResponse<DeleteUserRequest, undefined>(request, this.url + "/users/delete")
+    }
+
+    static async AddProduct(request: AddProductRequest){
+        return await getApiResponse<AddProductRequest, undefined>(request, this.url + '/products/add')
+    }
+
+    static async EditProduct(request: EditProductRequest) {
+        return await getApiResponse<EditProductRequest, undefined>(request, this.url + '/products/edit')
+    }
+
+    static async DeleteProduct(request: DeleteProductRequest) {
+        return await getApiResponse<DeleteProductRequest, undefined>(request, this.url + '/products/delete')
+    }
+
+    static async ListProducts(request: ListProductsRequest) {
+        return await getApiResponse<ListProductsRequest, ListProductsResponse>(request, this.url + '/products/list')
+    }
+
+    static async AddSubProduct(request: AddSubProductRequest) {
+        return await getApiResponse<AddSubProductRequest, undefined>(request, this.url + '/products/subproducts/add')
+    }
+
+    static async EditSubProduct(request: EditSubProductRequest) {
+        return await getApiResponse<EditSubProductRequest, undefined>(request, this.url + '/products/subproducts/edit')
+    }
+
+    static async DeleteSubProduct(request: DeleteSubProductRequest) {
+        return await getApiResponse<DeleteSubProductRequest, undefined>(request, this.url + '/products/subproducts/delete')
+    }
+
+    static async ListSubProducts(request: ListSubProductsRequest) {
+        return await getApiResponse<ListSubProductsRequest, ListSubProductsResponse>(request, this.url + '/products/subproducts/list')
+    }
+
+    static async AssignSubProduct(request: AssignSubProductRequest) {
+        return await getApiResponse<AssignSubProductRequest, undefined>(request, this.url + '/products/subproducts/assign')
+    }
+
+    static async UnassignSubProducts(request: UnassignSubProductsRequest) {
+        return await getApiResponse<UnassignSubProductsRequest, undefined>(request, this.url + "/products/subproducts/unassign")
+    }
+
+    static async EditSubProductAssignment(request: EditSubProductAssignmentRequest) {
+        return await getApiResponse<EditSubProductAssignmentRequest, undefined>(request, this.url + "/products/subproducts/assignments/edit")
+    }
+
+    static async GetProduct(request: GetProductRequest) {
+        return await getApiResponse<GetProductRequest, GetProductResponse>(request, this.url + "/products/get")
+    }
+
+    static async GetSubProduct(request: GetSubProductRequest) {
+        return await getApiResponse<GetSubProductRequest, GetSubProductResponse>(request, this.url + "/products/subproducts/get")
+    }
+
+    static async AddParameter(request: AddParameterRequest) {
+        return await getApiResponse<AddParameterRequest, undefined>(request, this.url + "/parameters/add")
+    }
+
+    static async EditParameter(request: EditParameterRequest) {
+        return await getApiResponse<EditParameterRequest, undefined>(request, this.url + "/parameters/edit")
+    }
+
+    static async DeleteParameter(request: DeleteParameterRequest) {
+        return await getApiResponse<DeleteParameterRequest, undefined>(request, this.url + "/parameters/delete")
+    }
+
+    static async AddOption(request: AddOptionRequest) {
+        return await getApiResponse<AddOptionRequest, undefined>(request, this.url + "/parameters/options/add")
+    }
+
+    static async DeleteOption(request: DeleteOptionRequest) {
+        return await getApiResponse<DeleteOptionRequest, undefined>(request, this.url + "/parameters/options/delete")
     }
 
     static async Session() {

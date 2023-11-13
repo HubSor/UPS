@@ -32,8 +32,9 @@ builder.Services.AddCors(op =>
 {
 	op.AddPolicy("AllowFrontend", pol =>
 	{
-		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "https://localhost:3000", "http://localhost:3000")
+		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "", "https://localhost:3000", "http://localhost:3000")
 			.AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+		pol.SetPreflightMaxAge(TimeSpan.FromMinutes(15));
 	});
 });
 
@@ -64,6 +65,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 		{
 			context.Response.StatusCode = 401;
 			return Task.CompletedTask;
+		};
+		conf.AccessDeniedPath = "/";
+		conf.Events.OnRedirectToAccessDenied = context =>
+		{
+			context.Response.StatusCode = 401;
+			return Task.CompletedTask;	
 		};
 		conf.Cookie.IsEssential = true;
 		conf.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -103,11 +110,11 @@ else
 }
 
 app.UseStaticFiles();
+app.UseCors("AllowFrontend");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy(new CookiePolicyOptions(){ Secure = CookieSecurePolicy.None});
-app.UseCors("AllowFrontend");
 app.UseSession();
 
 app.MapControllerRoute(
