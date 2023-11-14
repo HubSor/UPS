@@ -56,7 +56,14 @@ namespace Data
 				new (){ Id = ProductStatusEnum.Offered, Description = "Sprzedaż tego produktu jest dozwolona"},
 				new (){ Id = ProductStatusEnum.Withdrawn, Description = "Produkt wycofany ze sprzedaży. Sprzedaż niemożliwa."},
 			});
-				
+
+			context.AddressTypes.AddRange(new List<AddressType>()
+			{
+				new (){ Id = AddressTypeEnum.Residence, Name = "Adres zamieszkania"},
+				new (){ Id = AddressTypeEnum.Correspondence, Name = "Adres korespondencyjny"},
+				new (){ Id = AddressTypeEnum.Registered, Name = "Adres zameldowania"},
+			});
+
 			context.Products.Add(new()
 			{
 				Name = "Produkt testowy",
@@ -90,6 +97,14 @@ namespace Data
 				Code = "PP3",
 				BasePrice = 4.99m,
 			});
+			
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Jan",
+				LastName = "Kowalski",
+				PhoneNumber = "123456789",
+				Email = "test@gmail.com",
+			});
 
 			context.SaveChanges();
 			
@@ -105,6 +120,7 @@ namespace Data
 				ProductId = 1,
 				FinalPrice = 100.99m,
 				SellerId = 1,
+				ClientId = 1,
 			});
 			
 			var parameterTypes = new List<ParameterType>()

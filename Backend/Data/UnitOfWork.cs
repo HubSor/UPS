@@ -18,6 +18,10 @@ namespace Data
 		public DbSet<Sale> Sales { get; set; }
 		public DbSet<SaleParameter> SaleParameters { get; set; }
 		public DbSet<SubProductInSale> SubProductsInSales { get; set; }
+		public DbSet<AddressType> AddressTypes { get; set; }
+		public DbSet<Client> Clients { get; set; }
+		public DbSet<PersonClient> PersonClients { get; set; }
+		public DbSet<FirmClient> FirmClients { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{

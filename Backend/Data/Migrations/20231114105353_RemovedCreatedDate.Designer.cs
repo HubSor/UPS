@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(UnitOfWork))]
-    partial class UnitOfWorkModelSnapshot : ModelSnapshot
+    [Migration("20231114105353_RemovedCreatedDate")]
+    partial class RemovedCreatedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,10 +51,6 @@ namespace Data.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -63,10 +62,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Client");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Models.Entities.ClientAddress", b =>
@@ -443,47 +438,6 @@ namespace Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("Models.Entities.FirmClient", b =>
-                {
-                    b.HasBaseType("Models.Entities.Client");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Nip")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Regon")
-                        .HasMaxLength(14)
-                        .HasColumnType("character varying(14)");
-
-                    b.HasDiscriminator().HasValue("FirmClient");
-                });
-
-            modelBuilder.Entity("Models.Entities.PersonClient", b =>
-                {
-                    b.HasBaseType("Models.Entities.Client");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<string>("Pesel")
-                        .HasMaxLength(11)
-                        .HasColumnType("character varying(11)");
-
-                    b.HasDiscriminator().HasValue("PersonClient");
                 });
 
             modelBuilder.Entity("Models.Entities.ClientAddress", b =>
