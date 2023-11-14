@@ -171,6 +171,16 @@ namespace Data
 			
 			context.SaveChanges();
 			
+			context.ClientAddresses.Add(new() 
+			{
+				City = "Warszawa",
+				Street = "Polna",
+				StreetNumber = "43A",
+				PostalCode = "01-234",
+				ClientId = 1,
+				Type = AddressTypeEnum.Residence,
+			});
+			
 			context.SubProductsInSales.Add(new()
 			{
 				SaleId = 1,
