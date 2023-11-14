@@ -22,7 +22,7 @@ namespace Data
 		public DbSet<ClientAddress> ClientAddresses { get; set; }
 		public DbSet<Client> Clients { get; set; }
 		public DbSet<PersonClient> PersonClients { get; set; }
-		public DbSet<FirmClient> FirmClients { get; set; }
+		public DbSet<CompanyClient> CompanyClients { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{

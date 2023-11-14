@@ -104,10 +104,19 @@ namespace Data
 				LastName = "Kowalski",
 				PhoneNumber = "123456789",
 				Email = "test@gmail.com",
+				Pesel = "17211116123",
 			});
 
 			context.SaveChanges();
-			
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "krzak sp. z o.o.",
+				PhoneNumber = "123456789",
+				Email = "test@gmail.com",
+				Regon = "133632926",
+			});
+
 			context.SubProductsInProducts.Add(new()
 			{
 				ProductId = 1,

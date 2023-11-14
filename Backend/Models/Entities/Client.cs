@@ -12,7 +12,7 @@ namespace Models.Entities
 		public ICollection<ClientAddress> Addresses { get; set; } = default!;
 	}
 	
-	public class FirmClient : Client
+	public class CompanyClient : Client
 	{
 		[MaxLength(256)]
 		public string CompanyName { get; set; } = default!;
