@@ -1,3 +1,5 @@
 namespace Messages.Clients;
 
-public record FindClientOrder(bool IsPerson, string Identifier);
+public abstract record FindClientOrder(string Identifier);
+public record FindPersonClientOrder(string Identifier) : FindClientOrder(Identifier);
+public record FindCompanyClientOrder(string Identifier) : FindClientOrder(Identifier);

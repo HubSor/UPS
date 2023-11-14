@@ -16,10 +16,18 @@ namespace UPS.Controllers
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
-		[Route("find")]
-		public async Task<IActionResult> Find([FromBody] FindClientOrder order)
+		[Route("/people/find")]
+		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
-			return await RespondAsync<FindClientOrder, FindClientResponse>(order);
+			return await RespondAsync<FindPersonClientOrder, FindPersonClientResponse>(order);
+		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[Route("/companies/find")]
+		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
+		{
+			return await RespondAsync<FindCompanyClientOrder, FindCompanyClientResponse>(order);
 		}
 	}
 }

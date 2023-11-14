@@ -2,7 +2,14 @@
 
 namespace Messages.Clients;
 
-public class FindClientResponse 
+public abstract class FindClientResponse {}
+
+public class FindPersonClientResponse : FindClientResponse 
 {
-	public ClientDto Client { get; set; } = default!;
+	public PersonClientDto PersonClient { get; set; } = default!;
+}
+
+public class FindCompanyClientResponse : FindClientResponse
+{
+	public CompanyClientDto CompanyClient { get; set; } = default!;
 }
