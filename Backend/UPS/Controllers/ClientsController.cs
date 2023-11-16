@@ -16,6 +16,14 @@ namespace UPS.Controllers
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[Route("/upsert")]
+		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
+		{
+			return await RespondAsync<UpsertClientOrder, UpsertClientResponse>(order);
+		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("/people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{

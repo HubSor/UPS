@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Entities
 {
-	public class Client : Entity<int>
+	public abstract class Client : Entity<int>
 	{
 		public bool Deleted { get; set; }
 		[MaxLength(15)]

@@ -445,7 +445,7 @@ namespace Data.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("Models.Entities.FirmClient", b =>
+            modelBuilder.Entity("Models.Entities.CompanyClient", b =>
                 {
                     b.HasBaseType("Models.Entities.Client");
 
@@ -462,7 +462,7 @@ namespace Data.Migrations
                         .HasMaxLength(14)
                         .HasColumnType("character varying(14)");
 
-                    b.HasDiscriminator().HasValue("FirmClient");
+                    b.HasDiscriminator().HasValue("CompanyClient");
                 });
 
             modelBuilder.Entity("Models.Entities.PersonClient", b =>
