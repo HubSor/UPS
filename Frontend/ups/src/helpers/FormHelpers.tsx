@@ -1,11 +1,19 @@
 import { ErrorMessage, Field } from "formik"
-import { ParameterTypeEnum, ProductStatusEnum, RoleEnum } from "../api/Dtos"
+import { ParameterTypeEnum, ProductStatusEnum, ResultPaginationDto, RoleEnum } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 import React from "react"
 
 export type Option = {
     value: any,
     label: string
+}
+
+export const defaultPagination: ResultPaginationDto = {
+    pageSize: 10,
+    pageIndex: 0,
+    totalCount: 0,
+    totalPages: 1,
+    count: 0
 }
 
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {

@@ -12,6 +12,7 @@ import ProductMainPage from './pages/ProductMainPage';
 import SubProductMainPage from './pages/SubProductMainPage';
 import ProductPage from './pages/ProductPage';
 import SubProductPage from './pages/SubProductPage';
+import SalePathPage from './pages/SaleMainPage';
 
 export const Paths = {
     login: "/login",
@@ -21,6 +22,7 @@ export const Paths = {
     product: "/product/:id",
     subProducts: "/subproducts",
     subProduct: "/subproduct/:id",
+    salePath: "/sales",
 }
 
 const router = createBrowserRouter(
@@ -33,6 +35,7 @@ const router = createBrowserRouter(
             <Route path={Paths.product} element={<AuthorizedPage page={<ProductPage />} />} />
             <Route path={Paths.subProducts} element={<AuthorizedPage page={<SubProductMainPage />} />} />
             <Route path={Paths.subProduct} element={<AuthorizedPage page={<SubProductPage />} />} />
+            <Route path={Paths.salePath} element={<AuthorizedPage page={<SalePathPage />} />} />
         </Route>
     )
 )

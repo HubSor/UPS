@@ -4,7 +4,7 @@ import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useNavigate, useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { GetProductStatusDisplayName, PaginationBar } from "../helpers/FormHelpers"
+import { GetProductStatusDisplayName, PaginationBar, defaultPagination } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
@@ -21,14 +21,6 @@ export default function ProductPage() {
     return  <>
         {!!id && <ProductPageInner productId={+id} />}
     </>
-}
-
-const defaultPagination: ResultPaginationDto = {
-    pageSize: 10,
-    pageIndex: 0,
-    totalCount: 0,
-    totalPages: 1,
-    count: 0
 }
 
 type ProductPageState = {

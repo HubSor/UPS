@@ -7,11 +7,15 @@ export default function Header(){
     const nav = useNavigate();
 
     const showUsers = AuthHelpers.HasUserRoles();
+    const showSales = AuthHelpers.HasSalesRoles();
 
     return <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
         <a href={Paths.main} className="navbar-title">UPS</a>
         <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
+                {showSales && <li className="nav-item">
+                    <a className="nav-link" href={Paths.salePath}>Sprzedaż</a>
+                </li>}
                 <li className="nav-item">
                     <a className="nav-link" href={Paths.products}>Produkty</a>
                 </li>
