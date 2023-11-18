@@ -8,7 +8,7 @@ import { FillClientInfoForm } from "../components/salepath/FillClientInfoForm"
 
 enum SalePathStep {
     ChooseProduct = 1,
-    FillClientInfo = 2, // optional
+    FillClientInfo = 2,
     ChooseSubProducts = 3,
     FillParameterValues = 4,
     Summary = 5,
@@ -57,13 +57,8 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
-            let decrement = 1;
-            if (state.step === SalePathStep.FillParameterValues && state.product?.subProducts.length === 0){
-                decrement = state.product.anonymousSaleAllowed === false ? 3 : 2;
-            }
-            if (state.step === SalePathStep.ChooseSubProducts && state.product?.anonymousSaleAllowed === false) {
-                decrement = 2;
-            }
+            let decrement = state.step === SalePathStep.FillParameterValues && state.product?.subProducts.length === 0 ?
+                2 : 1;
             return { ...state, step: state.step - decrement }
         case 'fetchedProduct':
             return { ...state, product: action.product }
@@ -93,16 +88,19 @@ function SalePathPageInner() {
     }, [state.product?.id, state.productId, state.step])
 
     useEffect(() => {
-        if (state.step === SalePathStep.FillClientInfo && !!state.product && !state.product.anonymousSaleAllowed)
-            dispatch({ type: 'nextStep' })
-        if (state.step === SalePathStep.ChooseSubProducts && !!state.product && state.product.subProducts.length === 0)
-            dispatch({ type: 'nextStep' })
-    }, [state.step, state.product])
+        if (state.product?.id === state.productId && !!state.product ){
+            if (state.step === SalePathStep.ChooseSubProducts && state.product.subProducts.length === 0)
+                dispatch({ type: 'nextStep' })
+        }
+
+    }, [state.step, state.product, state.productId])
 
     const nextStepDisabled = () => { 
         switch (state.step){
             case SalePathStep.ChooseProduct:
                 return !state.productId
+            case SalePathStep.FillClientInfo:
+                return (!state.clientId && state.product?.anonymousSaleAllowed === false)
         }
     }
 

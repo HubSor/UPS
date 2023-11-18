@@ -95,6 +95,7 @@ export type ParameterDto = {
 export type ClientDto = {
     phoneNumber?: string,
     email?: string,
+    id: number
 }
 
 export type CompanyClientDto = ClientDto & {
