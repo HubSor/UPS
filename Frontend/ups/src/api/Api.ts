@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ApiResponse, GetProductResponse, GetSubProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse } from "./ApiResponses";
-import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, GetProductRequest, GetSubProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest } from "./ApiRequests";
+import { ApiResponse, FindCompanyClientResponse, FindPersonClientResponse, GetProductResponse, GetSubProductResponse, ListProductsResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse, UpsertClientResponse } from "./ApiResponses";
+import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, FindClientRequest, GetProductRequest, GetSubProductRequest, ListProductsRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, UnassignSubProductsRequest, UpsertClientRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { toastAuthError } from "../helpers/ToastHelpers";
 
@@ -151,6 +151,18 @@ export class Api {
 
     static async DeleteOption(request: DeleteOptionRequest) {
         return await getApiResponse<DeleteOptionRequest, undefined>(request, this.url + "/parameters/options/delete")
+    }
+
+    static async UpsertClient(request: UpsertClientRequest) {
+        return await getApiResponse<UpsertClientRequest, UpsertClientResponse>(request, this.url + "/clients/upsert")
+    }
+
+    static async FindPersonClient(request: FindClientRequest) {
+        return await getApiResponse<FindClientRequest, FindPersonClientResponse>(request, this.url + "/clients/people/find")
+    }
+
+    static async FindCompanyClient(request: FindClientRequest) {
+        return await getApiResponse<FindClientRequest, FindCompanyClientResponse>(request, this.url + "/clients/companies/find")
     }
 
     static async Session() {

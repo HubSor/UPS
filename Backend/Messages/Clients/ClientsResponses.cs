@@ -11,4 +11,7 @@ public class FindCompanyClientResponse : FindClientResponse
 {
 	public CompanyClientDto CompanyClient { get; set; } = default!;
 }
-public class UpsertClientResponse {}
+public class UpsertClientResponse 
+{
+	public int ClientId { get; set; }
+}

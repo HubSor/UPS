@@ -91,3 +91,20 @@ export type ParameterDto = {
     required: boolean,
     options: ExtendedOptionDto[]
 }
+
+export type ClientDto = {
+    phoneNumber?: string,
+    email?: string,
+}
+
+export type CompanyClientDto = ClientDto & {
+    companyName: string,
+    regon?: string,
+    nip?: string
+}
+
+export type PersonClientDto = ClientDto & {
+    firstName: string,
+    lastName: string,
+    pesel?: string
+}

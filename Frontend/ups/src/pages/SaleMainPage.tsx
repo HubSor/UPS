@@ -3,6 +3,8 @@ import { ExtendedProductDto } from "../api/Dtos"
 import { ChooseProductForm } from "../components/salepath/ChooseProductForm"
 import { Api } from "../api/Api"
 import { toastError } from "../helpers/ToastHelpers"
+import { ChooseSubProductsForm } from "../components/salepath/ChooseSubProductsForm"
+import { FillClientInfoForm } from "../components/salepath/FillClientInfoForm"
 
 enum SalePathStep {
     ChooseProduct = 1,
@@ -22,27 +24,47 @@ export type SalePathAction =
     | { type: 'fetchedProduct', product: ExtendedProductDto }
     | { type: 'nextStep' }
     | { type: 'prevStep' }
+    | { type: 'addSubProduct', subProductId: number }
+    | { type: 'removeSubProduct', subProductId: number }
+    | { type: 'setClient', clientId: number }
 
 type SalePathState = {
     step: SalePathStep
     product: ExtendedProductDto | null,
     productId: number | null,
+    subProductIds: number[],
+    clientId: number | null,
 }
 
 const initalState: SalePathState = {
     product: null,
     productId: null,
     step: SalePathStep.ChooseProduct,
+    subProductIds: [],
+    clientId: null
 }
 
 function reducer(state: SalePathState, action: SalePathAction): SalePathState {
     switch(action.type){
+        case 'setClient':
+            return { ...state, clientId: action.clientId }
+        case 'addSubProduct':
+            return { ...state, subProductIds: [ ...state.subProductIds, action.subProductId ]}
+        case 'removeSubProduct':
+            return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId)}
         case 'setProduct':
             return { ...state, productId: action.productId };
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
-            return { ...state, step: state.step - 1 }
+            let decrement = 1;
+            if (state.step === SalePathStep.FillParameterValues && state.product?.subProducts.length === 0){
+                decrement = state.product.anonymousSaleAllowed === false ? 3 : 2;
+            }
+            if (state.step === SalePathStep.ChooseSubProducts && state.product?.anonymousSaleAllowed === false) {
+                decrement = 2;
+            }
+            return { ...state, step: state.step - decrement }
         case 'fetchedProduct':
             return { ...state, product: action.product }
     }
@@ -70,6 +92,13 @@ function SalePathPageInner() {
         }
     }, [state.product?.id, state.productId, state.step])
 
+    useEffect(() => {
+        if (state.step === SalePathStep.FillClientInfo && !!state.product && !state.product.anonymousSaleAllowed)
+            dispatch({ type: 'nextStep' })
+        if (state.step === SalePathStep.ChooseSubProducts && !!state.product && state.product.subProducts.length === 0)
+            dispatch({ type: 'nextStep' })
+    }, [state.step, state.product])
+
     const nextStepDisabled = () => { 
         switch (state.step){
             case SalePathStep.ChooseProduct:
@@ -81,8 +110,6 @@ function SalePathPageInner() {
         <h4>Ścieżka Sprzedaży</h4>
         <strong>Krok {state.step.toString()}</strong>
         <br/>
-        <br/>
-        {state.step === SalePathStep.ChooseProduct && <ChooseProductForm  state={state} dispatch={dispatch} />}
         <div className="salepath-buttons">
             <div>
                 {state.step > SalePathStep.ChooseProduct && <button type="button" className="btn btn-lg btn-outline-primary"
@@ -104,5 +131,8 @@ function SalePathPageInner() {
                 </button>}
             </div>
         </div>
+        {state.step === SalePathStep.ChooseProduct && <ChooseProductForm  state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FillClientInfo && <FillClientInfoForm  state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsForm state={state} dispatch={dispatch} />}
     </>
 }

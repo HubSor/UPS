@@ -66,8 +66,8 @@ namespace Data
 
 			context.Products.Add(new()
 			{
-				Name = "Produkt testowy",
-				Code = "P1",
+				Name = "Produkt osobowy",
+				Code = "POSOB",
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -123,7 +123,24 @@ namespace Data
 				SubProductId = 1,
 				InProductPrice = 9.99m
 			});
-			
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 1,
+				SubProductId = 2,
+				InProductPrice = 9.99m
+			});
+
+			context.Products.Add(new()
+			{
+				Name = "Produkt anonimowy",
+				Code = "PANON",
+				Status = ProductStatusEnum.Offered,
+				AnonymousSaleAllowed = true,
+				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+				BasePrice = 99.99m,
+			});
+
 			context.Sales.Add(new()
 			{
 				ProductId = 1,
@@ -179,7 +196,21 @@ namespace Data
 			context.Parameters.Add(dayParam);
 			
 			context.SaveChanges();
-			
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 2,
+				SubProductId = 1,
+				InProductPrice = 9.99m
+			});
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 2,
+				SubProductId = 3,
+				InProductPrice = 9.99m
+			});
+
 			context.ClientAddresses.Add(new() 
 			{
 				City = "Warszawa",

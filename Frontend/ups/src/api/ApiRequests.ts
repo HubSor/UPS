@@ -132,3 +132,20 @@ export type AddOptionRequest = {
 export type DeleteOptionRequest = {
     optionId: number
 }
+
+export type UpsertClientRequest = {
+    isCompany: boolean,
+    clientId?: number,
+    phoneNumber?: string,
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    pesel?: string,
+    companyName?: string,
+    regon?: string,
+    nip?: string,
+}
+
+export type FindClientRequest = {
+    identifier: string
+}

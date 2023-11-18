@@ -23,6 +23,7 @@ export const ChooseProductForm = ({ state, dispatch }: ChooseProductProps) => {
 
     return <div>
         <h3>Wybierz produkt</h3>
+        <br/>
         <table className="table table-striped col-lg-3">
             <thead>
                 <tr className="table-dark">

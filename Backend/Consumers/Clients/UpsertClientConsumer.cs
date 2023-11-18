@@ -66,6 +66,9 @@ public class UpsertClientConsumer : TransactionConsumer<UpsertClientOrder, Upser
 
     public override async Task PostTransaction(ConsumeContext<UpsertClientOrder> context)
     {
-        await RespondAsync(context, new UpsertClientResponse());
+        await RespondAsync(context, new UpsertClientResponse()
+		{
+			ClientId = client!.Id
+		});
     }
 }
