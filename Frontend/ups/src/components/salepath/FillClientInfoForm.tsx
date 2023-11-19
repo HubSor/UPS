@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik"
 import { SalePathFormProps } from "../../pages/SaleMainPage"
 import { UpsertClientRequest } from "../../api/ApiRequests"
-import { object } from "yup"
+import { object, string } from "yup"
 import { Api } from "../../api/Api"
 import { ApiResponse, UpsertClientResponse } from "../../api/ApiResponses"
 import { toastError, toastInfo } from "../../helpers/ToastHelpers"
@@ -13,7 +13,24 @@ import debounce from 'lodash.debounce';
 type FillClientInfoProps = SalePathFormProps
 
 const fillClientInfoSchema = object<UpsertClientRequest>().shape({
-    
+    nip: string().nullable()
+        .matches(/^[0-9]{10}$/, "Niepoprawny NIP"),
+    pesel: string().nullable()
+        .matches(/^[0-9]{11}$/, "Niepoprawny PESEL"),
+    regon: string().nullable()
+        .matches(/^[0-9]{9,14}/, "Niepoprawny REGON")
+        .min(9, "Zbyt krótki REGON").max(14, "Zbyt długi REGON"),
+    phoneNumber: string().nullable()
+        .matches(/^[0-9]{9,15}/, "Niepoprawny numer telefonu")
+        .min(9, "Zbyt krótki numer telefonu").max(14, "Zbyt długi numer telefonu"),
+    companyName: string().nullable()
+        .max(256, "Zbyt długa nazwa firmy"),
+    firstName: string().nullable()
+        .max(256, "Zbyt długie imię"),
+    lastName: string().nullable()
+        .max(256, "Zbyt długie nazwisko"),
+    email: string().nullable()
+        .email("Niepoprawny adres E-mail")
 })
 
 export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => {
@@ -98,7 +115,6 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                     </>}
                     <TypeInputGroup name="phoneNumber" label="Numer telefonu" type="text" />
                     <TypeInputGroup name="email" label="Adres E-mail" type="text" />
-                    <TypeInputGroup name="nip" label="NIP" type="text" />
                     <div>
                         <Button type="submit" disabled={isSubmitting}>
                             Zapisz
