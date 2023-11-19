@@ -92,6 +92,10 @@ export type ParameterDto = {
     options: ExtendedOptionDto[]
 }
 
+export type SalePathParameterDto = ParameterDto & {
+    answer?: string
+}
+
 export type ClientDto = {
     phoneNumber?: string,
     email?: string,

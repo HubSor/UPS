@@ -10,9 +10,7 @@ import { useCallback, useEffect } from "react"
 import { Button } from "react-bootstrap"
 import debounce from 'lodash.debounce';
 
-type FillClientInfoProps = SalePathFormProps & {
-    
-}
+type FillClientInfoProps = SalePathFormProps
 
 const fillClientInfoSchema = object<UpsertClientRequest>().shape({
     

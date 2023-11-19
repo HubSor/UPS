@@ -1,8 +1,6 @@
 import { SalePathFormProps } from "../../pages/SaleMainPage"
 
-type ChooseSubProductsProps = SalePathFormProps & {
-    
-}
+type ChooseSubProductsProps = SalePathFormProps
 
 export const ChooseSubProductsForm = ({ state, dispatch }: ChooseSubProductsProps) => {
     return <div>

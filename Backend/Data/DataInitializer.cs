@@ -179,10 +179,42 @@ namespace Data
 
 			context.Parameters.Add(new()
 			{
-				Name = "Waga kupującego (kg)",
+				Name = "Miasto",
+				Type = ParameterTypeEnum.Text,
+				Required = true,
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Ile nóg ma człowiek?",
 				Type = ParameterTypeEnum.Integer,
 				Required = true,
-				ProductId = 1
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Ile to jest 5/2?",
+				Type = ParameterTypeEnum.Decimal,
+				Required = false,
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Czy jesteś sprzedawcą?",
+				Type = ParameterTypeEnum.Checkbox,
+				Required = false,
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Opisz mi swój dzień",
+				Type = ParameterTypeEnum.TextArea,
+				Required = false,
+				ProductId = 2
 			});
 
 			var dayParam = new Parameter()
@@ -190,7 +222,7 @@ namespace Data
 				Name = "Dzień tygodnia",
 				Type = ParameterTypeEnum.Select,
 				Required = true,
-				ProductId = 1
+				ProductId = 2
 			};
 
 			context.Parameters.Add(dayParam);

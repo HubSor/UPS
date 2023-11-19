@@ -5,9 +5,7 @@ import { PaginationBar, defaultPagination } from "../../helpers/FormHelpers"
 import { Api } from "../../api/Api"
 import { toastError } from "../../helpers/ToastHelpers"
 
-type ChooseProductProps = SalePathFormProps & {
-    
-}
+type ChooseProductProps = SalePathFormProps
 
 export const ChooseProductForm = ({ state, dispatch }: ChooseProductProps) => {
     const [products, setProducts] = useState<ProductDto[]>([]);

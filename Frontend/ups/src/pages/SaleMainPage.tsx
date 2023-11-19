@@ -1,10 +1,11 @@
 import { Dispatch, useEffect, useReducer } from "react"
-import { ExtendedProductDto } from "../api/Dtos"
+import { ExtendedProductDto, SalePathParameterDto } from "../api/Dtos"
 import { ChooseProductForm } from "../components/salepath/ChooseProductForm"
 import { Api } from "../api/Api"
 import { toastError } from "../helpers/ToastHelpers"
 import { ChooseSubProductsForm } from "../components/salepath/ChooseSubProductsForm"
 import { FillClientInfoForm } from "../components/salepath/FillClientInfoForm"
+import { FillParameterValuesForm } from "../components/salepath/FillParameterValuesForm"
 
 enum SalePathStep {
     ChooseProduct = 1,
@@ -27,6 +28,7 @@ export type SalePathAction =
     | { type: 'addSubProduct', subProductId: number }
     | { type: 'removeSubProduct', subProductId: number }
     | { type: 'setClient', clientId: number }
+    | { type: 'filledParameters', paramterValues: SalePathParameterDto[] }
 
 type SalePathState = {
     step: SalePathStep
@@ -34,6 +36,7 @@ type SalePathState = {
     productId: number | null,
     subProductIds: number[],
     clientId: number | null,
+    parameterValues: SalePathParameterDto[] | null,
 }
 
 const initalState: SalePathState = {
@@ -41,7 +44,8 @@ const initalState: SalePathState = {
     productId: null,
     step: SalePathStep.ChooseProduct,
     subProductIds: [],
-    clientId: null
+    clientId: null,
+    parameterValues: null,
 }
 
 function reducer(state: SalePathState, action: SalePathAction): SalePathState {
@@ -53,7 +57,7 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'removeSubProduct':
             return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId)}
         case 'setProduct':
-            return { ...state, productId: action.productId };
+            return { ...state, productId: action.productId, subProductIds: [], parameterValues: [], product: null };
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
@@ -62,6 +66,8 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
             return { ...state, step: state.step - decrement }
         case 'fetchedProduct':
             return { ...state, product: action.product }
+        case 'filledParameters':
+            return { ...state, parameterValues: action.paramterValues }
     }
 }
 
@@ -101,6 +107,8 @@ function SalePathPageInner() {
                 return !state.productId
             case SalePathStep.FillClientInfo:
                 return (!state.clientId && state.product?.anonymousSaleAllowed === false)
+            case SalePathStep.FillParameterValues:
+                return (state.parameterValues == null || state.parameterValues.some(pv => !pv.answer && pv.required))
         }
     }
 
@@ -132,5 +140,6 @@ function SalePathPageInner() {
         {state.step === SalePathStep.ChooseProduct && <ChooseProductForm  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.FillClientInfo && <FillClientInfoForm  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsForm state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FillParameterValues && <FillParameterValuesForm state={state} dispatch={dispatch} />}
     </>
 }
