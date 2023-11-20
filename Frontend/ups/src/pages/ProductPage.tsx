@@ -290,7 +290,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                         {state.product?.subProducts.map(s => {
                             return <tr key={s.id} onClick={() => {
                                 nav(Paths.subProduct.replace(":id", s.id.toString()))
-                            }}>
+                            }} data-toggle="tooltip" data-placement="top" title={s.description}>
                                 <td>
                                     {s.code}
                                 </td>
@@ -335,7 +335,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                         </thead>
                         <tbody>
                             {state.otherSubProducts?.map(s => {
-                                return <tr key={s.id}>
+                                return <tr key={s.id} data-toggle="tooltip" data-placement="top" title={s.description}>
                                     <td>
                                         {s.code}
                                     </td>

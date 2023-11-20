@@ -123,7 +123,7 @@ export default function SubProductMainPage() {
                 {state.subProducts.map(p => {
                     return <tr key={p.id} onClick={() => {
                         nav(Paths.subProduct.replace(":id", p.id.toString()))
-                    }}>
+                    }} data-toggle="tooltip" data-placement="top" title={p.description}>
                         <td>
                             {p.code}
                         </td>

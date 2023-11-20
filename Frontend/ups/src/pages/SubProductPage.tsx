@@ -211,7 +211,7 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
                         {state.subProduct?.products.map(p => {
                             return <tr key={p.id} onClick={() => {
                                 nav(Paths.product.replace(":id", p.id.toString()))
-                            }}>
+                            }} data-toggle="tooltip" data-placement="top" title={p.description}>
                                 <td>
                                     {p.code}
                                 </td>
