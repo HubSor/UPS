@@ -329,7 +329,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
                             <tr>
                                 <th>Kod</th>
                                 <th>Nazwa</th>
-                                <th>Bazowa cena</th>
+                                <th>Podstawowa cena</th>
                                 <th></th>
                             </tr>
                         </thead>

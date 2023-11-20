@@ -27,7 +27,7 @@ export const ChooseProductForm = ({ state, dispatch }: ChooseProductProps) => {
                 <tr className="table-dark">
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
-                    <th scope="col">Bazowa cena</th>
+                    <th scope="col">Podstawowa cena</th>
                 </tr>
             </thead>
             <tbody>

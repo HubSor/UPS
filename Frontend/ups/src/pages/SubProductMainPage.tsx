@@ -115,7 +115,7 @@ export default function SubProductMainPage() {
                 <tr className="table-dark">
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
-                    <th scope="col">Bazowa cena</th>
+                    <th scope="col">Podstawowa cena</th>
                     <th scope="col-2"></th>
                 </tr>
             </thead>

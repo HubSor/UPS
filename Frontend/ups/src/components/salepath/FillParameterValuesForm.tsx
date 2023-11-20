@@ -1,6 +1,5 @@
 import { FieldArray, Form, Formik } from "formik"
 import { SalePathFormProps } from "../../pages/SaleMainPage"
-import { object } from "yup"
 import { Button } from "react-bootstrap"
 import React from "react"
 import { ParameterTypeEnum, SalePathParameterDto } from "../../api/Dtos"
@@ -12,21 +11,16 @@ type FillParameterValuesFormValues = {
     params: SalePathParameterDto[]
 }
 
-const fillParameterValuesSchema = object<FillParameterValuesFormValues>().shape({
-    
-})
-
 export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValuesProps) => {
     const initialValues: FillParameterValuesFormValues = {
         params: state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [],
     }
 
     return <div>
-        <h3>Uzupełnij dane klienta</h3>
+        <h3>Uzupełnij parametry sprzedaży</h3>
         <br/>
         <Formik
             initialValues={initialValues}
-            validationSchema={fillParameterValuesSchema}
             onSubmit={(v, fh) => {
                 dispatch({ type: 'filledParameters', paramterValues: v.params })
                 fh.setSubmitting(false);

@@ -115,7 +115,7 @@ export default function ProductMainPage() {
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Bazowa cena</th>
+                    <th scope="col">Podstawowa cena</th>
                     <th scope="col-3"></th>
                 </tr>
             </thead>

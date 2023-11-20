@@ -6,6 +6,7 @@ import { toastError } from "../helpers/ToastHelpers"
 import { ChooseSubProductsForm } from "../components/salepath/ChooseSubProductsForm"
 import { FillClientInfoForm } from "../components/salepath/FillClientInfoForm"
 import { FillParameterValuesForm } from "../components/salepath/FillParameterValuesForm"
+import { SummaryForm } from "../components/salepath/SummaryForm"
 
 enum SalePathStep {
     ChooseProduct = 1,
@@ -141,5 +142,6 @@ function SalePathPageInner() {
         {state.step === SalePathStep.FillClientInfo && <FillClientInfoForm  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsForm state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.FillParameterValues && <FillParameterValuesForm state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.Summary && <SummaryForm state={state} dispatch={dispatch} />}
     </>
 }
