@@ -1,4 +1,4 @@
-import { Form, Formik } from "formik"
+import { Form, Formik, FormikHelpers, FormikProps } from "formik"
 import { SalePathFormProps } from "../../pages/SaleMainPage"
 import { UpsertClientRequest } from "../../api/ApiRequests"
 import { object, string } from "yup"
@@ -6,7 +6,7 @@ import { Api } from "../../api/Api"
 import { ApiResponse, UpsertClientResponse } from "../../api/ApiResponses"
 import { toastError, toastInfo } from "../../helpers/ToastHelpers"
 import { CheckboxInputGroup, SeparateErrors, TypeInputGroup, ValidationMessage } from "../../helpers/FormHelpers"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import debounce from 'lodash.debounce';
 
@@ -33,13 +33,37 @@ const fillClientInfoSchema = object<UpsertClientRequest>().shape({
         .email("Niepoprawny adres E-mail")
 })
 
+const validateMinimalData = (values: UpsertClientRequest, fh: FormikHelpers<UpsertClientRequest>): boolean => {
+    if (values.isCompany && !values.companyName){
+        fh.setFieldError("companyName", "Należy podać nazwę firmy")
+        return false;
+    }
+    else {
+        if (!values.firstName) {
+            fh.setFieldError("firstName", "Należy podać imię")
+            return false;
+        }
+        if (!values.lastName) {
+            fh.setFieldError("lastName", "Należy podać nazwisko")
+            return false;
+        }
+    }
+
+    return true;
+}
+
 export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => {
+    const [editingExistingClient, setEditingExistingClient] = useState(false);
+
     const initialValues: UpsertClientRequest = {
         isCompany: false,
     }
 
     return <div>
         <h3>Uzupełnij dane klienta</h3>
+        {editingExistingClient && <div className="alert alert-primary">
+            Edytujesz klienta wczytanego z systemu
+        </div>}
         <br/>
         <Formik
             initialValues={initialValues}
@@ -55,11 +79,14 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                     else
                         toastError('Nie udało się zapisać klienta')
                 }
+                
+                if (validateMinimalData(v, fh))
+                    Api.UpsertClient(v).then(handleApiResponse)
 
-                Api.UpsertClient(v).then(handleApiResponse)
+                fh.setSubmitting(false);
             }}
         >
-            {function FormInner({ isSubmitting, values, setFieldValue, isValid }) {
+            {function FormInner({ isSubmitting, values, setFieldValue, isValid }: FormikProps<UpsertClientRequest>) {
                 const debouncedFindClient = useCallback(() => {
                     return debounce(() => {
                         if (values.isCompany && (!!values.regon || !!values.nip)) {
@@ -71,6 +98,7 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                                     setFieldValue('phoneNumber', res.data.companyClient.phoneNumber)
                                     setFieldValue('email', res.data.companyClient.email)
                                     setFieldValue('clientId', res.data.companyClient.id)
+                                    setEditingExistingClient(true)
                                     toastInfo("Wczytano firmę " + res.data.companyClient.companyName)
                                 }
                             });
@@ -84,6 +112,7 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                                     setFieldValue('phoneNumber', res.data.personClient.phoneNumber)
                                     setFieldValue('email', res.data.personClient.email)
                                     setFieldValue('clientId', res.data.personClient.id)
+                                    setEditingExistingClient(true)
                                     toastInfo("Wczytano osobę " + res.data.personClient.firstName +
                                         ' ' + res.data.personClient.lastName)
                                 }
@@ -99,6 +128,21 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                         return () => debounced.cancel()
                     }
                 }, [debouncedFindClient, isValid, values.clientId, values.nip, values.pesel, values.regon]);
+
+                useEffect(() => {
+                    if (values.isCompany){
+                        setFieldValue("firstName", undefined)
+                        setFieldValue("pesel", undefined)
+                        setFieldValue("lastName", undefined)
+                    }
+                    else{
+                        setFieldValue("companyName", undefined)
+                        setFieldValue("regon", undefined)
+                        setFieldValue("nip", undefined)
+                    }
+                    setFieldValue("clientId", undefined)
+                    setEditingExistingClient(false)
+                }, [setFieldValue, values.isCompany])
 
                 return <Form>
                     <ValidationMessage fieldName="clientId" />

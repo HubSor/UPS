@@ -1,5 +1,5 @@
 import { Form } from "react-bootstrap";
-import { ParameterDto } from "../api/Dtos";
+import { ParameterDto, ParameterTypeEnum } from "../api/Dtos";
 import { Field } from "formik";
 import { ValidationMessage } from "./FormHelpers";
 import React from "react";
@@ -125,4 +125,15 @@ export function CheckboxParameter({ param, fieldName }: ParameterProps) {
         </Form.Label>
         <ValidationMessage fieldName={fieldName} />
     </Form.Check>
+}
+
+export function ParameterSwitch(props: ParameterProps){
+    return <>
+        {props.param.type === ParameterTypeEnum.Text && <TextParameter {...props} />}
+        {props.param.type === ParameterTypeEnum.Integer && <IntegerParameter {...props} />}
+        {props.param.type === ParameterTypeEnum.Decimal && <DecimalParameter {...props} />}
+        {props.param.type === ParameterTypeEnum.Select && <SelectParameter {...props} />}
+        {props.param.type === ParameterTypeEnum.Checkbox && <CheckboxParameter {...props} />}
+        {props.param.type === ParameterTypeEnum.TextArea && <TextAreaParameter {...props} />}
+    </>
 }

@@ -1,19 +1,25 @@
-import { FieldArray, Form, Formik } from "formik"
-import { SalePathFormProps } from "../../pages/SaleMainPage"
-import { Button } from "react-bootstrap"
+import { FieldArray, Form as FForm, Formik } from "formik"
+import { SalePathFormProps, getSelectedSubProducts } from "../../pages/SaleMainPage"
+import { Button, Form } from "react-bootstrap"
 import React from "react"
-import { ParameterTypeEnum, SalePathParameterDto } from "../../api/Dtos"
-import { CheckboxParameter, DecimalParameter, IntegerParameter, ParameterProps, SelectParameter, TextAreaParameter, TextParameter } from "../../helpers/ParameterHelpers"
+import { SalePathParameterDto } from "../../api/Dtos"
+import { ParameterProps, ParameterSwitch } from "../../helpers/ParameterHelpers"
 
 type FillParameterValuesProps = SalePathFormProps
 
 type FillParameterValuesFormValues = {
-    params: SalePathParameterDto[]
+    productParams: SalePathParameterDto[]
+    subProductParams: SalePathParameterDto[]
 }
 
 export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValuesProps) => {
+    const paramsFromProduct: SalePathParameterDto[] = state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
+    const paramsFormSubProducts: SalePathParameterDto[] = getSelectedSubProducts(state)
+        .flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined }))) ?? []
+
     const initialValues: FillParameterValuesFormValues = {
-        params: state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [],
+        productParams: paramsFromProduct,
+        subProductParams: paramsFormSubProducts
     }
 
     return <div>
@@ -22,31 +28,42 @@ export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValues
         <Formik
             initialValues={initialValues}
             onSubmit={(v, fh) => {
-                dispatch({ type: 'filledParameters', paramterValues: v.params })
+                dispatch({ type: 'filledParameters', productValues: v.productParams, subProductValues: v.subProductParams })
                 fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => {
-                return <Form>
+                const selectedSubproducts = getSelectedSubProducts(state);
+
+                return <FForm>
                     <FieldArray name="params" render={(fh) => <div>
+                        <Form.Label className="align-left">
+                            Parametry produktu
+                        </Form.Label>
                         {state.product?.parameters.map((p, idx) => {
                             const props: ParameterProps = { param: p, fieldName: `params.${idx}.answer`}
                             return <React.Fragment key={p.id}>
-                                {p.type === ParameterTypeEnum.Text && <TextParameter {...props} />}
-                                {p.type === ParameterTypeEnum.Integer && <IntegerParameter {...props} />}
-                                {p.type === ParameterTypeEnum.Decimal && <DecimalParameter {...props} />}
-                                {p.type === ParameterTypeEnum.Select && <SelectParameter {...props} />}
-                                {p.type === ParameterTypeEnum.Checkbox && <CheckboxParameter {...props} />}
-                                {p.type === ParameterTypeEnum.TextArea && <TextAreaParameter {...props} />}
+                                <ParameterSwitch {...props}/>
                             </React.Fragment>
                         })}
+                        {selectedSubproducts.length > 0 && <>
+                            <Form.Label className="align-left">
+                                Parametry podproduktów
+                            </Form.Label>
+                            {selectedSubproducts.flatMap(sp => sp.parameters.map((p ,idx) => {
+                                const props: ParameterProps = { param: p, fieldName: `params.${idx}.answer` }
+                                return <React.Fragment key={p.id}>
+                                    <ParameterSwitch {...props} />
+                                </React.Fragment> 
+                            }))}
+                        </>}
                     </div>}/>
                     <div>
                         <Button type="submit" disabled={isSubmitting}>
                             Zapisz
                         </Button>
                     </div>
-                </Form>}
+                </FForm>}
             }
         </Formik>
     </div>

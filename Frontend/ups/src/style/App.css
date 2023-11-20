@@ -107,3 +107,9 @@ main {
   grid-gap: 30rem;
   width: 100%;
 }
+
+.alert {
+  margin: auto;
+  margin-top: 2rem;
+  width: 50%;
+}

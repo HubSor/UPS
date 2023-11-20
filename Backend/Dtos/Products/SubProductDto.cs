@@ -24,7 +24,7 @@ namespace Dtos.Products
 	public class ExtendedSubProductDto : SubProductDto 
 	{
 		public decimal Price { get; set; }
-		public ICollection<ParameterDto> Parameters { get; set; } = default!;
+		public ICollection<ParameterDto> Parameters { get; set; } = new List<ParameterDto>();
 		public ICollection<ProductDto> Products { get; set; } = default!;
 
 		public ExtendedSubProductDto(SubProduct sp, decimal price) : base(sp)

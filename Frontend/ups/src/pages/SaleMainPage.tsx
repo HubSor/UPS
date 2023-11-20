@@ -29,7 +29,11 @@ export type SalePathAction =
     | { type: 'addSubProduct', subProductId: number }
     | { type: 'removeSubProduct', subProductId: number }
     | { type: 'setClient', clientId: number }
-    | { type: 'filledParameters', paramterValues: SalePathParameterDto[] }
+    | { type: 'filledParameters', productValues: SalePathParameterDto[], subProductValues: SalePathParameterDto[] }
+
+export const getSelectedSubProducts = (state: SalePathState) => {
+    return state.product?.subProducts.filter(sp => state.subProductIds.includes(sp.id)) ?? [];
+}
 
 type SalePathState = {
     step: SalePathStep
@@ -37,7 +41,8 @@ type SalePathState = {
     productId: number | null,
     subProductIds: number[],
     clientId: number | null,
-    parameterValues: SalePathParameterDto[] | null,
+    productParameterValues: SalePathParameterDto[] | null,
+    subProductParameterValues: SalePathParameterDto[] | null,
 }
 
 const initalState: SalePathState = {
@@ -46,7 +51,8 @@ const initalState: SalePathState = {
     step: SalePathStep.ChooseProduct,
     subProductIds: [],
     clientId: null,
-    parameterValues: null,
+    productParameterValues: null,
+    subProductParameterValues: null,
 }
 
 function reducer(state: SalePathState, action: SalePathAction): SalePathState {
@@ -54,11 +60,11 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'setClient':
             return { ...state, clientId: action.clientId }
         case 'addSubProduct':
-            return { ...state, subProductIds: [ ...state.subProductIds, action.subProductId ]}
+            return { ...state, subProductIds: [...state.subProductIds, action.subProductId], subProductParameterValues: [] }
         case 'removeSubProduct':
-            return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId)}
+            return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId), subProductParameterValues: [] }
         case 'setProduct':
-            return { ...state, productId: action.productId, subProductIds: [], parameterValues: [], product: null };
+            return { ...state, productId: action.productId, subProductIds: [], productParameterValues: [], product: null, subProductParameterValues: [] };
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
@@ -68,7 +74,7 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'fetchedProduct':
             return { ...state, product: action.product }
         case 'filledParameters':
-            return { ...state, parameterValues: action.paramterValues }
+            return { ...state, productParameterValues: action.productValues, subProductParameterValues: action.subProductValues }
     }
 }
 
@@ -107,16 +113,15 @@ function SalePathPageInner() {
             case SalePathStep.ChooseProduct:
                 return !state.productId
             case SalePathStep.FillClientInfo:
-                return (!state.clientId && state.product?.anonymousSaleAllowed === false)
+                return !state.clientId && state.product?.anonymousSaleAllowed === false
             case SalePathStep.FillParameterValues:
-                return (state.parameterValues == null || state.parameterValues.some(pv => !pv.answer && pv.required))
+                return (state.productParameterValues == null || state.productParameterValues.some(pv => !pv.answer && pv.required)) ||
+                    (state.subProductParameterValues == null || state.subProductParameterValues.some(pv => !pv.answer && pv.required))
         }
     }
 
     return <>
-        <h4>Ścieżka Sprzedaży</h4>
-        <strong>Krok {state.step.toString()}</strong>
-        <br/>
+        <h2>Ścieżka Sprzedaży - Krok {state.step.toString()}</h2>
         <div className="salepath-buttons">
             <div>
                 {state.step > SalePathStep.ChooseProduct && <button type="button" className="btn btn-lg btn-outline-primary"

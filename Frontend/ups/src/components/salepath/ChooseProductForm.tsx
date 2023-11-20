@@ -21,6 +21,9 @@ export const ChooseProductForm = ({ state, dispatch }: ChooseProductProps) => {
 
     return <div>
         <h3>Wybierz produkt</h3>
+        {!state.productId && <div className="alert alert-warning">
+            Nalezy wybrać produkt aby kontynuować
+        </div>}
         <br/>
         <table className="table table-striped col-lg-3">
             <thead>
