@@ -93,7 +93,8 @@ export type ParameterDto = {
 }
 
 export type SalePathParameterDto = ParameterDto & {
-    answer?: string
+    answer?: string,
+    subProductId?: number
 }
 
 export type ClientDto = {

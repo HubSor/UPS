@@ -14,9 +14,12 @@ type FillParameterValuesFormValues = {
 }
 
 export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValuesProps) => {
-    const paramsFromProduct: SalePathParameterDto[] = state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
-    const paramsFormSubProducts: SalePathParameterDto[] = getSelectedSubProducts(state)
-        .flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined }))) ?? []
+    const paramsFromProduct: SalePathParameterDto[] = !!state.productParameterValues && state.productParameterValues.length > 0 ?
+        state.productParameterValues :
+        state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
+    const paramsFormSubProducts: SalePathParameterDto[] = !!state.subProductParameterValues && state.subProductParameterValues.length > 0 ?
+        state.subProductParameterValues :
+        getSelectedSubProducts(state).flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined, subProductId: sp.id }))) ?? []
 
     const initialValues: FillParameterValuesFormValues = {
         productParams: paramsFromProduct,
@@ -35,7 +38,7 @@ export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValues
                 fh.setSubmitting(false);
             }}
         >
-            {({ isSubmitting }) => {
+            {({ isSubmitting, values }) => {
                 const selectedSubproducts = getSelectedSubProducts(state);
 
                 return <FForm>
@@ -64,7 +67,8 @@ export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValues
                                     <div className="align-left">
                                         {sp.name}
                                     </div>
-                                    {sp.parameters.map((p, idx) => {
+                                    {sp.parameters.map(p => {
+                                        const idx = values.subProductParams.findIndex(x => x.id === p.id)
                                         const props: ParameterProps = { param: p, fieldName: `subProductParams.${idx}.answer` }
                                         return <React.Fragment key={p.id}>
                                             <ParameterSwitch {...props} />

@@ -1,16 +1,16 @@
-import { Form } from "react-bootstrap"
 import { SalePathFormProps } from "../../pages/SaleMainPage"
 import { InfoRow } from "../InfoRow"
 import React from "react"
+import { DisplayParameterRow } from "../../helpers/ParameterHelpers"
 
 type SummaryProps = SalePathFormProps
 
 export const SummaryForm = ({ state, dispatch }: SummaryProps) => {
     return <div>
         <h3>Podsumowanie sprzedaży</h3>
-        <Form.Label className="align-left">
+        <h5 className="align-left">
             Dane produktu
-        </Form.Label>
+        </h5>
         <div className="card">
             <form className="card-body product-info">
                 <InfoRow value={state.product?.code} name="Kod" />
@@ -19,14 +19,12 @@ export const SummaryForm = ({ state, dispatch }: SummaryProps) => {
                 <InfoRow value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} name="Anonimowa sprzedaż" />
             </form>
         </div>
-        {
-            ""
-            // zmiana ceny produktu
-            // parametry produktu
-        }
-        <Form.Label className="align-left">
+        <div className="list-group">
+            {state.productParameterValues?.map(p => <DisplayParameterRow parameter={p} key={p.id} /> )}
+        </div>
+        <h5 className="align-left">
             Dane podproduktów
-        </Form.Label>
+        </h5>
         {state.product?.subProducts.filter(sp => state.subProductIds.includes(sp.id)).map(sp => {
             return <React.Fragment key={sp.id}>
                 <div className="card">
@@ -37,12 +35,10 @@ export const SummaryForm = ({ state, dispatch }: SummaryProps) => {
                         <InfoRow value={sp.basePrice.toString()} name="Podstawowa cena" />
                     </form>
                 </div>
+                <div className="list-group">
+                    {state.subProductParameterValues?.filter(sppv => sppv.subProductId === sp.id)?.map(p =><DisplayParameterRow parameter={p} key={p.id} />)}
+                </div>
                 <br/>
-                {
-                    ""
-                    // zmiana ceny
-                    // parametry podproduktu
-                }
             </React.Fragment>
         })}
     </div>
