@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from "formik"
-import { ParameterTypeEnum, ProductStatusEnum, ResultPaginationDto, RoleEnum } from "../api/Dtos"
+import { ResultPaginationDto } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 import React from "react"
 
@@ -33,51 +33,6 @@ export const SeparateErrors = (errors: { [key: string]: string[] }) => {
     let newObj: { [k: string]: string } = {};
     Object.keys(errors).forEach(k => newObj[k] =  errors[k].join('\n'));
     return newObj;
-}
-
-export const GetRoleDisplayName = (role: RoleEnum) => {
-    switch (role) {
-        case RoleEnum.Administrator:
-            return "Administrator";
-        case RoleEnum.UserManager:
-            return "Zarządca użytkowników";
-        case RoleEnum.Seller:
-            return "Sprzedawca";
-        case RoleEnum.ProductManager:
-            return "Zarządca produktów";
-    }
-}
-
-export const GetProductStatusDisplayName = (role?: ProductStatusEnum) => {
-    switch (role) {
-        case ProductStatusEnum.NotOffered:
-            return "Nieoferowany";
-        case ProductStatusEnum.Withdrawn:
-            return "Wycofany";
-        case ProductStatusEnum.Offered:
-            return "Oferowany";
-        default:
-            return ""
-    }
-}
-
-export const GetParameterTypeDisplayName = (type?: ParameterTypeEnum) => {
-    switch (type) {
-        case ParameterTypeEnum.Integer:
-            return "Liczba całkowita";
-        case ParameterTypeEnum.Checkbox:
-            return "Flaga";
-        case ParameterTypeEnum.Decimal:
-            return "Liczba dziesiętna";
-        case ParameterTypeEnum.Select:
-            return "Wybór jednokrotny";
-        case ParameterTypeEnum.Text:
-            return "Tekst";
-        case ParameterTypeEnum.TextArea:
-            return "Długi tekst";
-        default:
-            return ""
-    }
 }
 
 type InputGroupProps = {

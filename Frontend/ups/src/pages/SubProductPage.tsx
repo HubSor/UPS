@@ -3,15 +3,15 @@ import { ExtendedSubProductDto, ParameterDto, ProductDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useNavigate, useParams } from "react-router-dom"
-import { GetProductStatusDisplayName } from "../helpers/FormHelpers"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
 import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameterModal"
 import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
 import { AddOrEditSubProductModal } from "../components/modals/AddOrEditSubProductModal"
-import { InfoRow } from "../components/InfoRow"
-import { ParameterRow } from "../components/ParameterRow"
+import { DisplayInfoRow } from "../components/products/DisplayInfoRow"
+import { EditableParameterRow } from "../components/parameters/EditableParameterRow"
 import { Paths } from "../App"
+import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
 
 export default function SubProductPage() {
     const { id } = useParams();
@@ -156,9 +156,9 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
         </Form.Label>
         <div className="card">
             <form className="card-body product-info">
-                <InfoRow value={state.subProduct?.code} name="Kod"/>
-                <InfoRow value={state.subProduct?.name} name="Nazwa"/>
-                <InfoRow value={state.subProduct?.basePrice?.toString()} name="Podstawowa cena"/>
+                <DisplayInfoRow value={state.subProduct?.code} name="Kod"/>
+                <DisplayInfoRow value={state.subProduct?.name} name="Nazwa"/>
+                <DisplayInfoRow value={state.subProduct?.basePrice?.toString()} name="Podstawowa cena"/>
             </form>
         </div>
         <Form.Label className="align-left">
@@ -178,7 +178,7 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
         </Form.Label>
         <div className="list-group">
             {state.subProduct?.parameters.map(p => {
-                return <ParameterRow parameter={p} key={p.id}
+                return <EditableParameterRow parameter={p} key={p.id}
                     refresh={() => dispatch({ type: 'refreshSubProduct' })}
                     deleteParameter={(p) => dispatch({ type: 'deleteParameterButton', parameter: p })}
                     editParameter={(p) => dispatch({ type: 'editParameterButton', parameter: p })}

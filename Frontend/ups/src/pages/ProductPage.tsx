@@ -4,16 +4,17 @@ import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useNavigate, useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { GetProductStatusDisplayName, PaginationBar, defaultPagination } from "../helpers/FormHelpers"
+import { PaginationBar, defaultPagination } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
 import { Form } from "react-bootstrap"
 import { AddOrEditParameterModal } from "../components/modals/AddOrEditParameterModal"
 import { DeleteParameterModal } from "../components/modals/DeleteParameterModal"
-import { InfoRow } from "../components/InfoRow"
-import { ParameterRow } from "../components/ParameterRow"
+import { EditableParameterRow } from "../components/parameters/EditableParameterRow"
 import { Paths } from "../App"
+import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
+import { DisplayInfoRow } from "../components/products/DisplayInfoRow"
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -233,11 +234,11 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         </Form.Label>
         <div className="card">
             <form className="card-body product-info">
-                <InfoRow value={state.product?.code} name="Kod"/>
-                <InfoRow value={state.product?.name} name="Nazwa"/>
-                <InfoRow value={state.product?.basePrice?.toString()} name="Podstawowa cena"/>
-                <InfoRow value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} name="Anonimowa sprzedaż"/>
-                <InfoRow value={GetProductStatusDisplayName(state.product?.status)} name="Status"/>
+                <DisplayInfoRow value={state.product?.code} name="Kod"/>
+                <DisplayInfoRow value={state.product?.name} name="Nazwa"/>
+                <DisplayInfoRow value={state.product?.basePrice?.toString()} name="Podstawowa cena"/>
+                <DisplayInfoRow value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} name="Anonimowa sprzedaż"/>
+                <DisplayInfoRow value={GetProductStatusDisplayName(state.product?.status)} name="Status"/>
             </form>
         </div>
         <Form.Label className="align-left">
@@ -257,7 +258,7 @@ export function ProductPageInner({ productId }: ProductPageProps) {
         </Form.Label>
         <div className="list-group">
             {state.product?.parameters.map(p => {
-                return <ParameterRow parameter={p} key={p.id}   
+                return <EditableParameterRow parameter={p} key={p.id}   
                     refresh={() => dispatch({type: 'refreshProduct' })}
                     deleteParameter={(p) => dispatch({type: 'deleteParameterButton', parameter: p })}
                     editParameter={(p) => dispatch({type: 'editParameterButton', parameter: p })}

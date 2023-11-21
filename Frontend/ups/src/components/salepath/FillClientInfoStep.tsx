@@ -1,5 +1,5 @@
 import { Form, Formik, FormikHelpers, FormikProps } from "formik"
-import { SalePathFormProps } from "../../pages/SaleMainPage"
+import { SalePathStepProps } from "../../pages/SalePathPage"
 import { UpsertClientRequest } from "../../api/ApiRequests"
 import { object, string } from "yup"
 import { Api } from "../../api/Api"
@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import debounce from 'lodash.debounce';
 
-type FillClientInfoProps = SalePathFormProps
+type FillClientInfoProps = SalePathStepProps
 
 const fillClientInfoSchema = object<UpsertClientRequest>().shape({
     nip: string().nullable()
@@ -52,7 +52,7 @@ const validateMinimalData = (values: UpsertClientRequest, fh: FormikHelpers<Upse
     return true;
 }
 
-export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => {
+export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => {
     const [editingExistingClient, setEditingExistingClient] = useState(false);
 
     const initialValues: UpsertClientRequest = {

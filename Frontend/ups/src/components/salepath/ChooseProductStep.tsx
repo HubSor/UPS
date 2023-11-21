@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
-import { SalePathFormProps } from "../../pages/SaleMainPage"
+import { SalePathStepProps } from "../../pages/SalePathPage"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../../api/Dtos"
 import { PaginationBar, defaultPagination } from "../../helpers/FormHelpers"
 import { Api } from "../../api/Api"
 import { toastError } from "../../helpers/ToastHelpers"
 
-type ChooseProductProps = SalePathFormProps
+type ChooseProductProps = SalePathStepProps
 
-export const ChooseProductForm = ({ state, dispatch }: ChooseProductProps) => {
+export const ChooseProductStep = ({ state, dispatch }: ChooseProductProps) => {
     const [products, setProducts] = useState<ProductDto[]>([]);
     const [pagination, setPagination] = useState<ResultPaginationDto>(defaultPagination);
 

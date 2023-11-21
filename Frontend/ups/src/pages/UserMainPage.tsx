@@ -2,9 +2,10 @@ import { useCallback, useEffect, useReducer } from "react"
 import { AddOrEditUserModal } from "../components/modals/AddOrEditUserModal"
 import { Api } from "../api/Api"
 import { ResultPaginationDto, RoleEnum, UserDto } from "../api/Dtos"
-import { PaginationBar, GetRoleDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar } from "../helpers/FormHelpers"
 import { DeleteUserModal } from "../components/modals/DeleteUserModal"
 import { toastDefaultError } from "../helpers/ToastHelpers"
+import { GetRoleDisplayName } from "../helpers/EnumHelpers"
 
 type UserMainPageState =  {
     addUserModalOpen: boolean,

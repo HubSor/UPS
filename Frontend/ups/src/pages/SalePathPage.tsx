@@ -1,24 +1,20 @@
 import { Dispatch, useEffect, useReducer } from "react"
-import { ExtendedProductDto, SalePathParameterDto } from "../api/Dtos"
-import { ChooseProductForm } from "../components/salepath/ChooseProductForm"
+import { ExtendedProductDto, AnsweredParameterDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastError } from "../helpers/ToastHelpers"
-import { ChooseSubProductsForm } from "../components/salepath/ChooseSubProductsForm"
-import { FillClientInfoForm } from "../components/salepath/FillClientInfoForm"
-import { FillParameterValuesForm } from "../components/salepath/FillParameterValuesForm"
-import { SummaryForm } from "../components/salepath/SummaryForm"
+import { ChooseProductStep } from "../components/salepath/ChooseProductStep"
+import { FillClientInfoStep } from "../components/salepath/FillClientInfoStep"
+import { ChooseSubProductsStep } from "../components/salepath/ChooseSubProductsStep"
+import { FillParameterAnswersStep } from "../components/salepath/FillParameterAnswersStep"
+import { SummaryStep } from "../components/salepath/SummaryStep"
 
 enum SalePathStep {
     ChooseProduct = 1,
     FillClientInfo = 2,
     ChooseSubProducts = 3,
-    FillParameterValues = 4,
+    FillParameterAnswers = 4,
     Summary = 5,
     FinishSale = 6
-}
-
-export default function SalePathPage() {
-    return <SalePathPageInner/>
 }
 
 export type SalePathAction =
@@ -29,7 +25,7 @@ export type SalePathAction =
     | { type: 'addSubProduct', subProductId: number }
     | { type: 'removeSubProduct', subProductId: number }
     | { type: 'setClient', clientId: number }
-    | { type: 'filledParameters', productValues: SalePathParameterDto[], subProductValues: SalePathParameterDto[] }
+    | { type: 'filledParameters', productValues: AnsweredParameterDto[], subProductValues: AnsweredParameterDto[] }
 
 export const getSelectedSubProducts = (state: SalePathState) => {
     return state.product?.subProducts.filter(sp => state.subProductIds.includes(sp.id)) ?? [];
@@ -41,8 +37,8 @@ type SalePathState = {
     productId: number | null,
     subProductIds: number[],
     clientId: number | null,
-    productParameterValues: SalePathParameterDto[] | null,
-    subProductParameterValues: SalePathParameterDto[] | null,
+    productAnswers: AnsweredParameterDto[] | null,
+    subProductAnswers: AnsweredParameterDto[] | null,
 }
 
 const initalState: SalePathState = {
@@ -51,8 +47,8 @@ const initalState: SalePathState = {
     step: SalePathStep.ChooseProduct,
     subProductIds: [],
     clientId: null,
-    productParameterValues: null,
-    subProductParameterValues: null,
+    productAnswers: null,
+    subProductAnswers: null,
 }
 
 function reducer(state: SalePathState, action: SalePathAction): SalePathState {
@@ -60,30 +56,30 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'setClient':
             return { ...state, clientId: action.clientId }
         case 'addSubProduct':
-            return { ...state, subProductIds: [...state.subProductIds, action.subProductId], subProductParameterValues: [] }
+            return { ...state, subProductIds: [...state.subProductIds, action.subProductId], subProductAnswers: [] }
         case 'removeSubProduct':
-            return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId), subProductParameterValues: [] }
+            return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId), subProductAnswers: [] }
         case 'setProduct':
-            return { ...state, productId: action.productId, subProductIds: [], productParameterValues: [], product: null, subProductParameterValues: [] };
+            return { ...state, productId: action.productId, subProductIds: [], productAnswers: [], product: null, subProductAnswers: [] };
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
-            let decrement = state.step === SalePathStep.FillParameterValues && state.product?.subProducts.length === 0 ?
+            let decrement = state.step === SalePathStep.FillParameterAnswers && state.product?.subProducts.length === 0 ?
                 2 : 1;
             return { ...state, step: state.step - decrement }
         case 'fetchedProduct':
             return { ...state, product: action.product }
         case 'filledParameters':
-            return { ...state, productParameterValues: action.productValues, subProductParameterValues: action.subProductValues }
+            return { ...state, productAnswers: action.productValues, subProductAnswers: action.subProductValues }
     }
 }
 
-export type SalePathFormProps = {
+export type SalePathStepProps = {
     state: SalePathState,
     dispatch: Dispatch<SalePathAction>
 }
 
-function SalePathPageInner() {
+export default function SalePathPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
 
     useEffect(() => {
@@ -114,9 +110,9 @@ function SalePathPageInner() {
                 return !state.productId
             case SalePathStep.FillClientInfo:
                 return !state.clientId && state.product?.anonymousSaleAllowed === false
-            case SalePathStep.FillParameterValues:
-                return (state.productParameterValues == null || state.productParameterValues.some(pv => !pv.answer && pv.required)) ||
-                    (state.subProductParameterValues == null || state.subProductParameterValues.some(pv => !pv.answer && pv.required))
+            case SalePathStep.FillParameterAnswers:
+                return (state.productAnswers == null || state.productAnswers.some(pv => !pv.answer && pv.required)) ||
+                    (state.subProductAnswers == null || state.subProductAnswers.some(pv => !pv.answer && pv.required))
         }
     }
 
@@ -143,10 +139,10 @@ function SalePathPageInner() {
                 </button>}
             </div>
         </div>
-        {state.step === SalePathStep.ChooseProduct && <ChooseProductForm  state={state} dispatch={dispatch} />}
-        {state.step === SalePathStep.FillClientInfo && <FillClientInfoForm  state={state} dispatch={dispatch} />}
-        {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsForm state={state} dispatch={dispatch} />}
-        {state.step === SalePathStep.FillParameterValues && <FillParameterValuesForm state={state} dispatch={dispatch} />}
-        {state.step === SalePathStep.Summary && <SummaryForm state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.ChooseProduct && <ChooseProductStep  state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FillClientInfo && <FillClientInfoStep  state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsStep state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FillParameterAnswers && <FillParameterAnswersStep state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.Summary && <SummaryStep state={state} dispatch={dispatch} />}
     </>
 }

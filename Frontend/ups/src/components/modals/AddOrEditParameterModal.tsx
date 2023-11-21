@@ -2,11 +2,12 @@ import { Form as FForm, Field, FieldArray, Formik, FormikErrors } from "formik";
 import { Api } from "../../api/Api";
 import { OptionDto, ParameterDto, ParameterTypeEnum } from "../../api/Dtos";
 import { Button, Form, Modal } from "react-bootstrap";
-import { TypeInputGroup, SeparateErrors, Option, ValidationMessage, CheckboxInputGroup, AsInputGroup, GetParameterTypeDisplayName } from "../../helpers/FormHelpers";
+import { TypeInputGroup, SeparateErrors, Option, ValidationMessage, CheckboxInputGroup, AsInputGroup } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { AddParameterRequest, EditParameterRequest } from "../../api/ApiRequests";
 import { array, object, string } from "yup";
+import { GetParameterTypeDisplayName } from "../../helpers/EnumHelpers";
 
 type AddOrEditParameterModalProps = {
     onSuccess: () => void

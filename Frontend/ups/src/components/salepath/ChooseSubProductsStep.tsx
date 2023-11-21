@@ -1,8 +1,8 @@
-import { SalePathFormProps } from "../../pages/SaleMainPage"
+import { SalePathStepProps } from "../../pages/SalePathPage"
 
-type ChooseSubProductsProps = SalePathFormProps
+type ChooseSubProductsProps = SalePathStepProps
 
-export const ChooseSubProductsForm = ({ state, dispatch }: ChooseSubProductsProps) => {
+export const ChooseSubProductsStep = ({ state, dispatch }: ChooseSubProductsProps) => {
     return <div>
         <h3>Wybierz podprodukty</h3>
         {state.subProductIds.length === 0 && state.product && state.product.subProducts.length > 0 && <div className="alert alert-warning">

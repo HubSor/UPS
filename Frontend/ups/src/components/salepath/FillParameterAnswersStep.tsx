@@ -1,27 +1,27 @@
 import { FieldArray, Form as FForm, Formik } from "formik"
-import { SalePathFormProps, getSelectedSubProducts } from "../../pages/SaleMainPage"
+import { SalePathStepProps, getSelectedSubProducts } from "../../pages/SalePathPage"
 import { Button } from "react-bootstrap"
 import React from "react"
-import { SalePathParameterDto } from "../../api/Dtos"
+import { AnsweredParameterDto } from "../../api/Dtos"
 import { ParameterProps, ParameterSwitch } from "../../helpers/ParameterHelpers"
 import { toastInfo } from "../../helpers/ToastHelpers"
 
-type FillParameterValuesProps = SalePathFormProps
+type FillParameterAnswersProps = SalePathStepProps
 
-type FillParameterValuesFormValues = {
-    productParams: SalePathParameterDto[]
-    subProductParams: SalePathParameterDto[]
+type FillParameterAnswersFormValues = {
+    productParams: AnsweredParameterDto[]
+    subProductParams: AnsweredParameterDto[]
 }
 
-export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValuesProps) => {
-    const paramsFromProduct: SalePathParameterDto[] = !!state.productParameterValues && state.productParameterValues.length > 0 ?
-        state.productParameterValues :
+export const FillParameterAnswersStep = ({ state, dispatch }: FillParameterAnswersProps) => {
+    const paramsFromProduct: AnsweredParameterDto[] = !!state.productAnswers && state.productAnswers.length > 0 ?
+        state.productAnswers :
         state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
-    const paramsFormSubProducts: SalePathParameterDto[] = !!state.subProductParameterValues && state.subProductParameterValues.length > 0 ?
-        state.subProductParameterValues :
+    const paramsFormSubProducts: AnsweredParameterDto[] = !!state.subProductAnswers && state.subProductAnswers.length > 0 ?
+        state.subProductAnswers :
         getSelectedSubProducts(state).flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined, subProductId: sp.id }))) ?? []
 
-    const initialValues: FillParameterValuesFormValues = {
+    const initialValues: FillParameterAnswersFormValues = {
         productParams: paramsFromProduct,
         subProductParams: paramsFormSubProducts
     }

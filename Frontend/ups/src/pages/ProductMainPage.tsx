@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
-import { PaginationBar, GetProductStatusDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
 import { AuthHelpers } from "../helpers/AuthHelper"
+import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
 
 type ProductMainPageState =  {
     addProductModalOpen: boolean,

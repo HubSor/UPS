@@ -92,7 +92,7 @@ export type ParameterDto = {
     options: ExtendedOptionDto[]
 }
 
-export type SalePathParameterDto = ParameterDto & {
+export type AnsweredParameterDto = ParameterDto & {
     answer?: string,
     subProductId?: number
 }

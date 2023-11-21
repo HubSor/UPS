@@ -12,7 +12,7 @@ import ProductMainPage from './pages/ProductMainPage';
 import SubProductMainPage from './pages/SubProductMainPage';
 import ProductPage from './pages/ProductPage';
 import SubProductPage from './pages/SubProductPage';
-import SalePathPage from './pages/SaleMainPage';
+import SalePathPage from './pages/SalePathPage';
 
 export const Paths = {
     login: "/login",

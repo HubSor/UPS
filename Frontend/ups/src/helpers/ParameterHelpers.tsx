@@ -1,5 +1,5 @@
 import { Form } from "react-bootstrap";
-import { ParameterDto, ParameterTypeEnum, SalePathParameterDto } from "../api/Dtos";
+import { ParameterDto, ParameterTypeEnum } from "../api/Dtos";
 import { Field } from "formik";
 import { ValidationMessage } from "./FormHelpers";
 import React from "react";
@@ -136,20 +136,4 @@ export function ParameterSwitch(props: ParameterProps){
         {props.param.type === ParameterTypeEnum.Checkbox && <CheckboxParameter {...props} />}
         {props.param.type === ParameterTypeEnum.TextArea && <TextAreaParameter {...props} />}
     </>
-}
-
-type DisplayParameterRowProps = {
-    parameter: SalePathParameterDto
-}
-
-export const DisplayParameterRow = ({ parameter }: DisplayParameterRowProps) => {
-    return <div>
-        <div className="list-group-item">
-            <div className="d-flex justify-content-between">
-                <label key="id" className="m-2">{parameter.id}</label>
-                <label key="name" className="m-2 col-3 param-label">{parameter.name}</label>
-                <label key="answer" className="m-2 col-8 param-label">{parameter.answer}</label>
-            </div>
-        </div>
-    </div>
 }
