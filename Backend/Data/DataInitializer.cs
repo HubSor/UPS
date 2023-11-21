@@ -166,7 +166,7 @@ namespace Data
 				Name = "Imię zwierzęcia domowego",
 				Type = ParameterTypeEnum.Text,
 				Required = false,
-				ProductId = 1
+				SubProductId = 3
 			});
 
 			context.Parameters.Add(new()
@@ -198,7 +198,7 @@ namespace Data
 				Name = "Ile to jest 5/2?",
 				Type = ParameterTypeEnum.Decimal,
 				Required = false,
-				ProductId = 2
+				SubProductId = 1
 			});
 
 			context.Parameters.Add(new()
@@ -206,7 +206,7 @@ namespace Data
 				Name = "Czy jesteś sprzedawcą?",
 				Type = ParameterTypeEnum.Checkbox,
 				Required = false,
-				ProductId = 2
+				SubProductId = 2
 			});
 
 			context.Parameters.Add(new()
@@ -214,7 +214,7 @@ namespace Data
 				Name = "Opisz mi swój dzień",
 				Type = ParameterTypeEnum.TextArea,
 				Required = false,
-				ProductId = 2
+				SubProductId = 3
 			});
 
 			var dayParam = new Parameter()

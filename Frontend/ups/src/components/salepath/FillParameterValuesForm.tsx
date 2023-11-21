@@ -1,9 +1,10 @@
 import { FieldArray, Form as FForm, Formik } from "formik"
 import { SalePathFormProps, getSelectedSubProducts } from "../../pages/SaleMainPage"
-import { Button, Form } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import React from "react"
 import { SalePathParameterDto } from "../../api/Dtos"
 import { ParameterProps, ParameterSwitch } from "../../helpers/ParameterHelpers"
+import { toastInfo } from "../../helpers/ToastHelpers"
 
 type FillParameterValuesProps = SalePathFormProps
 
@@ -29,6 +30,8 @@ export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValues
             initialValues={initialValues}
             onSubmit={(v, fh) => {
                 dispatch({ type: 'filledParameters', productValues: v.productParams, subProductValues: v.subProductParams })
+                dispatch({ type: 'nextStep' })
+                toastInfo('Zapisano parametry sprzedaży')
                 fh.setSubmitting(false);
             }}
         >
@@ -36,26 +39,39 @@ export const FillParameterValuesForm = ({ state, dispatch }: FillParameterValues
                 const selectedSubproducts = getSelectedSubProducts(state);
 
                 return <FForm>
-                    <FieldArray name="params" render={(fh) => <div>
-                        <Form.Label className="align-left">
+                    <FieldArray name="productParams" render={(fh) => <div>
+                        <h5 className="align-left">
                             Parametry produktu
-                        </Form.Label>
+                        </h5>
+                        <div className="align-left">
+                            {state.product?.name}
+                        </div>
                         {state.product?.parameters.map((p, idx) => {
-                            const props: ParameterProps = { param: p, fieldName: `params.${idx}.answer`}
+                            const props: ParameterProps = { param: p, fieldName: `productParams.${idx}.answer`}
                             return <React.Fragment key={p.id}>
                                 <ParameterSwitch {...props}/>
                             </React.Fragment>
                         })}
+                        
+                    </div>}/>
+                    <FieldArray name="subProductParams" render={(fh) => <div>
                         {selectedSubproducts.length > 0 && <>
-                            <Form.Label className="align-left">
+                            <h5 className="align-left">
                                 Parametry podproduktów
-                            </Form.Label>
-                            {selectedSubproducts.flatMap(sp => sp.parameters.map((p ,idx) => {
-                                const props: ParameterProps = { param: p, fieldName: `params.${idx}.answer` }
-                                return <React.Fragment key={p.id}>
-                                    <ParameterSwitch {...props} />
-                                </React.Fragment> 
-                            }))}
+                            </h5>
+                            {selectedSubproducts.flatMap(sp => {
+                                return <React.Fragment key={sp.id}>
+                                    <div className="align-left">
+                                        {sp.name}
+                                    </div>
+                                    {sp.parameters.map((p, idx) => {
+                                        const props: ParameterProps = { param: p, fieldName: `subProductParams.${idx}.answer` }
+                                        return <React.Fragment key={p.id}>
+                                            <ParameterSwitch {...props} />
+                                        </React.Fragment>
+                                    })}
+                                </React.Fragment>
+                            })}
                         </>}
                     </div>}/>
                     <div>

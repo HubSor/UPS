@@ -73,6 +73,7 @@ export const FillClientInfoForm = ({ state, dispatch }: FillClientInfoProps) => 
                     if (res.success && res.data) {
                         toastInfo('Zapisano klienta')
                         dispatch({ type: 'setClient', clientId: res.data.clientId })
+                        dispatch({ type: 'nextStep' })
                     }
                     else if (res.errors)
                         fh.setErrors(SeparateErrors(res.errors));
