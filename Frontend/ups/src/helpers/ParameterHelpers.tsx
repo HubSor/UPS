@@ -36,6 +36,8 @@ const validateTextArea = (value: any) => {
 }
 
 const validateInteger = (value: any) => {
+    if (!value)
+        return
     if (!/^\d+$/.test(value))
         return "Niepoprawna liczba całkowita";
     if (+value > 1_000_000_000)
@@ -43,6 +45,8 @@ const validateInteger = (value: any) => {
 }
 
 const validateDecimal = (value: any) => {
+    if (!value)
+        return
     if (!/^-{0,1}\d*\.{0,1}\d+$/.test(value))
         return "Niepoprawna liczba dziesiętna";
     if (+value > 1_000_000_000)

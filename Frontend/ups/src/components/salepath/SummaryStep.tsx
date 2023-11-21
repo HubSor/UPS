@@ -36,7 +36,9 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
                     </form>
                 </div>
                 <div className="list-group">
-                    {state.subProductAnswers?.filter(sppv => sppv.subProductId === sp.id)?.map(p =><DisplayParameterRow parameter={p} key={p.id} />)}
+                    {state.subProductAnswers?.filter(sppv => sppv.subProductId === sp.id && !!sppv.answer)?.map(p =>
+                        <DisplayParameterRow parameter={p} key={p.id} />
+                    )}
                 </div>
                 <br/>
             </React.Fragment>

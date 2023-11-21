@@ -111,10 +111,17 @@ export default function SalePathPage() {
             case SalePathStep.FillClientInfo:
                 return !state.clientId && state.product?.anonymousSaleAllowed === false
             case SalePathStep.FillParameterAnswers:
-                return (state.productAnswers == null || state.productAnswers.some(pv => !pv.answer && pv.required)) ||
-                    (state.subProductAnswers == null || state.subProductAnswers.some(pv => !pv.answer && pv.required))
+                return (state.productAnswers == null || answeredProductParams.some(pv => !pv.answer && pv.required)) ||
+                    (state.subProductAnswers == null || answeredSubProductsParams.some(pv => !pv.answer && pv.required))
         }
     }
+
+    const answeredProductParams: AnsweredParameterDto[] = !!state.productAnswers && state.productAnswers.length > 0 ?
+        state.productAnswers :
+        state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
+    const answeredSubProductsParams: AnsweredParameterDto[] = !!state.subProductAnswers && state.subProductAnswers.length > 0 ?
+        state.subProductAnswers :
+        getSelectedSubProducts(state).flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined, subProductId: sp.id }))) ?? []
 
     return <>
         <h2>Ścieżka Sprzedaży - Krok {state.step.toString()}</h2>
@@ -142,7 +149,9 @@ export default function SalePathPage() {
         {state.step === SalePathStep.ChooseProduct && <ChooseProductStep  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.FillClientInfo && <FillClientInfoStep  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsStep state={state} dispatch={dispatch} />}
-        {state.step === SalePathStep.FillParameterAnswers && <FillParameterAnswersStep state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FillParameterAnswers && <FillParameterAnswersStep state={state} dispatch={dispatch}
+            paramsFormSubProducts={answeredSubProductsParams} paramsFromProduct={answeredProductParams}
+        />}
         {state.step === SalePathStep.Summary && <SummaryStep state={state} dispatch={dispatch} />}
     </>
 }
