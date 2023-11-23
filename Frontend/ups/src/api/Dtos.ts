@@ -97,6 +97,11 @@ export type AnsweredParameterDto = ParameterDto & {
     subProductId?: number
 }
 
+export type SaveSaleParameterDto = {
+    parameterId: number,
+    answer?: string
+}
+
 export type ClientDto = {
     phoneNumber?: string,
     email?: string,

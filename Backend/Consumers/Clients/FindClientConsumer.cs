@@ -59,7 +59,7 @@ public class FindPersonClientConsumer : FindClientConsumer<PersonClient, FindPer
 	public override async Task<PersonClient?> GetClientAsync(ConsumeContext<FindPersonClientOrder> context)
 	{
 		return await clients.GetAll()
-			.FirstOrDefaultAsync(x => x.Pesel == context.Message.Identifier.ToUpper().Trim());
+			.FirstOrDefaultAsync(x => x.Pesel == context.Message.Identifier.ToUpper().Trim() && !x.Deleted);
 	}
 
 	public override ClientDto CreateClientDto(ConsumeContext<FindPersonClientOrder> context)
@@ -87,8 +87,8 @@ public class FindCompanyClientConsumer : FindClientConsumer<CompanyClient, FindC
 	public override async Task<CompanyClient?> GetClientAsync(ConsumeContext<FindCompanyClientOrder> context)
 	{
 		return await clients.GetAll()
-			.FirstOrDefaultAsync(x => x.Nip == context.Message.Identifier.ToUpper().Trim() ||
-				x.Regon == context.Message.Identifier.ToUpper().Trim());
+			.FirstOrDefaultAsync(x => !x.Deleted && (x.Nip == context.Message.Identifier.ToUpper().Trim() ||
+				x.Regon == context.Message.Identifier.ToUpper().Trim()));
 	}
 
 	public override ClientDto CreateClientDto(ConsumeContext<FindCompanyClientOrder> context)

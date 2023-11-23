@@ -1,8 +1,10 @@
 import { SalePathStepProps, getSelectedSubProducts } from "../../pages/SalePathPage"
 import { DisplayInfoRow } from "../products/DisplayInfoRow"
-import React from "react"
+import React, { useState } from "react"
 import { DisplayParameterRow } from "../parameters/DisplayParameterRow"
 import { Button } from "react-bootstrap"
+import { Api } from "../../api/Api"
+import { SaveSaleParameterDto } from "../../api/Dtos"
 
 type SummaryProps = SalePathStepProps
 
@@ -13,8 +15,21 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
     const basePrice = selectedSubProducts.reduce((agg, curr) => agg + curr.basePrice, 0) +
         (state.product?.basePrice ?? 0)
 
-    const handleSubmit = () => {
+    const [totalPrice, setTotalPrice] = useState(initialPrice);
 
+    const handleSubmit = () => {
+        const answers: SaveSaleParameterDto[] = [
+            ...state.productAnswers?.map(pa => ({ answer: pa.answer, parameterId: pa.id })) ?? [],
+            ...state.subProductAnswers?.map(spa => ({ answer: spa.answer, parameterId: spa.id })) ?? []
+        ]
+
+        Api.SaveSale({
+            productId: state.productId!,
+            subProductIds: state.subProductIds,
+            clientId: state.clientId ?? undefined,
+            totalPrice: totalPrice,
+            answers: answers
+        })
     }
 
     return <div>
@@ -74,7 +89,10 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
         </div>
         <br/>
         <div>
-            <Button type="button" size="lg" onClick={handleSubmit}>
+            <Button type="button" size="lg" onClick={handleSubmit}
+                onChange={e => setTotalPrice(+e.currentTarget.value)}
+                disabled={!state.productId}
+            >
                 Zatwierdź sprzedaż
             </Button>
         </div>

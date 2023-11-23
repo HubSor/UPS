@@ -1,3 +1,3 @@
 ﻿namespace Messages.Sales;
 
-public class SaleSaleResponse {}
+public class SaveSaleResponse {}
