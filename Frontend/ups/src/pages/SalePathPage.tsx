@@ -114,6 +114,7 @@ export default function SalePathPage() {
                 return (state.productAnswers == null || answeredProductParams.some(pv => !pv.answer && pv.required)) ||
                     (state.subProductAnswers == null || answeredSubProductsParams.some(pv => !pv.answer && pv.required))
         }
+        return false
     }
 
     const answeredProductParams: AnsweredParameterDto[] = !!state.productAnswers && state.productAnswers.length > 0 ?
@@ -150,7 +151,7 @@ export default function SalePathPage() {
         {state.step === SalePathStep.FillClientInfo && <FillClientInfoStep  state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.ChooseSubProducts && <ChooseSubProductsStep state={state} dispatch={dispatch} />}
         {state.step === SalePathStep.FillParameterAnswers && <FillParameterAnswersStep state={state} dispatch={dispatch}
-            paramsFormSubProducts={answeredSubProductsParams} paramsFromProduct={answeredProductParams}
+            paramsFormSubProducts={answeredSubProductsParams} paramsFromProduct={answeredProductParams} nextStepDisabled={nextStepDisabled()}
         />}
         {state.step === SalePathStep.Summary && <SummaryStep state={state} dispatch={dispatch} />}
     </>

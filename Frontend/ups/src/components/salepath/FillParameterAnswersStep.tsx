@@ -9,6 +9,7 @@ import { toastInfo } from "../../helpers/ToastHelpers"
 type FillParameterAnswersProps = SalePathStepProps & {
     paramsFromProduct: AnsweredParameterDto[],
     paramsFormSubProducts: AnsweredParameterDto[],
+    nextStepDisabled: boolean
 }
 
 type FillParameterAnswersFormValues = {
@@ -16,7 +17,7 @@ type FillParameterAnswersFormValues = {
     subProductParams: AnsweredParameterDto[]
 }
 
-export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, paramsFormSubProducts }: FillParameterAnswersProps) => {
+export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, paramsFormSubProducts, nextStepDisabled }: FillParameterAnswersProps) => {
     const initialValues: FillParameterAnswersFormValues = {
         productParams: paramsFromProduct,
         subProductParams: paramsFormSubProducts
@@ -24,6 +25,9 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
 
     return <div>
         <h3>Uzupełnij parametry sprzedaży</h3>
+        {nextStepDisabled && <div className="alert alert-primary">
+            Uzupełnij wymagane parametry sprzedaży aby kontynuować
+        </div>}
         <br/>
         <Formik
             initialValues={initialValues}
@@ -51,8 +55,8 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
                                 <ParameterSwitch {...props}/>
                             </React.Fragment>
                         })}
-                        
                     </div>}/>
+                    <hr/>
                     <FieldArray name="subProductParams" render={(fh) => <div>
                         {selectedSubproducts.length > 0 && <>
                             <h5 className="align-left">

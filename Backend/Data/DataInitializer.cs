@@ -257,8 +257,6 @@ namespace Data
 			{
 				SaleId = 1,
 				SubProductId = 1,
-				InSalePrice = 99.99m,
-				ManualOverride = true,
 			});
 			
 			var days = new List<string>()
