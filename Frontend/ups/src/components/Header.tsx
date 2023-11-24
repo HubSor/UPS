@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { Paths } from "../App";
+import { RoleEnum } from "../api/Dtos";
 
 export default function Header(){
     const nav = useNavigate();
@@ -24,6 +25,9 @@ export default function Header(){
                 </li>
                 {showUsers && <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
+                </li>}
+                {AuthHelpers.HasRole(RoleEnum.Administrator) && <li className="nav-item">
+                    <a className="nav-link" href={Paths.sales}>Transakcje</a>
                 </li>}
             </ul>
         </div>

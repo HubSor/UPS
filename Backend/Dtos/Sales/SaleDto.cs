@@ -8,5 +8,6 @@ public class SaleDto
 	public ICollection<string> SubProductCodes { get; set; } = default!;
 	public PersonClientDto? PersonClient { get; set; } = default!; 
 	public CompanyClientDto? CompanyClient { get; set; } = default!; 
-	public DateTime SaleTime { get; set; }
+	public string SaleTime { get; set; } = default!;
+	public decimal TotalPrice { get; set; }
 }

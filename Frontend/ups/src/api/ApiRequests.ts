@@ -15,6 +15,10 @@ export type ListUsersRequest = {
     pagination: PaginationDto
 }
 
+export type ListSalesRequest = {
+    pagination: PaginationDto
+}
+
 export type EditUserRequest = {
     username: string,
     password?: string,

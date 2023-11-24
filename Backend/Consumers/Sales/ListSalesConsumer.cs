@@ -19,15 +19,15 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 		this.sales = sales;
 	}
 
-    private static PersonClientDto? GetPersonClient(Client? client) => client is PersonClient personClient ?
+	private static PersonClientDto? GetPersonClient(Client? client) => client is PersonClient personClient ?
 		new PersonClientDto(personClient) :
 		null;
 
-    private static CompanyClientDto? GetCompanyClient(Client? client) => client is CompanyClient companyClient ?
+	private static CompanyClientDto? GetCompanyClient(Client? client) => client is CompanyClient companyClient ?
 		new CompanyClientDto(companyClient) :
 		null;
 
-    public override async Task Consume(ConsumeContext<ListSalesOrder> context)
+	public override async Task Consume(ConsumeContext<ListSalesOrder> context)
 	{
 		var saleCount = sales.GetAll().Count();
 		var saleList = await sales.GetAll()
@@ -41,11 +41,12 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 			.Select(s => new SaleDto()
 			{
 				SaleId = s.Id,
-				SaleTime = s.SaleTime,
+				SaleTime = s.SaleTime.ToString("dd/MM/yyyy HH:mm"),
 				ProductCode = s.Product.Code,
 				SubProductCodes = s.SubProducts.Select(x => x.SubProduct.Code).ToList(),
 				PersonClient = GetPersonClient(s.Client),
 				CompanyClient = GetCompanyClient(s.Client),
+				TotalPrice = s.FinalPrice,
 			})
 			.ToListAsync();
 			

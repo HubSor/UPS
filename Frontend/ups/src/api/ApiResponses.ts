@@ -1,4 +1,4 @@
-import { CompanyClientDto, ExtendedProductDto, ExtendedSubProductDto, PagedList, PersonClientDto, ProductDto, SubProductDto, UserDto } from "./Dtos"
+import { CompanyClientDto, ExtendedProductDto, ExtendedSubProductDto, PagedList, PersonClientDto, ProductDto, SaleDto, SubProductDto, UserDto } from "./Dtos"
 
 export type ApiResponse<T> = {
     statusCode: number,
@@ -41,4 +41,8 @@ export type FindPersonClientResponse = {
 
 export type FindCompanyClientResponse = {
     companyClient: CompanyClientDto
+}
+
+export type ListSalesResponse = {
+    sales: PagedList<SaleDto>
 }

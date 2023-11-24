@@ -119,3 +119,13 @@ export type PersonClientDto = ClientDto & {
     lastName: string,
     pesel?: string
 }
+
+export type SaleDto = {
+    saleId: number,
+    productCode: string,
+    subProductCodes: string[],
+    personClient?: PersonClientDto,
+    companyClient?: CompanyClientDto,
+    saleTime: string,
+    totalPrice: number,
+}
