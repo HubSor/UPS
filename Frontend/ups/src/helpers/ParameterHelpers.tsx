@@ -86,7 +86,7 @@ export function DecimalParameter({ param, fieldName }: ParameterProps) {
             {getParamDisplay(param)}
         </Form.Label>
         <Field type='number' validate={baseParameterValidator(param, [validateDecimal])}
-            name={fieldName} className="form-control" />
+            name={fieldName} className="form-control" step={"0,01"} />
         <ValidationMessage fieldName={fieldName} />
     </Form.Group>
 }

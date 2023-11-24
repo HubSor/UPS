@@ -19,8 +19,8 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
 
     const handleSubmit = () => {
         const answers: SaveSaleParameterDto[] = [
-            ...state.productAnswers?.map(pa => ({ answer: pa.answer, parameterId: pa.id })) ?? [],
-            ...state.subProductAnswers?.map(spa => ({ answer: spa.answer, parameterId: spa.id })) ?? []
+            ...state.productAnswers?.map(pa => ({ answer: pa.answer?.toString(), parameterId: pa.id })) ?? [],
+            ...state.subProductAnswers?.map(spa => ({ answer: spa.answer?.toString(), parameterId: spa.id })) ?? []
         ]
 
         Api.SaveSale({

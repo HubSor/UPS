@@ -1,3 +1,4 @@
+using System.Globalization;
 using Core;
 using Data;
 using Helpers;
@@ -11,15 +12,16 @@ using Models.Entities;
 namespace Consumers.Sales;
 public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleResponse>
 {
-	private readonly HttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IRepository<Sale> sales;
 	private readonly IRepository<Parameter> parameters;
 	private readonly IRepository<Product> products;
 	private readonly IRepository<Client> clients;
+	private ICollection<Parameter> RelevantParameters { get; set; } = default!;
 	
 	public SaveSaleConsumer(ILogger<SaveSaleConsumer> logger, IRepository<Sale> sales,
 		IRepository<Parameter> parameters, IRepository<Product> products, 
-		IRepository<Client> clients, IUnitOfWork unitOfWork, HttpContextAccessor httpContextAccessor)
+		IRepository<Client> clients, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
 		: base(unitOfWork, logger)
 	{
 		this.sales = sales;
@@ -27,6 +29,29 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		this.parameters = parameters;
 		this.clients = clients;
 		this.httpContextAccessor = httpContextAccessor;
+	}
+	
+	private static bool ValidateAnswer(Parameter parameter, string answer)
+	{
+		if (parameter.Type == ParameterTypeEnum.Integer)
+		{
+			if (!int.TryParse(answer, out _))
+				return false;
+		}
+
+		if (parameter.Type == ParameterTypeEnum.Decimal)
+		{
+			if (!decimal.TryParse(answer, CultureInfo.InvariantCulture, out _))
+				return false;
+		}
+		
+		if (parameter.Type == ParameterTypeEnum.Select)
+		{
+			if (!parameter.Options.Select(o => o.Value).Contains(answer))
+				return false;
+		}
+
+		return true;
 	}
 
 	public override async Task<bool> PreTransaction(ConsumeContext<SaveSaleOrder> context)
@@ -65,7 +90,10 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		}
 		
 		var paramIds = context.Message.Answers.Select(a => a.ParameterId).ToList();
-		var dbParams = await parameters.GetAll().Where(x => paramIds.Contains(x.Id) && !x.Deleted).ToListAsync();
+		var dbParams = await parameters.GetAll()
+			.Include(p => p.Options)
+			.Where(x => paramIds.Contains(x.Id) && !x.Deleted)
+			.ToListAsync();
 		if (dbParams.Count != paramIds.Count)
 		{
 			await RespondWithValidationFailAsync(context, "Answers", "Nie znaleziono parametru");
@@ -87,13 +115,14 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 				return false;
 			}
 			
-			if (!ValidateAnswer(dbParam, answer))
+			if (!string.IsNullOrEmpty(answer.Answer) && !ValidateAnswer(dbParam, answer.Answer))
 			{
 				await RespondWithValidationFailAsync(context, "Answers", "Nie wszystkie odpowiedzi są poprawne");
 				return false;
 			}
 		}
 		
+		RelevantParameters = dbParams;
 		return true;
 	}
 
@@ -105,13 +134,20 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			ProductId = context.Message.ProductId,
 			SellerId = httpContextAccessor.GetUserId(),
 			FinalPrice = context.Message.TotalPrice,
-			SaleParameters = context.Message.Answers.Select(a => new SaleParameter 
-			{
-				Value = a.Answer,
-				ParameterId = a.ParameterId,
-				OptionId = 
-			}).ToList(),
-			
+			SaleParameters = context.Message.Answers
+				.Where(a => !string.IsNullOrEmpty(a.Answer))
+				.Select(a => {
+					var optionId = RelevantParameters
+						.First(rp => rp.Id == a.ParameterId).Options
+						.FirstOrDefault(o => o.Value == a.Answer)?.Id;
+						
+					return new SaleParameter 
+					{
+						Value = a.Answer,
+						ParameterId = a.ParameterId,
+						OptionId = optionId
+					};
+				}).ToList(),
 		});
 	}
 
