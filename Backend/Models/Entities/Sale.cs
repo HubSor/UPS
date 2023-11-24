@@ -14,5 +14,6 @@ namespace Models.Entities
 		public virtual Client? Client { get; set; } = default!;
 		public ICollection<SubProductInSale> SubProducts { get; set; } = default!;
 		public ICollection<SaleParameter> SaleParameters { get; set; } = default!;
+		public DateTime SaleTime { get; set; }
 	}
 }

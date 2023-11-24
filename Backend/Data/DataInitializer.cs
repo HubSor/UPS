@@ -147,6 +147,7 @@ namespace Data
 				FinalPrice = 100.99m,
 				SellerId = 1,
 				ClientId = 1,
+				SaleTime = DateTime.Now
 			});
 			
 			var parameterTypes = new List<ParameterType>()

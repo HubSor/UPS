@@ -21,5 +21,13 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<SaveSaleOrder, SaveSaleResponse>(order);
 		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.Administrator)]
+		[Route("list")]
+		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
+		{
+			return await RespondAsync<ListSalesOrder, ListSalesResponse>(order);
+		}
 	}
 }

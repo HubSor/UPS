@@ -148,6 +148,7 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 						OptionId = optionId
 					};
 				}).ToList(),
+			SaleTime = DateTime.Now
 		});
 	}
 
