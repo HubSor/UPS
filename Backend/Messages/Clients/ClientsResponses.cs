@@ -1,4 +1,5 @@
-﻿using Dtos.Clients;
+﻿using Dtos;
+using Dtos.Clients;
 
 namespace Messages.Clients;
 
@@ -14,4 +15,14 @@ public class FindCompanyClientResponse : FindClientResponse
 public class UpsertClientResponse 
 {
 	public int ClientId { get; set; }
+}
+
+public class ListCompanyClientsResponse
+{
+	public PagedList<CompanyClientDto> Clients { get; set; } = default!;
+}
+
+public class ListPersonClientsResponse 
+{
+	public PagedList<PersonClientDto> Clients { get; set; } = default!;
 }
