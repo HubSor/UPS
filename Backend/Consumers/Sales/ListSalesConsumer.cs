@@ -1,3 +1,4 @@
+using System.Globalization;
 using Core;
 using Dtos;
 using Dtos.Clients;
@@ -41,7 +42,7 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 			.Select(s => new SaleDto()
 			{
 				SaleId = s.Id,
-				SaleTime = s.SaleTime.ToString("dd/MM/yyyy HH:mm"),
+				SaleTime = s.SaleTime.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
 				ProductCode = s.Product.Code,
 				SubProductCodes = s.SubProducts.Select(x => x.SubProduct.Code).ToList(),
 				PersonClient = GetPersonClient(s.Client),

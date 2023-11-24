@@ -59,6 +59,8 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		var product = await products.GetAll()
 			.Include(x => x.SubProductInProducts)
 			.ThenInclude(x => x.SubProduct)
+			.ThenInclude(x => x.Parameters)
+			.Include(x => x.Parameters)
 			.FirstOrDefaultAsync(x => x.Id == context.Message.ProductId && !x.Deleted);
 		if (product == null)
 		{
@@ -72,7 +74,8 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			return false;
 		}
 		
-		var subProducts = product.SubProductInProducts.Select(x => x.SubProduct);
+		var subProducts = product.SubProductInProducts
+			.Select(x => x.SubProduct);
 		if (context.Message.SubProductIds.Any(sp => !subProducts.Select(x => x.Id).Contains(sp)))
 		{
 			await RespondWithValidationFailAsync(context, "SubProductIds", "Nie znaleziono podproduktu");
@@ -89,14 +92,32 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			}
 		}
 		
-		var paramIds = context.Message.Answers.Select(a => a.ParameterId).ToList();
+		var requiredParamsSubProduct = product.SubProductInProducts.SelectMany(x => x.SubProduct.Parameters.Where(s => s.Required));
+		var requiredParamsProduct = product.Parameters.Where(p => p.Required);
+		var requiredParams = requiredParamsSubProduct.Union(requiredParamsProduct);
+		var respondedParamIds = context.Message.Answers.Select(a => a.ParameterId).ToList();
+		
+		if (!requiredParams.All(rp => respondedParamIds.Contains(rp.Id) && !string.IsNullOrEmpty(context.Message.Answers.First(x => x.ParameterId == rp.Id).Answer)))
+		{
+			await RespondWithValidationFailAsync(context, "Answers", "Nie podano wszystkich wymaganych odpowiedzi");
+			return false;
+		}
+
 		var dbParams = await parameters.GetAll()
 			.Include(p => p.Options)
-			.Where(x => paramIds.Contains(x.Id) && !x.Deleted)
+			.Where(x => respondedParamIds.Contains(x.Id) && !x.Deleted)
 			.ToListAsync();
-		if (dbParams.Count != paramIds.Count)
+
+		if (dbParams.Count != respondedParamIds.Count)
 		{
 			await RespondWithValidationFailAsync(context, "Answers", "Nie znaleziono parametru");
+			return false;
+		}
+		
+		var dbSubProductIds = subProducts.Select(x => x.Id).ToList();
+		if (!dbParams.All(p => dbSubProductIds.Contains(p.SubProductId ?? -1) || p.ProductId == product.Id))
+		{
+			await RespondWithValidationFailAsync(context, "Answers", "Próba zapisu parametru nieprzypisanego do produktu lub podproduktu");
 			return false;
 		}
 		
@@ -148,6 +169,10 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 						OptionId = optionId
 					};
 				}).ToList(),
+			SubProducts = context.Message.SubProductIds.Select(id => new SubProductInSale()
+			{
+				SubProductId = id
+			}).ToList(),
 			SaleTime = DateTime.Now
 		});
 	}
