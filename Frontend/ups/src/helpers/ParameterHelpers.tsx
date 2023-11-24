@@ -44,10 +44,10 @@ const validateInteger = (value: any) => {
         return "Zbyt duża liczba";
 }
 
-const validateDecimal = (value: any) => {
+export const validateDecimal = (value: any) => {
     if (!value)
         return
-    if (!/^-{0,1}\d*\.{0,1}\d+$/.test(value))
+    if (!/^-{0,1}\d*[.,]{0,1}\d+$/.test(value))
         return "Niepoprawna liczba dziesiętna";
     if (+value > 1_000_000_000)
         return "Zbyt duża liczba";

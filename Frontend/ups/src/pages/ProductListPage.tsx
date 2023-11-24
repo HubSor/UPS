@@ -1,29 +1,32 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
-import { SubProductDto, ResultPaginationDto } from "../api/Dtos"
+import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
 import { PaginationBar } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
-import { AddOrEditSubProductModal } from "../components/modals/AddOrEditSubProductModal"
-import { DeleteSubProductModal } from "../components/modals/DeleteSubProductModal"
-import { AuthHelpers } from "../helpers/AuthHelper"
+import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
+import { DeleteProductModal } from "../components/modals/DeleteProductModal"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
+import { AuthHelpers } from "../helpers/AuthHelper"
+import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
 
-type SubProductMainPageState =  {
-    addSubProductModalOpen: boolean,
-    editSubProductModal: SubProductDto | null,
-    deleteSubProductModal: SubProductDto | null,
+type ProductListPageState =  {
+    addProductModalOpen: boolean,
+    editProductModal: ProductDto | null,
+    deleteProductModal: ProductDto | null,
     refresh: boolean
-    subProducts: SubProductDto[]
+    products: ProductDto[]
     pagination: ResultPaginationDto
+    statuses: ProductStatusEnum[]
 }
 
-const initalState: SubProductMainPageState = {
-    addSubProductModalOpen: false,
+const initalState: ProductListPageState = {
+    addProductModalOpen: false,
     refresh: true,
-    subProducts: [],
-    editSubProductModal: null,
-    deleteSubProductModal: null,
+    products: [],
+    statuses: [ ProductStatusEnum.NotOffered, ProductStatusEnum.Offered, ProductStatusEnum.Withdrawn ],
+    editProductModal: null,
+    deleteProductModal: null,
     pagination: {
         pageSize: 10,
         pageIndex: 0,
@@ -33,96 +36,94 @@ const initalState: SubProductMainPageState = {
     },
 }
 
-type SubProductMainPageAction =
-    | { type: 'addSubProductButton' }
-    | { type: 'editSubProductButton', subProduct: SubProductDto }
-    | { type: 'deleteSubProductButton', subProduct: SubProductDto }
+type ProductListPageAction =
+    | { type: 'addProductButton' }
+    | { type: 'editProductButton', product: ProductDto }
+    | { type: 'deleteProductButton', product: ProductDto }
     | { type: 'closeModal' }
     | { type: 'refresh' }
     | { type: 'changedPage', pageIndex: number }
-    | { type: 'fetchedSubProducts', subProducts: SubProductDto[], pagination: ResultPaginationDto }
+    | { type: 'fetchedProducts', products: ProductDto[], pagination: ResultPaginationDto }
 
-function reducer (state: SubProductMainPageState, action: SubProductMainPageAction): SubProductMainPageState {
+function reducer (state: ProductListPageState, action: ProductListPageAction): ProductListPageState {
     switch(action.type){
-        case 'addSubProductButton':
-            return { ...state, addSubProductModalOpen: true }
-        case 'editSubProductButton':
-            return { ...state, editSubProductModal: action.subProduct }
-        case 'deleteSubProductButton':
-            return { ...state, deleteSubProductModal: action.subProduct }
+        case 'addProductButton':
+            return { ...state, addProductModalOpen: true }
+        case 'editProductButton':
+            return { ...state, editProductModal: action.product }
+        case 'deleteProductButton':
+            return { ...state, deleteProductModal: action.product }
         case 'closeModal':
-            return { ...state, addSubProductModalOpen: false, editSubProductModal: null, deleteSubProductModal: null }
+            return { ...state, addProductModalOpen: false, editProductModal: null, deleteProductModal: null }
         case 'refresh':
             return { ...state, refresh: true }
         case 'changedPage':
             return { ...state, refresh: true, pagination: { ...state.pagination, pageIndex: action.pageIndex }}
-        case 'fetchedSubProducts':
-            return { ...state, refresh: false, subProducts: action.subProducts, pagination: action.pagination }
+        case 'fetchedProducts':
+            return { ...state, refresh: false, products: action.products, pagination: action.pagination }
     }
 }
 
-export default function SubProductMainPage() {
+export default function ProductListPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
     const nav = useNavigate();
 
     const fetchData = useCallback(() => {
-        Api.ListSubProducts({ pagination: state.pagination }).then(res => {
+        Api.ListProducts({ pagination: state.pagination, statuses: state.statuses }).then(res => {
             if (res.success && res.data){
-                dispatch({ 
-                    type: 'fetchedSubProducts', subProducts: res.data.subProducts.items, 
-                    pagination: res.data.subProducts.pagination 
-                })
+                dispatch({ type: 'fetchedProducts', products: res.data.products.items, pagination: res.data.products.pagination })
             }
             else toastDefaultError();
         })
-    }, [state.pagination])
+    }, [state.pagination, state.statuses])
 
     useEffect(() => {
         if (state.refresh)
             fetchData();
     }, [state.refresh, fetchData])
 
-    const hasProductRoles = AuthHelpers.HasProductRoles();
+    const hasProductRoles = AuthHelpers.HasProductRoles(); 
 
     return <>
-        {state.addSubProductModalOpen && <AddOrEditSubProductModal 
+        {state.addProductModalOpen && <AddOrEditProductModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
         />}
-        {!!state.editSubProductModal && <AddOrEditSubProductModal 
+        {!!state.editProductModal && <AddOrEditProductModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
-            editedSubProduct={state.editSubProductModal}
+            editedProduct={state.editProductModal}
         />}
-        {!!state.deleteSubProductModal && <DeleteSubProductModal 
+        {!!state.deleteProductModal && <DeleteProductModal 
             onSuccess={() => {
                 dispatch({ type: 'refresh' })
                 dispatch({ type: 'closeModal' })
             }}
             close={() => dispatch({ type: 'closeModal' })}
-            deletedSubProduct={state.deleteSubProductModal}
+            deletedProduct={state.deleteProductModal}
         />}
-        <h3>Podprodukty</h3>
+        <h3>Produkty</h3>
         <br/>
         <table className="table table-striped">
             <thead>
                 <tr className="table-dark">
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Podstawowa cena</th>
-                    <th scope="col-2"></th>
+                    <th scope="col-3"></th>
                 </tr>
             </thead>
             <tbody>
-                {state.subProducts.map(p => {
+                {state.products.map(p => {
                     return <tr key={p.id} onClick={() => {
-                        nav(Paths.subProduct.replace(":id", p.id.toString()))
+                        nav(Paths.product.replace(":id", p.id.toString()))
                     }} data-toggle="tooltip" data-placement="top" title={p.description}>
                         <td>
                             {p.code}
@@ -131,20 +132,23 @@ export default function SubProductMainPage() {
                             {p.name}
                         </td>
                         <td>
+                            {GetProductStatusDisplayName(p.status)}
+                        </td>
+                        <td>
                             {p.basePrice}
                         </td>
                         <td className="col-2">
                             {hasProductRoles && <>
                                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={(e) => {
                                     e.stopPropagation()
-                                    dispatch({ type: 'editSubProductButton', subProduct: p })
+                                    dispatch({ type: 'editProductButton', product: p })
                                 }}>
                                     Edytuj
                                 </button>
                                 &nbsp;
                                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={(e) => {
                                     e.stopPropagation()
-                                    dispatch({ type: 'deleteSubProductButton', subProduct: p })
+                                    dispatch({ type: 'deleteProductButton', product: p })
                                 }}>
                                     Usuń
                                 </button>
@@ -160,8 +164,8 @@ export default function SubProductMainPage() {
         />
         <br/>
         {hasProductRoles && <div className="col-sm-3">
-            <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addSubProductButton' })}>
-                Dodaj nowy podprodukt
+            <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'addProductButton' })}>
+                Dodaj nowy produkt
             </button>
         </div>}
     </>

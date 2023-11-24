@@ -18,8 +18,6 @@ export const defaultPagination: ResultPaginationDto = {
 
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
     return <ErrorMessage name={fieldName} render={msg => {
-        if (fieldName.startsWith('options'))
-            debugger;
         return <div className="error-msg">
             {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
                 {m}
@@ -29,10 +27,28 @@ export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
     }}/>
 }
 
+export const NoFormikValidationMessage = ({ msg }: { msg?: string }) => {
+    if (!msg)
+        return <></>
+
+    return <div className="error-msg m-2">
+        {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
+            {m}
+            <br />
+        </React.Fragment>)}
+    </div>
+}
+
 export const SeparateErrors = (errors: { [key: string]: string[] }) => {
     let newObj: { [k: string]: string } = {};
     Object.keys(errors).forEach(k => newObj[k] =  errors[k].join('\n'));
     return newObj;
+}
+
+export const JoinErrors = (errors: { [key: string]: string[] }) => {
+    let newStr = "";
+    Object.keys(errors).forEach(k => newStr += errors[k].join('\n') + '\n');
+    return newStr;
 }
 
 type InputGroupProps = {

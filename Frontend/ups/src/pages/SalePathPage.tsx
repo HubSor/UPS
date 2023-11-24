@@ -7,6 +7,7 @@ import { FillClientInfoStep } from "../components/salepath/FillClientInfoStep"
 import { ChooseSubProductsStep } from "../components/salepath/ChooseSubProductsStep"
 import { FillParameterAnswersStep } from "../components/salepath/FillParameterAnswersStep"
 import { SummaryStep } from "../components/salepath/SummaryStep"
+import { FinishSaleStep } from "../components/salepath/FinishSaleStep"
 
 enum SalePathStep {
     ChooseProduct = 1,
@@ -154,5 +155,6 @@ export default function SalePathPage() {
             paramsFormSubProducts={answeredSubProductsParams} paramsFromProduct={answeredProductParams} nextStepDisabled={nextStepDisabled()}
         />}
         {state.step === SalePathStep.Summary && <SummaryStep state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.FinishSale && <FinishSaleStep state={state} dispatch={dispatch} />}
     </>
 }

@@ -5,6 +5,9 @@ import { DisplayParameterRow } from "../parameters/DisplayParameterRow"
 import { Button } from "react-bootstrap"
 import { Api } from "../../api/Api"
 import { SaveSaleParameterDto } from "../../api/Dtos"
+import { validateDecimal } from "../../helpers/ParameterHelpers"
+import { toastDefaultError } from "../../helpers/ToastHelpers"
+import { JoinErrors, NoFormikValidationMessage } from "../../helpers/FormHelpers"
 
 type SummaryProps = SalePathStepProps
 
@@ -16,6 +19,8 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
         (state.product?.basePrice ?? 0)
 
     const [totalPrice, setTotalPrice] = useState(initialPrice);
+    const [submitErrorMsg, setSubmitErrorMsg] = useState<string | undefined>();
+    const [priceErrorMsg, setPriceErrorMsg] = useState<string | undefined>();
 
     const handleSubmit = () => {
         const answers: SaveSaleParameterDto[] = [
@@ -29,6 +34,15 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
             clientId: state.clientId ?? undefined,
             totalPrice: totalPrice,
             answers: answers
+        }).then(res => {
+            if (res.data && res.success){
+                dispatch({ type: 'nextStep' })
+                setSubmitErrorMsg(undefined)
+            }
+            else if (res.errors){
+                setSubmitErrorMsg(JoinErrors(res.errors))
+            }
+            else toastDefaultError();
         })
     }
 
@@ -38,6 +52,7 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
             Upewnij się, że dane sprzedaży są poprawne.<br/>
             Po zatwierdzeniu tego formularza, sprzedaż będzie zarejestrowana w systemie.
         </div>
+        <NoFormikValidationMessage msg={submitErrorMsg} />
         <h5 className="align-left">
             Dane produktu
         </h5>
@@ -84,14 +99,24 @@ export const SummaryStep = ({ state, dispatch }: SummaryProps) => {
         <div className="form-group row justify-content-center">
             <strong className="col-sm-3 col-form-label">Całkowita kwota do zapłaty</strong>
             <div className="col-sm-2">
-                <input type="number" className="form-control" defaultValue={initialPrice}/>
+                <input type="number" className="form-control" defaultValue={initialPrice}
+                    onChange={e => {
+                        const validation = validateDecimal(e.currentTarget.value);
+                        if (!validation) {
+                            setTotalPrice(+e.currentTarget.value)
+                            setPriceErrorMsg(undefined)
+                        }
+                        else
+                            setPriceErrorMsg(validation)
+                    }}
+                />
+                <NoFormikValidationMessage msg={priceErrorMsg}/>
             </div>
         </div>
         <br/>
         <div>
             <Button type="button" size="lg" onClick={handleSubmit}
-                onChange={e => setTotalPrice(+e.currentTarget.value)}
-                disabled={!state.productId}
+                disabled={!state.productId || !!priceErrorMsg}
             >
                 Zatwierdź sprzedaż
             </Button>
