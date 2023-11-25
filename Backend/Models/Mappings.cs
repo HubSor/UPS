@@ -31,6 +31,7 @@ namespace Models
 			builder.HasMany(x => x.SubProducts).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
 			builder.HasMany(x => x.SaleParameters).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
 			builder.HasOne(x => x.Seller).WithMany().HasForeignKey(x => x.SellerId);
+			builder.HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId);
 			builder.HasOne(x => x.Product).WithMany(x => x.Sales).HasForeignKey(x => x.ProductId);
 		}
 	}
@@ -43,7 +44,15 @@ namespace Models
 			builder.HasOne(x => x.SubProduct).WithMany(x => x.SubProductInSales).HasForeignKey(x => x.SubProductId);
 		}
 	}
-	
+
+	public class ClientMapping : IEntityTypeConfiguration<Client>
+	{
+		public void Configure(EntityTypeBuilder<Client> builder)
+		{
+			builder.HasMany(x => x.Addresses).WithOne(x => x.Client).HasForeignKey(x => x.ClientId);
+		}
+	}
+
 	public class SaleParameterMapping : IEntityTypeConfiguration<SaleParameter>
 	{
 		public void Configure(EntityTypeBuilder<SaleParameter> builder)
@@ -98,6 +107,14 @@ namespace Models
 	public class ProductStatusMapping : IEntityTypeConfiguration<ProductStatus>
 	{
 		public void Configure(EntityTypeBuilder<ProductStatus> builder)
+		{
+			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
+		}
+	}
+
+	public class AddressTypeMapping : IEntityTypeConfiguration<AddressType>
+	{
+		public void Configure(EntityTypeBuilder<AddressType> builder)
 		{
 			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
 		}

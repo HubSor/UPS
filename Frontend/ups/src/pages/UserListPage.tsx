@@ -2,11 +2,12 @@ import { useCallback, useEffect, useReducer } from "react"
 import { AddOrEditUserModal } from "../components/modals/AddOrEditUserModal"
 import { Api } from "../api/Api"
 import { ResultPaginationDto, RoleEnum, UserDto } from "../api/Dtos"
-import { PaginationBar, GetRoleDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar } from "../helpers/FormHelpers"
 import { DeleteUserModal } from "../components/modals/DeleteUserModal"
 import { toastDefaultError } from "../helpers/ToastHelpers"
+import { GetRoleDisplayName } from "../helpers/EnumHelpers"
 
-type UserMainPageState =  {
+type UserListPageState =  {
     addUserModalOpen: boolean,
     editUserModal: UserDto | null,
     deleteUserModal: UserDto | null,
@@ -15,7 +16,7 @@ type UserMainPageState =  {
     pagination: ResultPaginationDto
 }
 
-const initalState: UserMainPageState = {
+const initalState: UserListPageState = {
     addUserModalOpen: false,
     refresh: true,
     users: [],
@@ -30,7 +31,7 @@ const initalState: UserMainPageState = {
     },
 }
 
-type UserMainPageAction =
+type UserListPageAction =
     | { type: 'addUserButton' }
     | { type: 'editUserButton', user: UserDto }
     | { type: 'deleteUserButton', user: UserDto }
@@ -39,7 +40,7 @@ type UserMainPageAction =
     | { type: 'changedPage', pageIndex: number }
     | { type: 'fetchedUsers', users: UserDto[], pagination: ResultPaginationDto }
 
-function reducer (state: UserMainPageState, action: UserMainPageAction): UserMainPageState {
+function reducer (state: UserListPageState, action: UserListPageAction): UserListPageState {
     switch(action.type){
         case 'addUserButton':
             return { ...state, addUserModalOpen: true }
@@ -58,7 +59,7 @@ function reducer (state: UserMainPageState, action: UserMainPageAction): UserMai
     }
 }
 
-export default function UserMainPage() {
+export default function UserListPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
 
     const fetchData = useCallback(() => {

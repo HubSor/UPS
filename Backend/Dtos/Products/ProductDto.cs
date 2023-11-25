@@ -1,4 +1,3 @@
-using Dtos.Parameters;
 using Models.Entities;
 
 namespace Dtos.Products
@@ -22,21 +21,6 @@ namespace Dtos.Products
 			Status = p.Status;
 			AnonymousSaleAllowed = p.AnonymousSaleAllowed;
 			BasePrice = p.BasePrice;
-		}
-	}
-	
-	public class ExtendedProductDto : ProductDto
-	{
-		public ICollection<ExtendedSubProductDto> SubProducts { get; set; } = default!;
-		public ICollection<ParameterDto> Parameters { get; set; } = default!;
-		public ExtendedProductDto(Product p) : base(p)
-		{
-			SubProducts = p.SubProductInProducts
-				.Where(x => !x.SubProduct.Deleted)
-				.Select(x => new ExtendedSubProductDto(x.SubProduct, x.InProductPrice))
-				.ToList();
-				
-			Parameters = p.Parameters.Where(p => !p.Deleted).Select(p => new ParameterDto(p)).ToList();
 		}
 	}
 }

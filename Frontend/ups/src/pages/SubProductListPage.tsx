@@ -9,7 +9,7 @@ import { AuthHelpers } from "../helpers/AuthHelper"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
 
-type SubProductMainPageState =  {
+type SubProductListPageState =  {
     addSubProductModalOpen: boolean,
     editSubProductModal: SubProductDto | null,
     deleteSubProductModal: SubProductDto | null,
@@ -18,7 +18,7 @@ type SubProductMainPageState =  {
     pagination: ResultPaginationDto
 }
 
-const initalState: SubProductMainPageState = {
+const initalState: SubProductListPageState = {
     addSubProductModalOpen: false,
     refresh: true,
     subProducts: [],
@@ -33,7 +33,7 @@ const initalState: SubProductMainPageState = {
     },
 }
 
-type SubProductMainPageAction =
+type SubProductListPageAction =
     | { type: 'addSubProductButton' }
     | { type: 'editSubProductButton', subProduct: SubProductDto }
     | { type: 'deleteSubProductButton', subProduct: SubProductDto }
@@ -42,7 +42,7 @@ type SubProductMainPageAction =
     | { type: 'changedPage', pageIndex: number }
     | { type: 'fetchedSubProducts', subProducts: SubProductDto[], pagination: ResultPaginationDto }
 
-function reducer (state: SubProductMainPageState, action: SubProductMainPageAction): SubProductMainPageState {
+function reducer (state: SubProductListPageState, action: SubProductListPageAction): SubProductListPageState {
     switch(action.type){
         case 'addSubProductButton':
             return { ...state, addSubProductModalOpen: true }
@@ -61,7 +61,7 @@ function reducer (state: SubProductMainPageState, action: SubProductMainPageActi
     }
 }
 
-export default function SubProductMainPage() {
+export default function SubProductListPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
     const nav = useNavigate();
 
@@ -115,15 +115,16 @@ export default function SubProductMainPage() {
                 <tr className="table-dark">
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
-                    <th scope="col">Bazowa cena</th>
+                    <th scope="col">Podstawowa cena</th>
                     <th scope="col-2"></th>
                 </tr>
             </thead>
             <tbody>
                 {state.subProducts.map(p => {
                     return <tr key={p.id} onClick={() => {
-                        nav(Paths.subProduct.replace(":id", p.id.toString()))
-                    }}>
+                        if (hasProductRoles)
+                            nav(Paths.subProduct.replace(":id", p.id.toString()))
+                    }} data-toggle="tooltip" data-placement="top" title={p.description}>
                         <td>
                             {p.code}
                         </td>

@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Models.Entities
 {
 	public class SaleParameter : IEntity
 	{
+		[MaxLength(1024)]
 		public string? Value { get; set; }
 		public int SaleId { get; set; }
 		public virtual Sale Sale { get; set; } = default!;

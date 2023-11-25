@@ -2,12 +2,13 @@ import { Form, Formik } from "formik";
 import { Api } from "../../api/Api";
 import { ProductDto, ProductStatusEnum } from "../../api/Dtos";
 import { Button, Modal } from "react-bootstrap";
-import { TypeInputGroup, Option, GetProductStatusDisplayName, AsInputGroup, SeparateErrors, ValidationMessage, CheckboxInputGroup } from "../../helpers/FormHelpers";
+import { TypeInputGroup, Option, AsInputGroup, SeparateErrors, ValidationMessage, CheckboxInputGroup } from "../../helpers/FormHelpers";
 import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { EditProductRequest } from "../../api/ApiRequests";
 import { boolean, number, object, string } from "yup";
 import { useEffect } from "react";
+import { GetProductStatusDisplayName } from "../../helpers/EnumHelpers";
 
 type AddOrEditProductModalProps = {
     onSuccess: () => void

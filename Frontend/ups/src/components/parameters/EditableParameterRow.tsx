@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ParameterDto } from "../api/Dtos";
-import { GetParameterTypeDisplayName } from "../helpers/FormHelpers";
-import { toastDefaultError, toastError } from "../helpers/ToastHelpers";
-import { Api } from "../api/Api";
+import { ParameterDto } from "../../api/Dtos";
+import { toastDefaultError, toastError } from "../../helpers/ToastHelpers";
+import { Api } from "../../api/Api";
+import { GetParameterTypeDisplayName } from "../../helpers/EnumHelpers";
 
-type ParameterRowProps = {
+type EditableParameterRowProps = {
     parameter: ParameterDto,
     refresh: () => void,
     editParameter: (p: ParameterDto) => void,
@@ -12,7 +12,7 @@ type ParameterRowProps = {
     deleteOption: (optionId: number) => void,
 }
 
-export const ParameterRow = ({ parameter, refresh, editParameter, deleteParameter, deleteOption }: ParameterRowProps) => {
+export const EditableParameterRow = ({ parameter, refresh, editParameter, deleteParameter, deleteOption }: EditableParameterRowProps) => {
     const [showOptions, setShowOptions] = useState(true);
     const [addingNew, setAddingNew] = useState(false);
     const [newOptionValue, setNewOptionValue] = useState("");

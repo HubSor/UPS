@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
-import { PaginationBar, GetProductStatusDisplayName } from "../helpers/FormHelpers"
+import { PaginationBar } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
 import { AuthHelpers } from "../helpers/AuthHelper"
+import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
 
-type ProductMainPageState =  {
+type ProductListPageState =  {
     addProductModalOpen: boolean,
     editProductModal: ProductDto | null,
     deleteProductModal: ProductDto | null,
@@ -19,7 +20,7 @@ type ProductMainPageState =  {
     statuses: ProductStatusEnum[]
 }
 
-const initalState: ProductMainPageState = {
+const initalState: ProductListPageState = {
     addProductModalOpen: false,
     refresh: true,
     products: [],
@@ -35,7 +36,7 @@ const initalState: ProductMainPageState = {
     },
 }
 
-type ProductMainPageAction =
+type ProductListPageAction =
     | { type: 'addProductButton' }
     | { type: 'editProductButton', product: ProductDto }
     | { type: 'deleteProductButton', product: ProductDto }
@@ -44,7 +45,7 @@ type ProductMainPageAction =
     | { type: 'changedPage', pageIndex: number }
     | { type: 'fetchedProducts', products: ProductDto[], pagination: ResultPaginationDto }
 
-function reducer (state: ProductMainPageState, action: ProductMainPageAction): ProductMainPageState {
+function reducer (state: ProductListPageState, action: ProductListPageAction): ProductListPageState {
     switch(action.type){
         case 'addProductButton':
             return { ...state, addProductModalOpen: true }
@@ -63,7 +64,7 @@ function reducer (state: ProductMainPageState, action: ProductMainPageAction): P
     }
 }
 
-export default function ProductMainPage() {
+export default function ProductListPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
     const nav = useNavigate();
 
@@ -115,15 +116,16 @@ export default function ProductMainPage() {
                     <th scope="col">Kod</th>
                     <th scope="col">Nazwa</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Bazowa cena</th>
+                    <th scope="col">Podstawowa cena</th>
                     <th scope="col-3"></th>
                 </tr>
             </thead>
             <tbody>
                 {state.products.map(p => {
                     return <tr key={p.id} onClick={() => {
-                        nav(Paths.product.replace(":id", p.id.toString()))
-                    }}>
+                        if (hasProductRoles)
+                            nav(Paths.product.replace(":id", p.id.toString()))
+                    }} data-toggle="tooltip" data-placement="top" title={p.description}>
                         <td>
                             {p.code}
                         </td>

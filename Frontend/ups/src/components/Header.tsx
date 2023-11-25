@@ -2,16 +2,23 @@ import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { Paths } from "../App";
+import { RoleEnum } from "../api/Dtos";
 
 export default function Header(){
     const nav = useNavigate();
 
     const showUsers = AuthHelpers.HasUserRoles();
+    const showSales = AuthHelpers.HasSalesRoles();
+    const showSaleHistory = AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.SaleManager])
+    const showClients = AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.ClientManager])
 
     return <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
         <a href={Paths.main} className="navbar-title">UPS</a>
         <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
+                {showSales && <li className="nav-item">
+                    <a className="nav-link" href={Paths.salePath}>Sprzedaż</a>
+                </li>}
                 <li className="nav-item">
                     <a className="nav-link" href={Paths.products}>Produkty</a>
                 </li>
@@ -20,6 +27,12 @@ export default function Header(){
                 </li>
                 {showUsers && <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
+                </li>}
+                {showSaleHistory && <li className="nav-item">
+                    <a className="nav-link" href={Paths.sales}>Transakcje</a>
+                </li>}
+                {showClients && <li className="nav-item">
+                    <a className="nav-link" href={Paths.clients}>Klienci</a>
                 </li>}
             </ul>
         </div>

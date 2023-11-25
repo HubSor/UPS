@@ -9,6 +9,8 @@ export enum RoleEnum {
     Seller = 1,
     UserManager = 2,
     ProductManager = 3,
+    SaleManager = 4,
+    ClientManager = 5,
 }
 
 export const GetRoleKey = (role: RoleEnum): string => {
@@ -90,4 +92,57 @@ export type ParameterDto = {
     type: ParameterTypeEnum,
     required: boolean,
     options: ExtendedOptionDto[]
+}
+
+export type SaleParameterDto = ParameterDto & {
+    answer?: string
+}
+
+export type AnsweredParameterDto = ParameterDto & {
+    answer?: string | boolean,
+    subProductId?: number
+}
+
+export type SaveSaleParameterDto = {
+    parameterId: number,
+    answer?: string
+}
+
+export type ClientDto = {
+    phoneNumber?: string,
+    email?: string,
+    id: number
+}
+
+export type CompanyClientDto = ClientDto & {
+    companyName: string,
+    regon?: string,
+    nip?: string
+}
+
+export type PersonClientDto = ClientDto & {
+    firstName: string,
+    lastName: string,
+    pesel?: string
+}
+
+export type SaleDto = {
+    saleId: number,
+    productCode: string,
+    subProductCodes: string[],
+    personClient?: PersonClientDto,
+    companyClient?: CompanyClientDto,
+    saleTime: string,
+    totalPrice: number,
+}
+
+export type SaleDetailsDto = {
+    saleId: number,
+    personClient?: PersonClientDto,
+    companyClient?: CompanyClientDto,
+    saleTime: string,
+    totalPrice: number,
+    product: ProductDto,
+    subProducts: SubProductDto[],
+    parameters: SaleParameterDto[],
 }

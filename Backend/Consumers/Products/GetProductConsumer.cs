@@ -37,6 +37,8 @@ public class GetProductConsumer : TransactionConsumer<GetProductOrder, GetProduc
 			.ThenInclude(o => o.Options)
 			.Include(p => p.SubProductInProducts)
 			.ThenInclude(sp => sp.SubProduct)
+			.ThenInclude(sp => sp.Parameters)
+			.ThenInclude(p => p.Options)
 			.FirstAsync(p => p.Id == context.Message.ProductId);
 
 		productDto = new ExtendedProductDto(product);

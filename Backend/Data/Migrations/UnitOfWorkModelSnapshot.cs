@@ -22,6 +22,102 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Models.Entities.AddressType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AddressTypes");
+                });
+
+            modelBuilder.Entity("Models.Entities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Client");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Models.Entities.ClientAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("HouseNumber")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("character varying(6)");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("StreetNumber")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TypeObjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("TypeObjectId");
+
+                    b.ToTable("ClientAddresses");
+                });
+
             modelBuilder.Entity("Models.Entities.Parameter", b =>
                 {
                     b.Property<int>("Id")
@@ -179,16 +275,24 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("FinalPrice")
                         .HasColumnType("money");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("SaleTime")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int>("SellerId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ProductId");
 
@@ -209,7 +313,8 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Value")
-                        .HasColumnType("text");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
 
                     b.HasKey("SaleId", "ParameterId");
 
@@ -282,12 +387,6 @@ namespace Data.Migrations
                     b.Property<int>("SubProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("InSalePrice")
-                        .HasColumnType("money");
-
-                    b.Property<bool>("ManualOverride")
-                        .HasColumnType("boolean");
-
                     b.HasKey("SaleId", "SubProductId");
 
                     b.HasIndex("SubProductId");
@@ -344,6 +443,66 @@ namespace Data.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Models.Entities.CompanyClient", b =>
+                {
+                    b.HasBaseType("Models.Entities.Client");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Nip")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Regon")
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
+
+                    b.HasDiscriminator().HasValue("CompanyClient");
+                });
+
+            modelBuilder.Entity("Models.Entities.PersonClient", b =>
+                {
+                    b.HasBaseType("Models.Entities.Client");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Pesel")
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
+
+                    b.HasDiscriminator().HasValue("PersonClient");
+                });
+
+            modelBuilder.Entity("Models.Entities.ClientAddress", b =>
+                {
+                    b.HasOne("Models.Entities.Client", "Client")
+                        .WithMany("Addresses")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Entities.AddressType", "TypeObject")
+                        .WithMany()
+                        .HasForeignKey("TypeObjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("TypeObject");
+                });
+
             modelBuilder.Entity("Models.Entities.Parameter", b =>
                 {
                     b.HasOne("Models.Entities.Product", "Product")
@@ -391,6 +550,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Models.Entities.Sale", b =>
                 {
+                    b.HasOne("Models.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("Models.Entities.Product", "Product")
                         .WithMany("Sales")
                         .HasForeignKey("ProductId")
@@ -402,6 +565,8 @@ namespace Data.Migrations
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Client");
 
                     b.Navigation("Product");
 
@@ -485,6 +650,11 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Models.Entities.Client", b =>
+                {
+                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("Models.Entities.Parameter", b =>

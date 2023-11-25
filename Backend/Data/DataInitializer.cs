@@ -24,7 +24,9 @@ namespace Data
 				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko." },
 				new (){ Id = RoleEnum.Seller, Description = "Prawa do sprzedaży na ścieżce sprzedaży." },
 				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników." },
-				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami." },
+				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami i podproduktami." },
+				new (){ Id = RoleEnum.SaleManager, Description = "Prawo do wyświetlania historii transakcji." },
+				new (){ Id = RoleEnum.ClientManager, Description = "Prawo do zarządzania klientami." },
 			};
 			
 			context.Roles.AddRange(roles);
@@ -56,11 +58,18 @@ namespace Data
 				new (){ Id = ProductStatusEnum.Offered, Description = "Sprzedaż tego produktu jest dozwolona"},
 				new (){ Id = ProductStatusEnum.Withdrawn, Description = "Produkt wycofany ze sprzedaży. Sprzedaż niemożliwa."},
 			});
-				
+
+			context.AddressTypes.AddRange(new List<AddressType>()
+			{
+				new (){ Id = AddressTypeEnum.Residence, Name = "Adres zamieszkania"},
+				new (){ Id = AddressTypeEnum.Correspondence, Name = "Adres korespondencyjny"},
+				new (){ Id = AddressTypeEnum.Registered, Name = "Adres zameldowania"},
+			});
+
 			context.Products.Add(new()
 			{
-				Name = "Produkt testowy",
-				Code = "P1",
+				Name = "Produkt osobowy",
+				Code = "POSOB",
 				Status = ProductStatusEnum.Offered,
 				AnonymousSaleAllowed = false,
 				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -90,21 +99,73 @@ namespace Data
 				Code = "PP3",
 				BasePrice = 4.99m,
 			});
+			
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Jan",
+				LastName = "Kowalski",
+				PhoneNumber = "123456789",
+				Email = "test@gmail.com",
+				Pesel = "17211116123",
+			});
+
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Janusz",
+				LastName = "Nowak",
+				PhoneNumber = "999111333",
+				Email = "jnowak@gmail.com",
+			});
 
 			context.SaveChanges();
-			
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "krzak sp. z o.o.",
+				PhoneNumber = "123456789",
+				Email = "test@gmail.com",
+				Regon = "133632926",
+			});
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "januszex sp. z o.o.",
+				PhoneNumber = "888777666",
+				Email = "januszex@gmail.com",
+				Nip = "1336329260",
+			});
+
 			context.SubProductsInProducts.Add(new()
 			{
 				ProductId = 1,
 				SubProductId = 1,
 				InProductPrice = 9.99m
 			});
-			
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 1,
+				SubProductId = 2,
+				InProductPrice = 9.99m
+			});
+
+			context.Products.Add(new()
+			{
+				Name = "Produkt anonimowy",
+				Code = "PANON",
+				Status = ProductStatusEnum.Offered,
+				AnonymousSaleAllowed = true,
+				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+				BasePrice = 99.99m,
+			});
+
 			context.Sales.Add(new()
 			{
 				ProductId = 1,
 				FinalPrice = 100.99m,
 				SellerId = 1,
+				ClientId = 1,
+				SaleTime = DateTime.Now
 			});
 			
 			var parameterTypes = new List<ParameterType>()
@@ -124,7 +185,7 @@ namespace Data
 				Name = "Imię zwierzęcia domowego",
 				Type = ParameterTypeEnum.Text,
 				Required = false,
-				ProductId = 1
+				SubProductId = 3
 			});
 
 			context.Parameters.Add(new()
@@ -137,10 +198,50 @@ namespace Data
 
 			context.Parameters.Add(new()
 			{
-				Name = "Waga kupującego (kg)",
+				Name = "Czy masz dobry humor?",
+				Type = ParameterTypeEnum.Checkbox,
+				Required = false,
+				ProductId = 1
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Miasto",
+				Type = ParameterTypeEnum.Text,
+				Required = true,
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Ile nóg ma człowiek?",
 				Type = ParameterTypeEnum.Integer,
 				Required = true,
-				ProductId = 1
+				ProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Ile to jest 5/2?",
+				Type = ParameterTypeEnum.Decimal,
+				Required = false,
+				SubProductId = 1
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Czy jesteś sprzedawcą?",
+				Type = ParameterTypeEnum.Checkbox,
+				Required = false,
+				SubProductId = 2
+			});
+
+			context.Parameters.Add(new()
+			{
+				Name = "Opisz mi swój dzień",
+				Type = ParameterTypeEnum.TextArea,
+				Required = false,
+				SubProductId = 3
 			});
 
 			var dayParam = new Parameter()
@@ -148,19 +249,41 @@ namespace Data
 				Name = "Dzień tygodnia",
 				Type = ParameterTypeEnum.Select,
 				Required = true,
-				ProductId = 1
+				ProductId = 2
 			};
 
 			context.Parameters.Add(dayParam);
 			
 			context.SaveChanges();
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 2,
+				SubProductId = 1,
+				InProductPrice = 9.99m
+			});
+
+			context.SubProductsInProducts.Add(new()
+			{
+				ProductId = 2,
+				SubProductId = 3,
+				InProductPrice = 9.99m
+			});
+
+			context.ClientAddresses.Add(new() 
+			{
+				City = "Warszawa",
+				Street = "Polna",
+				StreetNumber = "43A",
+				PostalCode = "01-234",
+				ClientId = 1,
+				Type = AddressTypeEnum.Residence,
+			});
 			
 			context.SubProductsInSales.Add(new()
 			{
 				SaleId = 1,
 				SubProductId = 1,
-				InSalePrice = 99.99m,
-				ManualOverride = true,
 			});
 			
 			var days = new List<string>()

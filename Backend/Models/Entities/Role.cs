@@ -8,6 +8,8 @@ namespace Models.Entities
 		Seller = 1,
 		UserManager = 2,
 		ProductManager = 3,
+		SaleManager = 4,
+		ClientManager = 5,
 	}
 	
 	public class Role : DictEntity<RoleEnum>

@@ -18,9 +18,15 @@ namespace Data
 		public DbSet<Sale> Sales { get; set; }
 		public DbSet<SaleParameter> SaleParameters { get; set; }
 		public DbSet<SubProductInSale> SubProductsInSales { get; set; }
+		public DbSet<AddressType> AddressTypes { get; set; }
+		public DbSet<ClientAddress> ClientAddresses { get; set; }
+		public DbSet<Client> Clients { get; set; }
+		public DbSet<PersonClient> PersonClients { get; set; }
+		public DbSet<CompanyClient> CompanyClients { get; set; }
 		
 		public UnitOfWork(DbContextOptions options) : base(options)
 		{
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 		}
 		
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

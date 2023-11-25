@@ -1,4 +1,4 @@
-import { OptionDto, PaginationDto, ParameterTypeEnum, ProductStatusEnum } from "./Dtos"
+import { OptionDto, PaginationDto, ParameterTypeEnum, ProductStatusEnum, SaveSaleParameterDto } from "./Dtos"
 
 export type LoginRequest = {
     username: string,
@@ -11,9 +11,17 @@ export type AddUserRequest = {
     roleIds: number[]
 }
 
-export type ListUsersRequest = {
+type BaseListPaginatedRequest = {
     pagination: PaginationDto
 }
+
+export type ListUsersRequest = BaseListPaginatedRequest
+
+export type ListSalesRequest = BaseListPaginatedRequest
+
+export type ListPersonClientsRequest = BaseListPaginatedRequest
+
+export type ListCompanyClientsRequest = BaseListPaginatedRequest
 
 export type EditUserRequest = {
     username: string,
@@ -53,14 +61,12 @@ export type UnassignSubProductsRequest = {
     subProductIds: number[]
 }
 
-export type ListProductsRequest = {
+export type ListProductsRequest = BaseListPaginatedRequest & {
     statuses: ProductStatusEnum[],
-    pagination: PaginationDto
 }
 
-export type ListSubProductsRequest = {
+export type ListSubProductsRequest = BaseListPaginatedRequest & {
     productId?: number,
-    pagination: PaginationDto
 }
 
 export type EditProductRequest = {
@@ -99,6 +105,10 @@ export type GetProductRequest = {
     productId: number
 }
 
+export type GetSaleRequest = {
+    saleId: number
+}
+
 export type GetSubProductRequest = {
     subProductId: number
 }
@@ -131,4 +141,29 @@ export type AddOptionRequest = {
 
 export type DeleteOptionRequest = {
     optionId: number
+}
+
+export type UpsertClientRequest = {
+    isCompany: boolean,
+    clientId?: number,
+    phoneNumber?: string,
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    pesel?: string,
+    companyName?: string,
+    regon?: string,
+    nip?: string,
+}
+
+export type FindClientRequest = {
+    identifier: string
+}
+
+export type SaveSaleRequest = {
+    productId: number,
+    subProductIds: number[],
+    clientId?: number,
+    answers: SaveSaleParameterDto[],
+    totalPrice: number,
 }

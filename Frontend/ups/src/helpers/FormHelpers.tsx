@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from "formik"
-import { ParameterTypeEnum, ProductStatusEnum, RoleEnum } from "../api/Dtos"
+import { CompanyClientDto, PersonClientDto, ResultPaginationDto } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 import React from "react"
 
@@ -8,10 +8,16 @@ export type Option = {
     label: string
 }
 
+export const defaultPagination: ResultPaginationDto = {
+    pageSize: 10,
+    pageIndex: 0,
+    totalCount: 0,
+    totalPages: 1,
+    count: 0
+}
+
 export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
     return <ErrorMessage name={fieldName} render={msg => {
-        if (fieldName.startsWith('options'))
-            debugger;
         return <div className="error-msg">
             {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
                 {m}
@@ -21,56 +27,32 @@ export const ValidationMessage = ({ fieldName }: { fieldName: string }) => {
     }}/>
 }
 
+export const NoFormikValidationMessage = ({ msg }: { msg?: string }) => {
+    if (!msg)
+        return <></>
+
+    return <div className="error-msg m-2">
+        {msg.split('\n').map((m, idx) => <React.Fragment key={idx}>
+            {m}
+            <br />
+        </React.Fragment>)}
+    </div>
+}
+
 export const SeparateErrors = (errors: { [key: string]: string[] }) => {
     let newObj: { [k: string]: string } = {};
     Object.keys(errors).forEach(k => newObj[k] =  errors[k].join('\n'));
     return newObj;
 }
 
-export const GetRoleDisplayName = (role: RoleEnum) => {
-    switch (role) {
-        case RoleEnum.Administrator:
-            return "Administrator";
-        case RoleEnum.UserManager:
-            return "Zarządca użytkowników";
-        case RoleEnum.Seller:
-            return "Sprzedawca";
-        case RoleEnum.ProductManager:
-            return "Zarządca produktów";
-    }
+export const JoinErrors = (errors: { [key: string]: string[] }) => {
+    let newStr = "";
+    Object.keys(errors).forEach(k => newStr += errors[k].join('\n') + '\n');
+    return newStr;
 }
 
-export const GetProductStatusDisplayName = (role?: ProductStatusEnum) => {
-    switch (role) {
-        case ProductStatusEnum.NotOffered:
-            return "Nieoferowany";
-        case ProductStatusEnum.Withdrawn:
-            return "Wycofany";
-        case ProductStatusEnum.Offered:
-            return "Oferowany";
-        default:
-            return ""
-    }
-}
-
-export const GetParameterTypeDisplayName = (type?: ParameterTypeEnum) => {
-    switch (type) {
-        case ParameterTypeEnum.Integer:
-            return "Liczba całkowita";
-        case ParameterTypeEnum.Checkbox:
-            return "Flaga";
-        case ParameterTypeEnum.Decimal:
-            return "Liczba dziesiętna";
-        case ParameterTypeEnum.Select:
-            return "Wybór jednokrotny";
-        case ParameterTypeEnum.Text:
-            return "Tekst";
-        case ParameterTypeEnum.TextArea:
-            return "Długi tekst";
-        default:
-            return ""
-    }
-}
+export const getClientName = (pClient?: PersonClientDto, cClient?: CompanyClientDto) => !!cClient ?
+    cClient.companyName : !!pClient ? pClient.firstName + ' ' + pClient.lastName : ""
 
 type InputGroupProps = {
     name: string,
@@ -85,6 +67,16 @@ type AsInputGroupProps = InputGroupProps & {
     options?: Option[],
     as?: string,
     rows?: number
+}
+
+export const InlineTextInputGroup = (props: InputGroupProps) => {
+    return <div className="form-group row mb-4">
+        <label className="col-sm-2 col-form-label">{props.label}</label>
+        <div className="col">
+            <Field type="text" name={props.name} className="form-control"/>
+            <ValidationMessage fieldName={props.name} />
+        </div>
+    </div>
 }
 
 export function TypeInputGroup(props: TypeInputGroupProps){
