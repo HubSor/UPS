@@ -34,7 +34,7 @@ export class AuthHelpers {
     }
 
     public static HasSalesRoles() {
-        return AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.Seller]);
+        return AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.Seller, RoleEnum.SaleManager]);
     }
 
     public static ClearAllData() {

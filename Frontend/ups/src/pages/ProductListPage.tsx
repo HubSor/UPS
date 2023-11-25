@@ -123,7 +123,8 @@ export default function ProductListPage() {
             <tbody>
                 {state.products.map(p => {
                     return <tr key={p.id} onClick={() => {
-                        nav(Paths.product.replace(":id", p.id.toString()))
+                        if (hasProductRoles)
+                            nav(Paths.product.replace(":id", p.id.toString()))
                     }} data-toggle="tooltip" data-placement="top" title={p.description}>
                         <td>
                             {p.code}

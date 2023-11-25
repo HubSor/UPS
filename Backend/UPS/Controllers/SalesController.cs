@@ -15,7 +15,7 @@ namespace UPS.Controllers
 		}
 		
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
@@ -23,7 +23,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
 		[Route("list")]
 		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
 		{
@@ -31,7 +31,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
 		[Route("get")]
 		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
 		{

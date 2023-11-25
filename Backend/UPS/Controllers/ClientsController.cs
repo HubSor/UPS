@@ -15,7 +15,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
@@ -23,7 +23,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
@@ -31,7 +31,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Administrator)]
 		[Route("people/list")]
 		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
 		{
@@ -39,7 +39,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Seller, RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
 		{
@@ -47,7 +47,7 @@ namespace UPS.Controllers
 		}
 
 		[HttpPost]
-		[AuthorizeRoles(RoleEnum.Administrator)]
+		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Administrator)]
 		[Route("companies/list")]
 		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
 		{

@@ -9,6 +9,8 @@ export default function Header(){
 
     const showUsers = AuthHelpers.HasUserRoles();
     const showSales = AuthHelpers.HasSalesRoles();
+    const showSaleHistory = AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.SaleManager])
+    const showClients = AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.ClientManager])
 
     return <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
         <a href={Paths.main} className="navbar-title">UPS</a>
@@ -26,10 +28,10 @@ export default function Header(){
                 {showUsers && <li className="nav-item">
                     <a className="nav-link" href={Paths.users}>Użytkownicy</a>
                 </li>}
-                {AuthHelpers.HasRole(RoleEnum.Administrator) && <li className="nav-item">
+                {showSaleHistory && <li className="nav-item">
                     <a className="nav-link" href={Paths.sales}>Transakcje</a>
                 </li>}
-                {AuthHelpers.HasRole(RoleEnum.Administrator) && <li className="nav-item">
+                {showClients && <li className="nav-item">
                     <a className="nav-link" href={Paths.clients}>Klienci</a>
                 </li>}
             </ul>

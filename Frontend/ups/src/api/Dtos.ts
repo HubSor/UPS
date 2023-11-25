@@ -9,6 +9,8 @@ export enum RoleEnum {
     Seller = 1,
     UserManager = 2,
     ProductManager = 3,
+    SaleManager = 4,
+    ClientManager = 5,
 }
 
 export const GetRoleKey = (role: RoleEnum): string => {

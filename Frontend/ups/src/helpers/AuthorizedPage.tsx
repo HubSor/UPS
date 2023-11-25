@@ -4,13 +4,15 @@ import { AuthHelpers } from "./AuthHelper";
 import { Paths } from "../App";
 import Header from "../components/Header";
 import { Api } from "../api/Api";
-import { UPSToastContainer } from "./ToastHelpers";
+import { UPSToastContainer, toastError } from "./ToastHelpers";
+import { RoleEnum } from "../api/Dtos";
 
 type AuththorizedPageProps = {
-    page: JSX.Element
+    page: JSX.Element,
+    requiredRoles: RoleEnum[] | true
 }
 
-export function AuthorizedPage({ page }: AuththorizedPageProps) {
+export function AuthorizedPage({ page, requiredRoles }: AuththorizedPageProps) {
     const nav = useNavigate();
 
     useEffect(() => {
@@ -23,10 +25,17 @@ export function AuthorizedPage({ page }: AuththorizedPageProps) {
                 AuthHelpers.ClearAllData();
                 nav(Paths.login);
             }
+
+            if (requiredRoles !== true){
+                if (!AuthHelpers.HasAnyRole([ ...requiredRoles, RoleEnum.Administrator ])){
+                    nav(Paths.main)
+                    toastError("Strona niedostępna dla posiadanych uprawnień")
+                }
+            }
         }
 
         checkIfLoggedIn();
-    }, [nav])
+    }, [nav, requiredRoles])
 
     return <>
         <header>

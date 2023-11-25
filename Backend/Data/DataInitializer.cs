@@ -24,7 +24,9 @@ namespace Data
 				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko." },
 				new (){ Id = RoleEnum.Seller, Description = "Prawa do sprzedaży na ścieżce sprzedaży." },
 				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników." },
-				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami." },
+				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami i podproduktami." },
+				new (){ Id = RoleEnum.SaleManager, Description = "Prawo do wyświetlania historii transakcji." },
+				new (){ Id = RoleEnum.ClientManager, Description = "Prawo do zarządzania klientami." },
 			};
 			
 			context.Roles.AddRange(roles);
