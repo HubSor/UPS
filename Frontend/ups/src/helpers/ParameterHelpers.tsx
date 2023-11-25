@@ -4,8 +4,10 @@ import { Field } from "formik";
 import { ValidationMessage } from "./FormHelpers";
 import React from "react";
 
-function getParamDisplay(p: ParameterDto) {
-    return p.name + (p.required ? "*" : " (opcjonalny)") 
+function ParamLabel({ param } : { param: ParameterDto } ) {
+    return <label className="col-sm-3 col-form-label">
+        {param.name + (param.required ? "*" : " (opcjonalny)")}
+    </label>
 }
 
 const baseParameterValidator = (p: ParameterDto, validators: ((v: any) => string | undefined)[]) => {
@@ -58,75 +60,75 @@ export type ParameterProps = {
     fieldName: string,
 }
 
+const formGroupClass = "form-group mb-2 mt-2 row";
+
 export function TextParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Group className="mb-3">
-        <Form.Label>
-            {getParamDisplay(param)}
-        </Form.Label>
-        <Field validate={baseParameterValidator(param, [validateText])}
-            type='text' name={fieldName} className="form-control" />
-        <ValidationMessage fieldName={fieldName} />
+    return <Form.Group className={formGroupClass}>
+        <ParamLabel param={param} />
+        <div className="col">
+            <Field validate={baseParameterValidator(param, [validateText])}
+                type='text' name={fieldName} className="form-control" />
+            <ValidationMessage fieldName={fieldName} />
+        </div>
     </Form.Group>
 }
 
 export function IntegerParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Group className="mb-3">
-        <Form.Label>
-            {getParamDisplay(param)}
-        </Form.Label>
-        <Field validate={baseParameterValidator(param, [validateInteger])}
-            type='number' name={fieldName} className="form-control" />
-        <ValidationMessage fieldName={fieldName} />
+    return <Form.Group className={formGroupClass}>
+        <ParamLabel param={param} />
+        <div className="col">
+            <Field validate={baseParameterValidator(param, [validateInteger])}
+                type='number' name={fieldName} className="form-control" />
+            <ValidationMessage fieldName={fieldName} />
+        </div>
     </Form.Group>
 }
 
 export function DecimalParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Group className="mb-3">
-        <Form.Label>
-            {getParamDisplay(param)}
-        </Form.Label>
-        <Field type='number' validate={baseParameterValidator(param, [validateDecimal])}
-            name={fieldName} className="form-control" step={"0,01"} />
-        <ValidationMessage fieldName={fieldName} />
+    return <Form.Group className={formGroupClass}>
+        <ParamLabel param={param} />
+        <div className="col">
+            <Field type='number' validate={baseParameterValidator(param, [validateDecimal])}
+                name={fieldName} className="form-control" step={"0,01"} />
+            <ValidationMessage fieldName={fieldName} />
+        </div>
     </Form.Group>
 }
 
 export function TextAreaParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Group className="mb-3">
-        <Form.Label>
-            {getParamDisplay(param)}
-        </Form.Label>
-        <Field as={'textarea'} rows={4} validate={baseParameterValidator(param, [validateTextArea])}
-            values={undefined} className="form-control" name={fieldName} />
-        <ValidationMessage fieldName={fieldName} />
+    return <Form.Group className={formGroupClass}>
+        <ParamLabel param={param} />
+        <div className="col">
+            <Field as={'textarea'} rows={4} validate={baseParameterValidator(param, [validateTextArea])}
+                values={undefined} className="form-control" name={fieldName} />
+            <ValidationMessage fieldName={fieldName} />
+        </div>
     </Form.Group>
 }
 
 export function SelectParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Group className="mb-3">
-        <Form.Label>
-            {getParamDisplay(param)}
-        </Form.Label>
-        <Field as="select" name={fieldName} className="form-control" validate={baseParameterValidator(param, [])}>
-            <option value={undefined}>---</option>
-            {!!param.options && param.options.map(o => {
-                return <React.Fragment key={o.value}>
-                    <option value={o.value}>{o.value}</option>
-                </React.Fragment>
-            })}
-        </Field>
-        <ValidationMessage fieldName={fieldName} />
+    return <Form.Group className={formGroupClass}>
+        <ParamLabel param={param} />
+        <div className="col">
+            <Field as="select" name={fieldName} className="form-control" validate={baseParameterValidator(param, [])}>
+                <option value={undefined}>---</option>
+                {!!param.options && param.options.map(o => {
+                    return <React.Fragment key={o.value}>
+                        <option value={o.value}>{o.value}</option>
+                    </React.Fragment>
+                })}
+            </Field>
+            <ValidationMessage fieldName={fieldName} />
+        </div>
     </Form.Group>
 }
 
 export function CheckboxParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Check className="mb-3">
+    return <Form.Check className={formGroupClass}>
         <Field type="checkbox" name={fieldName} className="form-check-input"
             validate={baseParameterValidator(param, [])} />
         &nbsp;
-        <Form.Label className="form-check-label">
-            {getParamDisplay(param)}
-        </Form.Label>
+        <ParamLabel param={param} />
         <ValidationMessage fieldName={fieldName} />
     </Form.Check>
 }

@@ -22,7 +22,7 @@ const fillClientInfoSchema = object<UpsertClientRequest>().shape({
         .min(9, "Zbyt krótki REGON").max(14, "Zbyt długi REGON"),
     phoneNumber: string().nullable()
         .matches(/^[0-9]{9,15}/, "Niepoprawny numer telefonu")
-        .min(9, "Zbyt krótki numer telefonu").max(14, "Zbyt długi numer telefonu"),
+        .min(9, "Zbyt krótki numer telefonu").max(15, "Zbyt długi numer telefonu"),
     companyName: string().nullable()
         .max(256, "Zbyt długa nazwa firmy"),
     firstName: string().nullable()
@@ -65,6 +65,7 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
         companyName: "",
         lastName: "",
         pesel: "",
+        clientId: undefined
     }
 
     return <div>
@@ -160,7 +161,7 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
                         setFieldValue("regon", "")
                         setFieldValue("nip", "")
                     }
-                    setFieldValue("clientId", "")
+                    setFieldValue("clientId", undefined)
                     setEditingExistingClient(false)
                 }, [setFieldValue, values.isCompany])
 

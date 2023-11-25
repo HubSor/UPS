@@ -43,10 +43,10 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
 
                 return <FForm>
                     <FieldArray name="productParams" render={(fh) => <div>
-                        <h5 className="align-left">
+                        <h5>
                             Parametry produktu
                         </h5>
-                        <div className="align-left">
+                        <div>
                             {state.product?.name}
                         </div>
                         {state.product?.parameters.map((p, idx) => {
@@ -59,12 +59,12 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
                     <hr/>
                     <FieldArray name="subProductParams" render={(fh) => <div>
                         {selectedSubproducts.length > 0 && <>
-                            <h5 className="align-left">
+                            <h5>
                                 Parametry podproduktów
                             </h5>
                             {selectedSubproducts.flatMap(sp => {
                                 return <React.Fragment key={sp.id}>
-                                    <div className="align-left">
+                                    <div>
                                         {sp.name}
                                     </div>
                                     {sp.parameters.map(p => {
