@@ -46,3 +46,11 @@ export type FindCompanyClientResponse = {
 export type ListSalesResponse = {
     sales: PagedList<SaleDto>
 }
+
+export type ListPersonClientsResponse = {
+    clients: PagedList<PersonClientDto>
+}
+
+export type ListCompanyClientsResponse = {
+    clients: PagedList<CompanyClientDto>
+}

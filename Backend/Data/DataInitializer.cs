@@ -107,6 +107,14 @@ namespace Data
 				Pesel = "17211116123",
 			});
 
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Janusz",
+				LastName = "Nowak",
+				PhoneNumber = "999111333",
+				Email = "jnowak@gmail.com",
+			});
+
 			context.SaveChanges();
 
 			context.Clients.Add(new CompanyClient()
@@ -115,6 +123,14 @@ namespace Data
 				PhoneNumber = "123456789",
 				Email = "test@gmail.com",
 				Regon = "133632926",
+			});
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "januszex sp. z o.o.",
+				PhoneNumber = "888777666",
+				Email = "januszex@gmail.com",
+				Nip = "1336329260",
 			});
 
 			context.SubProductsInProducts.Add(new()

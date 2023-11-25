@@ -29,6 +29,9 @@ export default function Header(){
                 {AuthHelpers.HasRole(RoleEnum.Administrator) && <li className="nav-item">
                     <a className="nav-link" href={Paths.sales}>Transakcje</a>
                 </li>}
+                {AuthHelpers.HasRole(RoleEnum.Administrator) && <li className="nav-item">
+                    <a className="nav-link" href={Paths.clients}>Klienci</a>
+                </li>}
             </ul>
         </div>
         <div className="navbar-login">

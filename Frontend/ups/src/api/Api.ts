@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ApiResponse, FindCompanyClientResponse, FindPersonClientResponse, GetProductResponse, GetSubProductResponse, ListProductsResponse, ListSalesResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse, UpsertClientResponse } from "./ApiResponses";
-import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, FindClientRequest, GetProductRequest, GetSubProductRequest, ListProductsRequest, ListSalesRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, SaveSaleRequest, UnassignSubProductsRequest, UpsertClientRequest } from "./ApiRequests";
+import { ApiResponse, FindCompanyClientResponse, FindPersonClientResponse, GetProductResponse, GetSubProductResponse, ListCompanyClientsResponse, ListPersonClientsResponse, ListProductsResponse, ListSalesResponse, ListSubProductsResponse, ListUsersResponse, LoginResponse, UpsertClientResponse } from "./ApiResponses";
+import { AddOptionRequest, AddParameterRequest, AddProductRequest, AddSubProductRequest, AddUserRequest, AssignSubProductRequest, DeleteOptionRequest, DeleteParameterRequest, DeleteProductRequest, DeleteSubProductRequest, DeleteUserRequest, EditParameterRequest, EditProductRequest, EditSubProductAssignmentRequest, EditSubProductRequest, EditUserRequest, FindClientRequest, GetProductRequest, GetSubProductRequest, ListCompanyClientsRequest, ListPersonClientsRequest, ListProductsRequest, ListSalesRequest, ListSubProductsRequest, ListUsersRequest, LoginRequest, SaveSaleRequest, UnassignSubProductsRequest, UpsertClientRequest } from "./ApiRequests";
 import { AuthHelpers } from "../helpers/AuthHelper";
 import { toastAuthError } from "../helpers/ToastHelpers";
 
@@ -171,6 +171,14 @@ export class Api {
 
     static async ListSales(request: ListSalesRequest) {
         return await getApiResponse<ListSalesRequest, ListSalesResponse>(request, this.url + "/sales/list")
+    }
+
+    static async ListPersonClients(request: ListPersonClientsRequest) {
+        return await getApiResponse<ListPersonClientsRequest, ListPersonClientsResponse>(request, this.url + "/clients/people/list")
+    }
+
+    static async ListCompanyClients(request: ListCompanyClientsRequest) {
+        return await getApiResponse<ListCompanyClientsRequest, ListCompanyClientsResponse>(request, this.url + "/clients/companies/list")
     }
 
     static async Session() {

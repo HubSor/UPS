@@ -11,13 +11,17 @@ export type AddUserRequest = {
     roleIds: number[]
 }
 
-export type ListUsersRequest = {
+type BaseListPaginatedRequest = {
     pagination: PaginationDto
 }
 
-export type ListSalesRequest = {
-    pagination: PaginationDto
-}
+export type ListUsersRequest = BaseListPaginatedRequest
+
+export type ListSalesRequest = BaseListPaginatedRequest
+
+export type ListPersonClientsRequest = BaseListPaginatedRequest
+
+export type ListCompanyClientsRequest = BaseListPaginatedRequest
 
 export type EditUserRequest = {
     username: string,
@@ -57,14 +61,12 @@ export type UnassignSubProductsRequest = {
     subProductIds: number[]
 }
 
-export type ListProductsRequest = {
+export type ListProductsRequest = BaseListPaginatedRequest & {
     statuses: ProductStatusEnum[],
-    pagination: PaginationDto
 }
 
-export type ListSubProductsRequest = {
+export type ListSubProductsRequest = BaseListPaginatedRequest & {
     productId?: number,
-    pagination: PaginationDto
 }
 
 export type EditProductRequest = {
