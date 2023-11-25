@@ -105,6 +105,10 @@ export type GetProductRequest = {
     productId: number
 }
 
+export type GetSaleRequest = {
+    saleId: number
+}
+
 export type GetSubProductRequest = {
     subProductId: number
 }

@@ -1,7 +1,7 @@
 using Dtos.Sales;
 using FluentValidation;
 
-namespace Validators.Products
+namespace Validators.Sales
 {
 	public class SaveSaleParameterDtoValidator : AbstractValidator<SaveSaleParameterDto>
 	{

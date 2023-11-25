@@ -8,3 +8,7 @@ public class ListSalesResponse
 {
 	public PagedList<SaleDto> Sales { get; set; } = default!;
 }
+public class GetSaleResponse
+{
+	public SaleDetailsDto SaleDetailsDto { get; set; } = default!;
+}

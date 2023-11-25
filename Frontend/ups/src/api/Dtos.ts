@@ -92,6 +92,10 @@ export type ParameterDto = {
     options: ExtendedOptionDto[]
 }
 
+export type SaleParameterDto = ParameterDto & {
+    answer?: string
+}
+
 export type AnsweredParameterDto = ParameterDto & {
     answer?: string,
     subProductId?: number
@@ -128,4 +132,15 @@ export type SaleDto = {
     companyClient?: CompanyClientDto,
     saleTime: string,
     totalPrice: number,
+}
+
+export type SaleDetailsDto = {
+    saleId: number,
+    personClient?: PersonClientDto,
+    companyClient?: CompanyClientDto,
+    saleTime: string,
+    totalPrice: number,
+    product: ProductDto,
+    subProducts: SubProductDto[],
+    parameters: SaleParameterDto[],
 }
