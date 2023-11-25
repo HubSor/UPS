@@ -26,7 +26,8 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
     return <div>
         <h3>Uzupełnij parametry sprzedaży</h3>
         {nextStepDisabled && <div className="alert alert-primary">
-            Uzupełnij wymagane parametry sprzedaży aby kontynuować
+            Kliknij 'Zapisz' aby kontynuować. <br/>
+            Musisz uzupełnić wszystkie wymagane parametry.
         </div>}
         <br/>
         <Formik

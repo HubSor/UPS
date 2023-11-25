@@ -61,7 +61,7 @@ function reducer(state: SalePathState, action: SalePathAction): SalePathState {
         case 'removeSubProduct':
             return { ...state, subProductIds: state.subProductIds.filter(s => s !== action.subProductId), subProductAnswers: [] }
         case 'setProduct':
-            return { ...state, productId: action.productId, subProductIds: [], productAnswers: [], product: null, subProductAnswers: [] };
+            return { ...state, productId: action.productId, subProductIds: [], productAnswers: null, product: null, subProductAnswers: null };
         case 'nextStep':
             return { ...state, step: state.step + 1}
         case 'prevStep':
@@ -129,13 +129,16 @@ export default function SalePathPage() {
         <h2>Ścieżka Sprzedaży - Krok {state.step.toString()}</h2>
         <div className="salepath-buttons">
             <div>
-                {state.step > SalePathStep.ChooseProduct && <button type="button" className="btn btn-lg btn-outline-primary"
-                    onClick={() => {
-                        dispatch({ type: 'prevStep' })
-                    }}
-                >
-                    Cofnij
-                </button>}
+                {state.step > SalePathStep.ChooseProduct &&
+                    state.step < SalePathStep.FinishSale &&
+                    <button type="button" className="btn btn-lg btn-outline-primary"
+                        onClick={() => {
+                            dispatch({ type: 'prevStep' })
+                        }}
+                    >
+                        Cofnij
+                    </button>
+                }
             </div>
             <div>
                 {state.step < SalePathStep.Summary && <button type="button" className="btn btn-lg btn-primary"

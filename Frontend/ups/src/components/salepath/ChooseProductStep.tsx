@@ -22,7 +22,7 @@ export const ChooseProductStep = ({ state, dispatch }: ChooseProductProps) => {
     return <div>
         <h3>Wybierz produkt</h3>
         {!state.productId && <div className="alert alert-warning">
-            Nalezy wybrać produkt aby kontynuować
+            Należy wybrać produkt aby kontynuować.
         </div>}
         <br/>
         <table className="table table-striped col-lg-3">

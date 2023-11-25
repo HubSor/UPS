@@ -78,6 +78,7 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
             }}
         >
             {function FormInner({ isSubmitting, values, errors }) {
+                const showOptions = values.type.toString() === ParameterTypeEnum.Select.toString();
                 return <FForm>
                     <Modal.Header className="darkblue">
                         <Modal.Title>
@@ -92,9 +93,9 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
                         <CheckboxInputGroup name="required" label="Wymagany" />
                         <AsInputGroup name="type" label="Typ" as="select" options={parameterTypeOptions} />
                         <Form.Group className="mb-3">
-                            <Form.Label>
+                            {showOptions && <Form.Label>
                                 Opcje
-                            </Form.Label>
+                            </Form.Label>}
                             <FieldArray 
                                 name="options"
                                 render={helpers => <div>
@@ -111,11 +112,11 @@ export function AddOrEditParameterModal({ onSuccess, close, editedParameter, pro
                                             Usuń
                                         </button>
                                     </div>)}
-                                    <button className="btn btn-primary m-1" type="button"
+                                    {showOptions && <button className="btn btn-primary m-1" type="button"
                                         onClick={() => helpers.push("")}
                                     >
                                         Dodaj opcję
-                                    </button>
+                                    </button>}
                                 </div>}
                             />
                         </Form.Group>

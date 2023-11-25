@@ -15,7 +15,7 @@ namespace Validators.Sales
 				.GreaterThan(0).WithMessage("Identyfikator klienta musi być dodatni").When(x => x.ClientId.HasValue);
 
 			RuleFor(x => x.SubProductIds)
-				.NotEmpty().WithMessage("Należy podać identyfikatory podproduktów")
+				.NotNull().WithMessage("Należy podać identyfikatory podproduktów")
 				.Must(ids => ids.All(id => id > 0)).WithMessage("Niepoprawne identyfikatory produktów");
 
 			RuleFor(x => x.TotalPrice)

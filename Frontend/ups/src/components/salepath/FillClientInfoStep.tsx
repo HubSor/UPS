@@ -34,9 +34,11 @@ const fillClientInfoSchema = object<UpsertClientRequest>().shape({
 })
 
 const validateMinimalData = (values: UpsertClientRequest, fh: FormikHelpers<UpsertClientRequest>): boolean => {
-    if (values.isCompany && !values.companyName){
-        fh.setFieldError("companyName", "Należy podać nazwę firmy")
-        return false;
+    if (values.isCompany){
+        if (!values.companyName){
+            fh.setFieldError("companyName", "Należy podać nazwę firmy")
+            return false;
+        }
     }
     else {
         if (!values.firstName) {
@@ -71,7 +73,7 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
     return <div>
         <h3>Uzupełnij dane klienta</h3>
         {editingExistingClient && <div className="alert alert-primary">
-            Edytujesz klienta wczytanego z systemu
+            Edytujesz klienta wczytanego z systemu.
         </div>}
         <br/>
         <Formik

@@ -6,7 +6,7 @@ export const ChooseSubProductsStep = ({ state, dispatch }: ChooseSubProductsProp
     return <div>
         <h3>Wybierz podprodukty</h3>
         {state.subProductIds.length === 0 && state.product && state.product.subProducts.length > 0 && <div className="alert alert-warning">
-            Nie wybrano żadnego podproduktu
+            Nie wybrano żadnego podproduktu.
         </div>}
         <br/>
         {!!state.product && <table className="table table-striped col-lg-3">

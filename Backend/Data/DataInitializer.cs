@@ -198,6 +198,14 @@ namespace Data
 
 			context.Parameters.Add(new()
 			{
+				Name = "Czy masz dobry humor?",
+				Type = ParameterTypeEnum.Checkbox,
+				Required = false,
+				ProductId = 1
+			});
+
+			context.Parameters.Add(new()
+			{
 				Name = "Miasto",
 				Type = ParameterTypeEnum.Text,
 				Required = true,

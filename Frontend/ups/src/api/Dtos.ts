@@ -99,7 +99,7 @@ export type SaleParameterDto = ParameterDto & {
 }
 
 export type AnsweredParameterDto = ParameterDto & {
-    answer?: string,
+    answer?: string | boolean,
     subProductId?: number
 }
 

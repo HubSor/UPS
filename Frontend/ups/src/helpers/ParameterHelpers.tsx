@@ -124,13 +124,14 @@ export function SelectParameter({ param, fieldName }: ParameterProps) {
 }
 
 export function CheckboxParameter({ param, fieldName }: ParameterProps) {
-    return <Form.Check className={formGroupClass}>
-        <Field type="checkbox" name={fieldName} className="form-check-input"
-            validate={baseParameterValidator(param, [])} />
-        &nbsp;
+    return <Form.Group className={formGroupClass}>
         <ParamLabel param={param} />
-        <ValidationMessage fieldName={fieldName} />
-    </Form.Check>
+        <div className="col">
+            <Field type="checkbox" name={fieldName} className="form-check-input align-left"
+                validate={baseParameterValidator(param, [])} />
+            <ValidationMessage fieldName={fieldName} />
+        </div>
+    </Form.Group>
 }
 
 export function ParameterSwitch(props: ParameterProps){

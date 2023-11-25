@@ -50,6 +50,12 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			if (!parameter.Options.Select(o => o.Value).Contains(answer))
 				return false;
 		}
+		
+		if (parameter.Type == ParameterTypeEnum.Checkbox)
+		{
+			if (answer != "TAK" && answer != "NIE")
+				return false;
+		}
 
 		return true;
 	}
