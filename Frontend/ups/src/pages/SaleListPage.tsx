@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ResultPaginationDto, SaleDto } from "../api/Dtos"
-import { PaginationBar, defaultPagination } from "../helpers/FormHelpers"
+import { PaginationBar, defaultPagination, getClientName } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
+import { useNavigate } from "react-router-dom"
+import { Paths } from "../App"
 
 type SaleListPageState =  {
     refresh: boolean
@@ -34,6 +36,7 @@ function reducer (state: SaleListPageState, action: SaleListPageAction): SaleLis
 
 export default function SaleListPage() {
     const [state, dispatch] = useReducer(reducer, initalState);
+    const nav = useNavigate();
 
     const fetchData = useCallback(() => {
         Api.ListSales({ pagination: state.pagination }).then(res => {
@@ -68,13 +71,11 @@ export default function SaleListPage() {
             </thead>
             <tbody>
                 {state.sales.map(s => {
-                    const clientString = !!s.companyClient ?
-                        s.companyClient.companyName :
-                        !!s.personClient ?
-                            s.personClient.firstName + ' ' + s.personClient.lastName :
-                            ""
+                    const clientString = getClientName(s.personClient, s.companyClient);
 
-                    return <tr key={s.saleId}>
+                    return <tr key={s.saleId} onClick={() => {
+                        nav(Paths.sale.replace(":id", s.saleId.toString()))
+                    }}>
                         <td>
                             {s.saleId}
                         </td>

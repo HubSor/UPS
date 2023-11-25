@@ -88,7 +88,7 @@ type SubProductPageProps = {
     subProductId: number
 }
 
-export function SubProductPageInner({ subProductId }: SubProductPageProps) {
+function SubProductPageInner({ subProductId }: SubProductPageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
     const nav = useNavigate();
 
@@ -152,7 +152,7 @@ export function SubProductPageInner({ subProductId }: SubProductPageProps) {
         <h3>{state.subProduct?.code} {state.subProduct?.name}</h3>
         <br />
         <Form.Label className="align-left">
-            Dane
+            Dane podproduktu
         </Form.Label>
         <div className="card">
             <form className="card-body product-info">

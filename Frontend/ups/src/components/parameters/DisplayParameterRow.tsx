@@ -1,7 +1,9 @@
-import { AnsweredParameterDto } from "../../api/Dtos"
-
 type DisplayParameterRowProps = {
-    parameter: AnsweredParameterDto
+    parameter: {
+        id: number,
+        name: string,
+        answer?: string
+    }
 }
 
 export const DisplayParameterRow = ({ parameter }: DisplayParameterRowProps) => {

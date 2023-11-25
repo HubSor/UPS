@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from "formik"
-import { ResultPaginationDto } from "../api/Dtos"
+import { CompanyClientDto, PersonClientDto, ResultPaginationDto } from "../api/Dtos"
 import { Form } from "react-bootstrap"
 import React from "react"
 
@@ -51,6 +51,9 @@ export const JoinErrors = (errors: { [key: string]: string[] }) => {
     return newStr;
 }
 
+export const getClientName = (pClient?: PersonClientDto, cClient?: CompanyClientDto) => !!cClient ?
+    cClient.companyName : !!pClient ? pClient.firstName + ' ' + pClient.lastName : ""
+
 type InputGroupProps = {
     name: string,
     label: string,
@@ -75,7 +78,6 @@ export const InlineTextInputGroup = (props: InputGroupProps) => {
         </div>
     </div>
 }
-
 
 export function TypeInputGroup(props: TypeInputGroupProps){
     return <Form.Group className="mb-3">
