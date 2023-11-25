@@ -5,7 +5,7 @@ import { object, string } from "yup"
 import { Api } from "../../api/Api"
 import { ApiResponse, UpsertClientResponse } from "../../api/ApiResponses"
 import { toastError, toastInfo } from "../../helpers/ToastHelpers"
-import { CheckboxInputGroup, SeparateErrors, TypeInputGroup, ValidationMessage } from "../../helpers/FormHelpers"
+import { CheckboxInputGroup, InlineTextInputGroup, SeparateErrors, ValidationMessage } from "../../helpers/FormHelpers"
 import { useCallback, useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import debounce from 'lodash.debounce';
@@ -57,6 +57,14 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
 
     const initialValues: UpsertClientRequest = {
         isCompany: false,
+        phoneNumber: "",
+        email: "",
+        regon: "",
+        nip: "",
+        firstName: "",
+        companyName: "",
+        lastName: "",
+        pesel: "",
     }
 
     return <div>
@@ -81,8 +89,19 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
                         toastError('Nie udało się zapisać klienta')
                 }
                 
-                if (validateMinimalData(v, fh))
-                    Api.UpsertClient(v).then(handleApiResponse)
+                const values = { ...v, 
+                    phoneNumber: v.phoneNumber || undefined,
+                    email: v.email || undefined,
+                    firstName: v.firstName || undefined,
+                    lastName: v.lastName || undefined,
+                    pesel: v.pesel || undefined,
+                    companyName: v.companyName || undefined,
+                    regon: v.regon || undefined,
+                    nip: v.nip || undefined,
+                }
+
+                if (validateMinimalData(values, fh))
+                    Api.UpsertClient(values).then(handleApiResponse)
 
                 fh.setSubmitting(false);
             }}
@@ -93,11 +112,11 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
                         if (values.isCompany && (!!values.regon || !!values.nip)) {
                             Api.FindCompanyClient({ identifier: values.regon ?? values.nip ?? "" }).then(res => {
                                 if (res.data && res.success) {
-                                    setFieldValue('regon', res.data.companyClient.regon)
-                                    setFieldValue('nip', res.data.companyClient.nip)
+                                    setFieldValue('regon', res.data.companyClient.regon ?? "")
+                                    setFieldValue('nip', res.data.companyClient.nip ?? "")
                                     setFieldValue('companyName', res.data.companyClient.companyName)
-                                    setFieldValue('phoneNumber', res.data.companyClient.phoneNumber)
-                                    setFieldValue('email', res.data.companyClient.email)
+                                    setFieldValue('phoneNumber', res.data.companyClient.phoneNumber ?? "")
+                                    setFieldValue('email', res.data.companyClient.email ?? "")
                                     setFieldValue('clientId', res.data.companyClient.id)
                                     setEditingExistingClient(true)
                                     toastInfo("Wczytano firmę " + res.data.companyClient.companyName)
@@ -107,11 +126,11 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
                         if (!values.isCompany && !!values.pesel) {
                             Api.FindPersonClient({ identifier: values.pesel }).then(res => {
                                 if (res.data && res.success) {
-                                    setFieldValue('pesel', res.data.personClient.pesel)
+                                    setFieldValue('pesel', res.data.personClient.pesel ?? "")
                                     setFieldValue('firstName', res.data.personClient.firstName)
                                     setFieldValue('lastName', res.data.personClient.lastName)
-                                    setFieldValue('phoneNumber', res.data.personClient.phoneNumber)
-                                    setFieldValue('email', res.data.personClient.email)
+                                    setFieldValue('phoneNumber', res.data.personClient.phoneNumber ?? "")
+                                    setFieldValue('email', res.data.personClient.email ?? "")
                                     setFieldValue('clientId', res.data.personClient.id)
                                     setEditingExistingClient(true)
                                     toastInfo("Wczytano osobę " + res.data.personClient.firstName +
@@ -132,16 +151,16 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
 
                 useEffect(() => {
                     if (values.isCompany){
-                        setFieldValue("firstName", undefined)
-                        setFieldValue("pesel", undefined)
-                        setFieldValue("lastName", undefined)
+                        setFieldValue("firstName", "")
+                        setFieldValue("pesel", "")
+                        setFieldValue("lastName", "")
                     }
                     else{
-                        setFieldValue("companyName", undefined)
-                        setFieldValue("regon", undefined)
-                        setFieldValue("nip", undefined)
+                        setFieldValue("companyName", "")
+                        setFieldValue("regon", "")
+                        setFieldValue("nip", "")
                     }
-                    setFieldValue("clientId", undefined)
+                    setFieldValue("clientId", "")
                     setEditingExistingClient(false)
                 }, [setFieldValue, values.isCompany])
 
@@ -149,17 +168,17 @@ export const FillClientInfoStep = ({ state, dispatch }: FillClientInfoProps) => 
                     <ValidationMessage fieldName="clientId" />
                     <CheckboxInputGroup name="isCompany" label="Czy klient jest firmą?"/>
                     {!values.isCompany && <>
-                        <TypeInputGroup name="firstName" label="Imię" type="text" />
-                        <TypeInputGroup name="lastName" label="Nazwisko" type="text" />
-                        <TypeInputGroup name="pesel" label="PESEL" type="text" />
+                        <InlineTextInputGroup name="firstName" label="Imię"/>
+                        <InlineTextInputGroup name="lastName" label="Nazwisko"/>
+                        <InlineTextInputGroup name="pesel" label="PESEL"/>
                     </>}
                     {!!values.isCompany && <>
-                        <TypeInputGroup name="companyName" label="Nazwa firmy" type="text" />
-                        <TypeInputGroup name="regon" label="REGON" type="text" />
-                        <TypeInputGroup name="nip" label="NIP" type="text" />
+                        <InlineTextInputGroup name="companyName" label="Nazwa firmy" />
+                        <InlineTextInputGroup name="regon" label="REGON" />
+                        <InlineTextInputGroup name="nip" label="NIP" />
                     </>}
-                    <TypeInputGroup name="phoneNumber" label="Numer telefonu" type="text" />
-                    <TypeInputGroup name="email" label="Adres E-mail" type="text" />
+                    <InlineTextInputGroup name="phoneNumber" label="Numer telefonu" />
+                    <InlineTextInputGroup name="email" label="Adres E-mail" />
                     <div>
                         <Button type="submit" disabled={isSubmitting}>
                             Zapisz

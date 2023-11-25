@@ -66,6 +66,17 @@ type AsInputGroupProps = InputGroupProps & {
     rows?: number
 }
 
+export const InlineTextInputGroup = (props: InputGroupProps) => {
+    return <div className="form-group row mb-4">
+        <label className="col-sm-2 col-form-label">{props.label}</label>
+        <div className="col">
+            <Field type="text" name={props.name} className="form-control"/>
+            <ValidationMessage fieldName={props.name} />
+        </div>
+    </div>
+}
+
+
 export function TypeInputGroup(props: TypeInputGroupProps){
     return <Form.Group className="mb-3">
         <Form.Label>
