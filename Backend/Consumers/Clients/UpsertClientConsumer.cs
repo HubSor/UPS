@@ -33,6 +33,11 @@ public class UpsertClientConsumer : TransactionConsumer<UpsertClientOrder, Upser
 				clientFound = true;
 		}
 
+		if (client == null)
+			logger.LogInformation("Client not found. Insert mode");
+		else
+			logger.LogInformation("Client {ClientId} found. Update mode", client.Id);
+			
 		client ??= context.Message.IsCompany ? new CompanyClient() : new PersonClient();
 		
 		return true;
@@ -50,25 +55,27 @@ public class UpsertClientConsumer : TransactionConsumer<UpsertClientOrder, Upser
 			personClient.Pesel = context.Message.Pesel;
 			personClient.FirstName = context.Message.FirstName!;
 			personClient.LastName = context.Message.LastName!;
+			logger.LogInformation("Upserting person");
 		}
 		if (client is CompanyClient companyClient)
 		{
 			companyClient.CompanyName = context.Message.CompanyName!;
 			companyClient.Nip = context.Message.Nip;
 			companyClient.Regon = context.Message.Regon;
+			logger.LogInformation("Upserting company");
 		}
-			
+
 		if (clientFound)
 			await clients.UpdateAsync(client);
 		else
 			await clients.AddAsync(client); 
 	}
 
-    public override async Task PostTransaction(ConsumeContext<UpsertClientOrder> context)
-    {
-        await RespondAsync(context, new UpsertClientResponse()
+	public override async Task PostTransaction(ConsumeContext<UpsertClientOrder> context)
+	{
+		await RespondAsync(context, new UpsertClientResponse()
 		{
 			ClientId = client!.Id
 		});
-    }
+	}
 }

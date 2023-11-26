@@ -42,6 +42,7 @@ public class GetProductConsumer : TransactionConsumer<GetProductOrder, GetProduc
 			.FirstAsync(p => p.Id == context.Message.ProductId);
 
 		productDto = new ExtendedProductDto(product);
+		logger.LogInformation("Got product {ProductId}", product.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<GetProductOrder> context)

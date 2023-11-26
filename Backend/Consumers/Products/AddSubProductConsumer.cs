@@ -43,12 +43,14 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 		};
 		
 		await subProducts.AddAsync(subProduct);
+		logger.LogInformation("Added subproduct {SubProductId}", subProduct.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AddSubProductOrder> context)
 	{	
 		if (context.Message.ProductId.HasValue)
 		{
+			logger.LogInformation("Assigning new subproduct to product {ProductId}", context.Message.ProductId);
 			var order = new AssignSubProductOrder(context.Message.ProductId.Value, subProduct.Id, subProduct.BasePrice);
 			try
 			{
@@ -56,14 +58,20 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 				var response = await client.GetResponse<ApiResponse<AssignSubProductResponse>>(order);
 				
 				if (response.Message.Success)
+				{
 					await RespondAsync(context, new AddSubProductResponse());
-				else 
+					logger.LogInformation("Successfully assigned new subproduct");
+				}
+				else
+				{
 					await context.RespondAsync(ApiResponse<AddSubProductResponse>.FromApiResponse(response.Message));
+					logger.LogWarning("Failed assigned new subproduct");
+				}
 			}
 			catch (Exception ex)
 			{
 				await RespondWithValidationFailAsync(context, "ProductId", "Powiązanie z produktem nie powiodło się");
-				logger.LogError(ex, "Error while assigning subproduct");
+				logger.LogError(ex, "Error while assigning subproduct {SubProductId} to product {ProductId}", subProduct.Id, context.Message.ProductId);
 			}
 		}
 		else

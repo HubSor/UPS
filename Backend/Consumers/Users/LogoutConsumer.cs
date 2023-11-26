@@ -22,5 +22,6 @@ public class LogoutConsumer : BaseConsumer<LogoutOrder, LogoutResponse>
 			
 		await httpContextAccessor.HttpContext!.SignOutAsync();
 		await RespondAsync(context, new LogoutResponse());
+		logger.LogInformation("Logged out");
 	}
 }

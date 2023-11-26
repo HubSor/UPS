@@ -44,6 +44,7 @@ public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, E
 		subProduct.BasePrice = context.Message.BasePrice;
 		
 		await subProducts.UpdateAsync(subProduct);
+		logger.LogInformation("Edited subproduct {SubProductId}", subProduct.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<EditSubProductOrder> context)

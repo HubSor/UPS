@@ -39,6 +39,8 @@ public class EditSubProductAssignmentConsumer : TransactionConsumer<EditSubProdu
 		editedEntity.InProductPrice = context.Message.NewPrice;
 		
 		await subProductsInProducts.UpdateAsync(editedEntity);
+		logger.LogInformation("Edited subproduct assignment for product {ProductId} and subproduct {SubProductId}",
+			editedEntity.ProductId, editedEntity.SubProductId);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<EditSubProductAssignmentOrder> context)

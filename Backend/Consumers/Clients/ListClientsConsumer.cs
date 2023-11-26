@@ -28,7 +28,7 @@ public abstract class ListClientsConsumer<T, O, D, R> : BaseConsumer<O, R>
 	{
 		var count = clients.GetAll().Count();
 		var list = clients.GetAll()
-			.OrderBy(x => x.Id)
+			.OrderByDescending(x => x.Id)
 			.Skip(context.Message.Pagination.PageIndex * context.Message.Pagination.PageSize)
 			.Take(context.Message.Pagination.PageSize)
 			.Select(GetClientDto)
@@ -49,6 +49,7 @@ public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListP
 
 	protected override async Task RespondAsync(ConsumeContext<ListPersonClientsOrder> context, ICollection<PersonClientDto> dtos, int count)
 	{
+		logger.LogInformation("Listing clients of type {ClientType}", nameof(PersonClient));
 		await RespondAsync(context, new ListPersonClientsResponse()
 		{
 			Clients = new PagedList<PersonClientDto>(dtos, count,
@@ -68,6 +69,7 @@ public class ListCompanyClientsConsumer : ListClientsConsumer<CompanyClient, Lis
 
 	protected override async Task RespondAsync(ConsumeContext<ListCompanyClientsOrder> context, ICollection<CompanyClientDto> dtos, int count)
 	{
+		logger.LogInformation("Listing clients of type {ClientType}", nameof(CompanyClient));
 		await RespondAsync(context, new ListCompanyClientsResponse()
 		{
 			Clients = new PagedList<CompanyClientDto>(dtos, count,

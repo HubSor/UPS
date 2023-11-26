@@ -43,6 +43,7 @@ public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse
 			.FirstAsync(p => p.Id == context.Message.SaleId);
 
 		saleDetailsDto = new SaleDetailsDto(sale);
+		logger.LogInformation("Got sale {SaleId} details", sale.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<GetSaleOrder> context)

@@ -32,7 +32,7 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 	{
 		var saleCount = sales.GetAll().Count();
 		var saleList = await sales.GetAll()
-			.OrderBy(x => x.Id)
+			.OrderByDescending(x => x.Id)
 			.Include(x => x.Client)
 			.Include(x => x.Product)
 			.Include(x => x.SubProducts)
@@ -56,5 +56,6 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 			Sales = new PagedList<SaleDto>(saleList, saleCount,
 				context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)
 		});
+		logger.LogInformation("Listed sales");
 	}
 }

@@ -9,7 +9,7 @@ namespace Data
 		public static void Initialize(UnitOfWork context, IPasswordService passwordService)
 		{
 			//context.Database.EnsureCreated();
-						
+			
 			if (context.Database.GetPendingMigrations().Any())
 			{
 				context.Database.Migrate();

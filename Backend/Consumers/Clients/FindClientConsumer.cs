@@ -43,6 +43,7 @@ public abstract class FindClientConsumer<T, O, R> : TransactionConsumer<O, R>
 
 	public override Task InTransaction(ConsumeContext<O> context)
 	{
+		logger.LogInformation("Creating found client Dto");
 		clientDto =  CreateClientDto(context);
 		return Task.CompletedTask;
 	}

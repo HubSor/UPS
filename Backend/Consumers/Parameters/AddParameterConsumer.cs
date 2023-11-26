@@ -57,6 +57,7 @@ public class AddParameterConsumer : TransactionConsumer<AddParameterOrder, AddPa
 		}).ToList() ?? new List<ParameterOption>();
 		
 		await parameters.AddAsync(parameter);
+		logger.LogInformation("Added parameter with ProductId: {ProductId} SubProductId: {SubProductId}", parameter.ProductId, parameter.SubProductId);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AddParameterOrder> context)

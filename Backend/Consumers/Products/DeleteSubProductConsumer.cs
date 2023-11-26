@@ -43,23 +43,29 @@ public class DeleteSubProductConsumer : TransactionConsumer<DeleteSubProductOrde
 			.ThenInclude(p => p.SaleParameters)
 			.FirstAsync(p => p.Id == context.Message.SubProductId);
 
+		logger.LogInformation("Deleting subproduct {SubProductId}", subProduct.Id);
+
 		foreach (var assignment in subProduct.SubProductInProducts.ToList())
 		{
+			logger.LogInformation("Deleting assignments for deleted subproduct");
 			await subProductsInProducts.DeleteAsync(assignment);
 			subProduct.SubProductInProducts.Remove(assignment);
 		}
 			
 		foreach(var param in subProduct.Parameters.ToList())
 		{
+			logger.LogInformation("Deleting parameters for deleted subproduct");
 			if (param.SaleParameters.Any())
 			{
 				param.Deleted = true;
 				await parameters.UpdateAsync(param);
+				logger.LogInformation("Soft deleted parameter {ParameterId}", param.Id);
 			}
 			else
 			{
 				await parameters.DeleteAsync(param);
 				subProduct.Parameters.Remove(param);
+				logger.LogInformation("Hard deleted parameter {ParameterId}", param.Id);
 			}
 		}
 		
@@ -67,12 +73,14 @@ public class DeleteSubProductConsumer : TransactionConsumer<DeleteSubProductOrde
 		{
 			subProduct.Deleted = true;
 			await subProducts.UpdateAsync(subProduct);
+			logger.LogInformation("Soft deleted subproduct {SubProductId}", subProduct.Id);
 		}
 		else 
 		{
-			await subProducts.DeleteAsync(subProduct);	
+			await subProducts.DeleteAsync(subProduct);
+			logger.LogInformation("Hard deleted subproduct {SubProductId}", subProduct.Id);
 		}
-		
+
 		await unitOfWork.FlushAsync();
 	}
 

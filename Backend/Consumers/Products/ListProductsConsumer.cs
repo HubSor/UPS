@@ -36,6 +36,7 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 		{
 			Products = new PagedList<ProductDto>(dtos, totalCount, context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)	
 		};
+		logger.LogInformation("Listed products");
 	}
 
 	public override async Task PostTransaction(ConsumeContext<ListProductsOrder> context)

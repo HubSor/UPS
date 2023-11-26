@@ -51,6 +51,7 @@ public class AddUserConsumer : TransactionConsumer<AddUserOrder, AddUserResponse
 		};
 		
 		await users.AddAsync(newUser);
+		logger.LogInformation("Added new user {UserId}", newUser.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AddUserOrder> context)

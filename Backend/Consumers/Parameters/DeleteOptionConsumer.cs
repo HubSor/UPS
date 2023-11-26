@@ -35,7 +35,8 @@ public class DeleteOptionConsumer : TransactionConsumer<DeleteOptionOrder, Delet
 
 	public override async Task InTransaction(ConsumeContext<DeleteOptionOrder> context)
 	{
-		await options.DeleteAsync(option);	
+		await options.DeleteAsync(option);
+		logger.LogInformation("Deleted option {OptionId}", option.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<DeleteOptionOrder> context)

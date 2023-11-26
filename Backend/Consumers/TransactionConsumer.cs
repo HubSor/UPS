@@ -17,22 +17,25 @@ public abstract class TransactionConsumer<Order, Response> : BaseConsumer<Order,
 	
 	public override async Task Consume(ConsumeContext<Order> context)
 	{
+		logger.LogTrace("Starting pre transaction action of {ConsumerName}", GetType().Name);
 		if (await PreTransaction(context))
 		{
 			try
 			{
-				// todo logowanie
+				logger.LogTrace("Beggining transaction of {ConsumerName}", GetType().Name);
 				await unitOfWork.BeginTransasctionAsync();
 				await InTransaction(context);
 				await unitOfWork.FlushAsync();
 				await unitOfWork.CommitTransasctionAsync();
-				
+				logger.LogTrace("Committed transaction of {ConsumerName}", GetType().Name);
+
+				logger.LogTrace("Starting post transaction action of {ConsumerName}", GetType().Name);
 				await PostTransaction(context);
 			}
 			catch (Exception ex)
 			{
 				await unitOfWork.RollbackTransactionAsync();
-				logger.LogInformation(ex, "Exception in TransactionConsumer");
+				logger.LogInformation(ex, "Exception in {ConsumerName}", GetType().Name);
 				throw;
 			}
 		}

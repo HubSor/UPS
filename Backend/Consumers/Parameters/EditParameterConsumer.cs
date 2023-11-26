@@ -38,6 +38,7 @@ public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, Edi
 
 	public override async Task InTransaction(ConsumeContext<EditParameterOrder> context)
 	{
+		logger.LogInformation("Editing parameter {ParameterId}", parameter.Id);
 		parameter.Required = context.Message.Required;
 		parameter.Name = context.Message.Name;
 		
@@ -47,6 +48,7 @@ public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, Edi
 
 		if (oldAllowsOptions)
 		{
+			logger.LogInformation("Deleting options of old parameter");
 			foreach (var opt in parameter.Options.ToList())
 			{
 				await options.DeleteAsync(opt);
@@ -56,6 +58,7 @@ public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, Edi
 		
 		if (newAllowsOptions)
 		{
+			logger.LogInformation("Adding options for new parameter");
 			parameter.Options = context.Message.Options?.Select(x => new ParameterOption()
 			{
 				Value = x.Value,
@@ -64,6 +67,7 @@ public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, Edi
 		}
 
 		await parameters.UpdateAsync(parameter);
+		logger.LogInformation("Edited parameter {ParameterId}", parameter.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<EditParameterOrder> context)

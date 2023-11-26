@@ -155,7 +155,7 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 
 	public override async Task InTransaction(ConsumeContext<SaveSaleOrder> context)
 	{
-		await sales.AddAsync(new Sale
+		var newSale = new Sale
 		{
 			ClientId = context.Message.ClientId,
 			ProductId = context.Message.ProductId,
@@ -163,12 +163,13 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			FinalPrice = context.Message.TotalPrice,
 			SaleParameters = context.Message.Answers
 				.Where(a => !string.IsNullOrEmpty(a.Answer))
-				.Select(a => {
+				.Select(a =>
+				{
 					var optionId = RelevantParameters
 						.First(rp => rp.Id == a.ParameterId).Options
 						.FirstOrDefault(o => o.Value == a.Answer)?.Id;
-						
-					return new SaleParameter 
+
+					return new SaleParameter
 					{
 						Value = a.Answer,
 						ParameterId = a.ParameterId,
@@ -180,7 +181,11 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 				SubProductId = id
 			}).ToList(),
 			SaleTime = DateTime.Now
-		});
+		};
+		
+		await sales.AddAsync(newSale);
+		
+		logger.LogInformation("Saved new sale {SaleId}", newSale.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<SaveSaleOrder> context)
