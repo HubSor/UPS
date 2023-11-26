@@ -39,5 +39,7 @@ public class ListUsersConsumer : BaseConsumer<ListUsersOrder, ListUsersResponse>
 			Users = new PagedList<UserDto>(userList, userCount,
 				context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)
 		});
+		
+		logger.LogInformation("Listing users");
 	}
 }

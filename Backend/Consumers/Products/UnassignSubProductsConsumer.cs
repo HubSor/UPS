@@ -53,6 +53,7 @@ public class UnassignSubProductsConsumer : TransactionConsumer<UnassignSubProduc
 			.Where(x => context.Message.SubProductIds.Contains(x.SubProductId) && context.Message.ProductId == x.ProductId).ToListAsync();
 		foreach (var toDelete in toDeleteList)
 		{
+			logger.LogInformation("Deleting assignment of subproduct {SubProductId} to product {ProductId}", toDelete.SubProductId, toDelete.ProductId);
 			await subProductsInProducts.DeleteAsync(toDelete);	
 		}
 	}

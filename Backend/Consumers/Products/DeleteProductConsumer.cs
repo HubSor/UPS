@@ -42,24 +42,29 @@ public class DeleteProductConsumer : TransactionConsumer<DeleteProductOrder, Del
 			.ThenInclude(p => p.SaleParameters)
 			.FirstAsync(p => p.Id == context.Message.ProductId);
 
+		logger.LogInformation("Deleting product {ProductId}", product.Id);
 
 		foreach (var assignment in product.SubProductInProducts.ToList())
 		{
+			logger.LogInformation("Deleting assignments for deleted product");
 			await subProductsInProducts.DeleteAsync(assignment);
 			product.SubProductInProducts.Remove(assignment);
 		}
 
 		foreach (var param in product.Parameters.ToList())
 		{
+			logger.LogInformation("Deleting parameters for deleted product");
 			if (param.SaleParameters.Any())
 			{
 				param.Deleted = true;
 				await parameters.UpdateAsync(param);
+				logger.LogInformation("Soft deleted parameter {ParameterId}", param.Id);
 			}
 			else
 			{
 				await parameters.DeleteAsync(param);
 				product.Parameters.Remove(param);
+				logger.LogInformation("Hard deleted parameter {ParameterId}", param.Id);
 			}
 		}
 
@@ -67,10 +72,12 @@ public class DeleteProductConsumer : TransactionConsumer<DeleteProductOrder, Del
 		{
 			product.Deleted = true;
 			await products.UpdateAsync(product);
+			logger.LogInformation("Soft deleted product {ProductId}", product.Id);
 		}
 		else
 		{
 			await products.DeleteAsync(product);
+			logger.LogInformation("Hard deleted product {ProductId}", product.Id);
 		}
 
 		await unitOfWork.FlushAsync();

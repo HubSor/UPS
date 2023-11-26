@@ -46,6 +46,7 @@ public class EditProductConsumer : TransactionConsumer<EditProductOrder, EditPro
 		product.Status = context.Message.Status;
 		
 		await products.UpdateAsync(product);
+		logger.LogInformation("Edited product {ProductId}", product.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<EditProductOrder> context)

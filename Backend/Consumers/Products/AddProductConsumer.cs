@@ -41,6 +41,7 @@ public class AddProductConsumer : TransactionConsumer<AddProductOrder, AddProduc
 		};
 		
 		await products.AddAsync(product);
+		logger.LogInformation("Added product {ProductId}", product.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AddProductOrder> context)

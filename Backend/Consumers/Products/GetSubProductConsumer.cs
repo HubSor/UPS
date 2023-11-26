@@ -40,6 +40,7 @@ public class GetSubProductConsumer : TransactionConsumer<GetSubProductOrder, Get
 			.FirstAsync(p => p.Id == context.Message.SubProductId);
 
 		subProductDto = new ExtendedSubProductDto(subProduct);
+		logger.LogInformation("Got subproduct {SubProductId}", subProduct.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<GetSubProductOrder> context)

@@ -53,6 +53,8 @@ public class DeleteUserConsumer : TransactionConsumer<DeleteUserOrder, DeleteUse
 	{
 		if (user != null)
 			await users.DeleteAsync(user);
+
+		logger.LogInformation("Deleted user {UserId}", user?.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<DeleteUserOrder> context)

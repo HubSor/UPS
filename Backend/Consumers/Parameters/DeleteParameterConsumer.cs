@@ -40,10 +40,12 @@ public class DeleteParameterConsumer : TransactionConsumer<DeleteParameterOrder,
 		{
 			parameter.Deleted = true;
 			await parameters.UpdateAsync(parameter);
+			logger.LogInformation("Soft deleted parameter {ParameterId}", parameter.Id);
 		}
 		else 
 		{
-			await parameters.DeleteAsync(parameter);	
+			await parameters.DeleteAsync(parameter);
+			logger.LogInformation("Hard deleted parameter {ParameterId}", parameter.Id);
 		}
 	}
 

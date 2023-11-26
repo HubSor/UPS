@@ -18,6 +18,7 @@ try
 		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
 			op => {
 				op.MigrationsAssembly(typeof(UnitOfWork).Assembly.FullName);
+				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
 			});
 	});
 }

@@ -15,9 +15,9 @@ using Services;
 namespace Consumers.Users;
 public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 {
-	private IRepository<User> users;
-	private IHttpContextAccessor httpContextAccessor;
-	private IPasswordService passwordService;
+	private readonly IRepository<User> users;
+	private readonly IHttpContextAccessor httpContextAccessor;
+	private readonly IPasswordService passwordService;
 	public LoginConsumer(IUnitOfWork unitOfWork, IRepository<User> users, IHttpContextAccessor httpContextAccessor, ILogger<LoginConsumer> logger, IPasswordService passwordService)
 		: base(unitOfWork, logger)
 	{
@@ -27,11 +27,13 @@ public class LoginConsumer : TransactionConsumer<LoginOrder, LoginResponse>
 	}
 
 	public override async Task InTransaction(ConsumeContext<LoginOrder> context)
-	{		
+	{
+		logger.LogInformation("Login initiated");
 		var user = await users.GetAll().Include(x => x.Roles).FirstOrDefaultAsync(u => u.Name == context.Message.Username);
 		
 		if (user == null || !user.Active)
 		{
+			logger.LogInformation("Faking login");
 			passwordService.FakeGenerateHash();
 			await RespondWithValidationFailAsync(context, nameof(LoginOrder.Password), "Niepoprawne hasło");
 			return;

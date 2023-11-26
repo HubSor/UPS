@@ -64,12 +64,13 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 	public override async Task InTransaction(ConsumeContext<EditUserOrder> context)
 	{	
 		var newRoles = await roles.GetAll().Where(r => context.Message.RoleIds.Contains(r.Id)).ToListAsync();
-		
 		var user = await users.GetAll()
 			.Include(x => x.Roles)
 			.FirstOrDefaultAsync(u => u.Id == context.Message.Id) ??
 			throw new UPSException("No user");
 			
+		logger.LogInformation("Editing user {UserId}", user.Id);
+		
 		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !httpContextAccessor.HasAnyRole(RoleEnum.Administrator))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie można edytować administratora");
@@ -80,6 +81,7 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 		user.Roles = newRoles;
 		if (!string.IsNullOrEmpty(context.Message.Password))
 		{
+			logger.LogInformation("Changing password for edited user");
 			var salt = passwordService.GenerateSalt();
 			var hash = passwordService.GenerateHash(context.Message.Password, salt);
 			user.Hash = hash;
@@ -87,7 +89,7 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 		}
 		
 		await users.UpdateAsync(user);
-		
+
 		if (user.Id == httpContextAccessor.GetUserId())
 			editedUser = user;
 	}
@@ -95,7 +97,8 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 	public override async Task PostTransaction(ConsumeContext<EditUserOrder> context)
 	{
 		if (editedUser != null)
-		{ // updating claims after self-edit
+		{
+			logger.LogInformation("Updating claims after self edit");
 			var claimsIdentity = new ClaimsIdentity(editedUser.GetClaims(), CookieAuthenticationDefaults.AuthenticationScheme);
 			var principal = new ClaimsPrincipal(claimsIdentity);
 			await httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);

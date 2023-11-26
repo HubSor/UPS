@@ -47,8 +47,8 @@ public class AddOptionConsumer : TransactionConsumer<AddOptionOrder, AddOptionRe
 			Value = context.Message.Value,
 			ParameterId = parameter.Id
 		};
-	
 		await options.AddAsync(option);
+		logger.LogInformation("Added option to parameter {ParameterId}", parameter.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AddOptionOrder> context)

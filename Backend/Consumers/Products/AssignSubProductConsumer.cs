@@ -55,6 +55,7 @@ public class AssignSubProductConsumer : TransactionConsumer<AssignSubProductOrde
 		};
 		
 		await subProductsInProducts.AddAsync(subProductInProduct);
+		logger.LogInformation("Assigned subproduct {SubProductId} to product {ProductId}", subProductInProduct.SubProductId, context.Message.ProductId);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<AssignSubProductOrder> context)
