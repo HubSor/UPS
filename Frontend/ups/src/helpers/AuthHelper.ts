@@ -41,3 +41,8 @@ export class AuthHelpers {
         secureLocalStorage.clear();
     }
 }
+
+export const showUsers = () => AuthHelpers.HasUserRoles();
+export const showSales = () => AuthHelpers.HasSalesRoles();
+export const showSaleHistory = () => AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.SaleManager])
+export const showClients = () => AuthHelpers.HasAnyRole([RoleEnum.Administrator, RoleEnum.ClientManager])
