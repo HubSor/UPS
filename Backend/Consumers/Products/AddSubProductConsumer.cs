@@ -40,8 +40,9 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 			Code = context.Message.Code.ToUpper(),
 			Description = context.Message.Description,
 			BasePrice = context.Message.BasePrice,
+			TaxRate = context.Message.TaxRate != 0 ? context.Message.TaxRate / 100m : 0.00m
 		};
-		
+
 		await subProducts.AddAsync(subProduct);
 		logger.LogInformation("Added subproduct {SubProductId}", subProduct.Id);
 	}

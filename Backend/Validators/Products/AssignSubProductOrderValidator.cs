@@ -17,7 +17,7 @@ namespace Validators.Products
 				
 			RuleFor(x => x.Price)
 				.GreaterThanOrEqualTo(0).WithMessage("Cena nie może być ujemna")
-				.LessThanOrEqualTo(1_000_000).WithMessage("Zbyt wysoka cena"); // todo konfig
+				.LessThanOrEqualTo(1_000_000).WithMessage("Zbyt wysoka cena");
 		}
 	}
 }

@@ -38,6 +38,7 @@ export type AddProductRequest = {
     anonymousSaleAllowed: boolean,
     code: string,
     name: string,
+    taxRate: number,
     basePrice: number,
     description?: string
 }
@@ -46,6 +47,7 @@ export type AddSubProductRequest = {
     code: string,
     name: string,
     basePrice: number,
+    taxRate: number,
     description?: string
     productId?: number
 }
@@ -74,6 +76,7 @@ export type EditProductRequest = {
     code: string,
     name: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
     id: number,
     status: ProductStatusEnum
@@ -83,6 +86,7 @@ export type EditSubProductRequest = {
     code: string,
     name: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
     id: number,
 }

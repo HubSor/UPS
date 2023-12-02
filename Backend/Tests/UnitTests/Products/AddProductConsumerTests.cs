@@ -22,7 +22,7 @@ public class AddProductConsumerTests : ConsumerTestCase<AddProductConsumer, AddP
 	[Test]
 	public async Task Consume_Ok_AddSimpleProduct()
 	{
-		var order = new AddProductOrder(true, "TEST1", "Nowy produkt", 99.99m, null);
+		var order = new AddProductOrder(true, "TEST1", "Nowy produkt", 99.99m, 10, null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -46,7 +46,7 @@ public class AddProductConsumerTests : ConsumerTestCase<AddProductConsumer, AddP
 			Code = "TEST1"
 		});
 		
-		var order = new AddProductOrder(true, "test1", "Nowy produkt", 99.99m, null);
+		var order = new AddProductOrder(true, "test1", "Nowy produkt", 99.99m, 10, null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

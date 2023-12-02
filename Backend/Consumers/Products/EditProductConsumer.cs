@@ -44,7 +44,8 @@ public class EditProductConsumer : TransactionConsumer<EditProductOrder, EditPro
 		product.BasePrice = context.Message.BasePrice;
 		product.AnonymousSaleAllowed = context.Message.AnonymousSaleAllowed;
 		product.Status = context.Message.Status;
-		
+		product.TaxRate = context.Message.TaxRate != 0 ? context.Message.TaxRate / 100m : 0.00m;
+
 		await products.UpdateAsync(product);
 		logger.LogInformation("Edited product {ProductId}", product.Id);
 	}

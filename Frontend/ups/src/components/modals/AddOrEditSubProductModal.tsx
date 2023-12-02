@@ -40,7 +40,8 @@ export function AddOrEditSubProductModal({ onSuccess, close, editedSubProduct }:
         name: editedSubProduct?.name ?? "",
         basePrice: editedSubProduct?.basePrice ?? 0,
         description: editedSubProduct?.description,
-        id: editedSubProduct?.id ?? -1
+        id: editedSubProduct?.id ?? -1,
+        taxRate: !!editedSubProduct ? editedSubProduct?.taxRate * 100 : 0,
     }
 
     return <Modal show size="lg">
@@ -82,7 +83,8 @@ export function AddOrEditSubProductModal({ onSuccess, close, editedSubProduct }:
                         <ValidationMessage fieldName="id" />
                         <TypeInputGroup name="code" label="Kod" type="text"/>
                         <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
-                        <AsInputGroup rows={3} name="description" label="Opis" as="textarea"/>
+                        <TypeInputGroup name="taxRate" label="Stawka podatku (%)" type="number" />
+                        <AsInputGroup rows={3} name="description" label="Opis" as="textarea" />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button type="submit" disabled={isSubmitting}>
