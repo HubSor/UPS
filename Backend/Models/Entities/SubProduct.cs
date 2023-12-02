@@ -13,6 +13,8 @@ namespace Models.Entities
 		public string Code { get; set; } = default!;
 		[Column(TypeName = "money")]
 		public decimal BasePrice { get; set; }
+		[Column(TypeName = "numeric(3, 2)")]
+		public decimal TaxRate { get; set; }
 		[MaxLength(1000)]
 		public string? Description { get; set; }
 		public ICollection<SubProductInProduct> SubProductInProducts { get; set; } = default!;
