@@ -45,6 +45,7 @@ export type ProductDto = {
     name: string,
     code: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
     status: ProductStatusEnum
 }
@@ -59,6 +60,7 @@ export type SubProductDto = {
     name: string,
     code: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
 }
 

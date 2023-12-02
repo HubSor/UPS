@@ -4,7 +4,7 @@ import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useNavigate, useParams } from "react-router-dom"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
-import { PaginationBar, defaultPagination } from "../helpers/FormHelpers"
+import { PaginationBar, defaultPagination, taxText } from "../helpers/FormHelpers"
 import { EditAssignedSubProductModal } from "../components/modals/EditAssignedSubProductModal"
 import { AssignSubProductModal } from "../components/modals/AssignSubProductModal"
 import { UnassignSubProductModal } from "../components/modals/UnassignSubProductModal"
@@ -237,6 +237,7 @@ function ProductPageInner({ productId }: ProductPageProps) {
                 <DisplayInfoRow value={state.product?.code} name="Kod"/>
                 <DisplayInfoRow value={state.product?.name} name="Nazwa"/>
                 <DisplayInfoRow value={state.product?.basePrice?.toString()} name="Podstawowa cena"/>
+                <DisplayInfoRow value={taxText(state.product?.taxRate)} name="Stawka podatku"/>
                 <DisplayInfoRow value={state.product?.anonymousSaleAllowed ? "TAK" : "NIE"} name="Anonimowa sprzedaż"/>
                 <DisplayInfoRow value={GetProductStatusDisplayName(state.product?.status)} name="Status"/>
             </form>

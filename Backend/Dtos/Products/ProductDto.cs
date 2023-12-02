@@ -9,6 +9,7 @@ namespace Dtos.Products
 		public string Name { get; set; } = default!;
 		public string Code { get; set; } = default!;
 		public decimal BasePrice { get; set; }
+		public decimal TaxRate { get; set; }
 		public string? Description { get; set; }
 		public ProductStatusEnum Status { get; set; }
 		
@@ -21,6 +22,7 @@ namespace Dtos.Products
 			Status = p.Status;
 			AnonymousSaleAllowed = p.AnonymousSaleAllowed;
 			BasePrice = p.BasePrice;
+			TaxRate = p.TaxRate;
 		}
 	}
 }
