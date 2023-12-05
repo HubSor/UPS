@@ -35,6 +35,7 @@ public class AddProductConsumerTests : ConsumerTestCase<AddProductConsumer, AddP
 		Assert.That(newProduct!.BasePrice, Is.EqualTo(99.99m));
 		Assert.That(newProduct!.Description, Is.Null);
 		Assert.That(newProduct!.Status, Is.EqualTo(ProductStatusEnum.NotOffered));
+		Assert.That(newProduct!.TaxRate, Is.EqualTo(0.1m));
 	}
 	
 	[Test]
