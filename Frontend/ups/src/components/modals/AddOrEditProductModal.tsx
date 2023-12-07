@@ -32,7 +32,10 @@ const addOrEditProductSchema = object<EditProductRequest>().shape({
         .min(0, "Zbyt niska cena"),
     description: string()
         .nullable()
-        .max(1000, "Opis zbyt długi")
+        .max(1000, "Opis zbyt długi"),
+    taxRate: number()
+        .max(200, "Zbyt wysoki podatek")
+        .min(0, "Podatek nie może być ujemny")
 })
 
 const productOptions: Option[] = [
@@ -76,6 +79,8 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                 editMode ?
                     Api.EditProduct(values).then(res => handleApiResponse(res, true)) :
                     Api.AddProduct(values).then(res => handleApiResponse(res, false))
+
+                fh.setSubmitting(false);
             }}
         >
             {function FormInner({ isSubmitting, values, setFieldValue }) {

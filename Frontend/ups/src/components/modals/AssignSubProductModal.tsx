@@ -47,6 +47,8 @@ export function AssignSubProductModal({ onSuccess, close, assignedSubProduct, pr
                 }
 
                 Api.AssignSubProduct(v).then(res => handleApiResponse(res))
+
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>

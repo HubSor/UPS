@@ -64,6 +64,8 @@ export function AddOrEditSubProductModal({ onSuccess, close, editedSubProduct }:
                 editMode ?
                     Api.EditSubProduct(v).then(res => handleApiResponse(res, true)) :
                     Api.AddSubProduct(v).then(res => handleApiResponse(res, false))
+
+                fh.setSubmitting(false);
             }}
         >
             {function FormInner({ isSubmitting, values, setFieldValue }) { 

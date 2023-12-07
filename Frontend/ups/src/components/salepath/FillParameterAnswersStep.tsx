@@ -75,13 +75,16 @@ export const FillParameterAnswersStep = ({ state, dispatch, paramsFromProduct, p
                                             <ParameterSwitch {...props} />
                                         </React.Fragment>
                                     })}
+                                    {sp.parameters.length === 0 && <>
+                                        Brak parametrów dla wybranego podproduktu
+                                    </>}
                                 </React.Fragment>
                             })}
                         </>}
                     </div>}/>
                     <div>
-                        <Button type="submit" disabled={isSubmitting}>
-                            Zapisz
+                        <Button type="submit" className="mt-4" size="lg" disabled={isSubmitting}>
+                            Zapisz i przejdź dalej
                         </Button>
                     </div>
                 </FForm>}

@@ -57,7 +57,7 @@ public class ListCompanyClientsConsumerTests : ConsumerTestCase<ListCompanyClien
 		Assert.That(data!.Pagination.PageSize, Is.EqualTo(10));
 		Assert.That(data!.Pagination.PageIndex, Is.EqualTo(0));
 		
-		Assert.That(data!.Items.First().Id < data!.Items.Last().Id);
+		Assert.That(data!.Items.First().Id > data!.Items.Last().Id);
 		Assert.That(data!.Items.Count(u => u.CompanyName == "januszex"), Is.EqualTo(1));
 		Assert.That(data!.Items.Count(u => u.CompanyName == "krzak"), Is.EqualTo(1));
 		Assert.That(data!.Items.Count(u => u.Regon == "123456789"), Is.EqualTo(1));

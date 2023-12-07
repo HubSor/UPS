@@ -35,6 +35,8 @@ export function DeleteUserModal({ onSuccess, close, deletedUser }: DeleteUserMod
                 }
 
                 Api.DeleteUser(v).then(handleApiResponse)
+                
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>

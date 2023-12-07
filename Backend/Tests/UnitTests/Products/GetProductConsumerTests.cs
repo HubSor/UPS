@@ -21,6 +21,7 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 				Name = "test1",
 				Code = "CODE1",
 				BasePrice = 99,
+				Parameters = Array.Empty<Parameter>()
 			}	
 		};
 		var subProductInProduct2 = new SubProductInProduct()
@@ -31,6 +32,7 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 				Name = "test2",
 				Code = "CODE2",
 				BasePrice = 9.99m,
+				Parameters = Array.Empty<Parameter>()
 			}
 		};
 

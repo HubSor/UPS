@@ -47,6 +47,8 @@ export function EditAssignedSubProductModal({ onSuccess, close, editedSubProduct
                 }
 
                 Api.EditSubProductAssignment(v).then(res => handleApiResponse(res))
+
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>
