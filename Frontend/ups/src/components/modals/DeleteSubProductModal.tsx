@@ -35,6 +35,8 @@ export function DeleteSubProductModal({ onSuccess, close, deletedSubProduct }: D
                 }
 
                 Api.DeleteSubProduct(v).then(handleApiResponse)
+
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>

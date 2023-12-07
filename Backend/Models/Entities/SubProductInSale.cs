@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Models.Entities
 {
 	public class SubProductInSale : IEntity
@@ -6,5 +8,9 @@ namespace Models.Entities
 		public virtual Sale Sale { get; set; } = default!;
 		public int SubProductId { get; set; }
 		public virtual SubProduct SubProduct { get; set; } = default!;
+		[Column(TypeName = "money")]
+		public decimal Price { get; set; }
+		[Column(TypeName = "money")]
+		public decimal Tax { get; set; }
 	}
 }

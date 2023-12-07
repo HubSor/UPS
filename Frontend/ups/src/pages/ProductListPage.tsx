@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ProductDto, ProductStatusEnum, ResultPaginationDto } from "../api/Dtos"
-import { PaginationBar } from "../helpers/FormHelpers"
+import { PaginationBar, taxText } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { AddOrEditProductModal } from "../components/modals/AddOrEditProductModal"
 import { DeleteProductModal } from "../components/modals/DeleteProductModal"
@@ -117,6 +117,7 @@ export default function ProductListPage() {
                     <th scope="col">Nazwa</th>
                     <th scope="col">Status</th>
                     <th scope="col">Podstawowa cena</th>
+                    <th scope="col">Stawka podatku</th>
                     <th scope="col-3"></th>
                 </tr>
             </thead>
@@ -137,6 +138,9 @@ export default function ProductListPage() {
                         </td>
                         <td>
                             {p.basePrice}
+                        </td>
+                        <td>
+                            {taxText(p.taxRate)}
                         </td>
                         <td className="col-2">
                             {hasProductRoles && <>

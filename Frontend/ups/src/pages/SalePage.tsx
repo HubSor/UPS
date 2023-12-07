@@ -65,6 +65,7 @@ function SalePageInner({ saleId }: SalePageProps) {
     const clientId = state.sale?.personClient?.id ?? state.sale?.companyClient?.id;
     const displayClientName = getClientName(state.sale?.personClient, state.sale?.companyClient);
     const subProductCodes = state.sale?.subProducts.map(s => s.code).join(',')
+    const subProductTax = state.sale?.subProducts.map(s => s.tax).reduce((sum, elem) => sum + elem, 0);
 
     return <>
         <h3>Transakcja {saleId}</h3>
@@ -74,7 +75,10 @@ function SalePageInner({ saleId }: SalePageProps) {
         </Form.Label>
         <div className="card">
             <form className="card-body product-info">
-                <DisplayInfoRow value={state.sale?.totalPrice.toFixed(2).replace('.', ',')} name="Wartość" />
+                <DisplayInfoRow value={state.sale?.totalPrice.toFixed(2).replace('.', ',')} name="Całkowita należność klienta" />
+                <DisplayInfoRow value={state.sale?.totalTax.toFixed(2).replace('.', ',')} name="Całkowity podatek" />
+                <DisplayInfoRow value={state.sale?.productPrice.toFixed(2).replace('.', ',')} name="Ostateczna cena produktu" />
+                <DisplayInfoRow value={state.sale?.productTax.toFixed(2).replace('.', ',')} name="Podatek na produkcie" />
                 <DisplayInfoRow value={state.sale?.saleTime} name="Data rejestracji" />
                 <div onClick={() => !!state.sale?.product ?
                     nav(Paths.product.replace(":id", state.sale?.product.id.toString())) :
@@ -86,6 +90,7 @@ function SalePageInner({ saleId }: SalePageProps) {
                 <DisplayInfoRow value={clientId?.toString()} name="Id klienta" />
                 <DisplayInfoRow value={displayClientName} name="Klient" />
                 <DisplayInfoRow value={subProductCodes} name="Wybrane podprodukty" />
+                <DisplayInfoRow value={subProductTax?.toFixed(2).replace('.', ',')} name="Podatek na podproduktach" />
             </form>
         </div>
         <Form.Label className="align-left">

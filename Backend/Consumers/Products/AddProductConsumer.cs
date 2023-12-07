@@ -38,6 +38,7 @@ public class AddProductConsumer : TransactionConsumer<AddProductOrder, AddProduc
 			BasePrice = context.Message.BasePrice,
 			AnonymousSaleAllowed = context.Message.AnonymousSaleAllowed,
 			Status = ProductStatusEnum.NotOffered,
+			TaxRate = context.Message.TaxRate != 0 ? context.Message.TaxRate / 100m : 0.00m
 		};
 		
 		await products.AddAsync(product);

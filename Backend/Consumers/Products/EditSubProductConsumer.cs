@@ -42,7 +42,8 @@ public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, E
 		subProduct.Name = context.Message.Name;
 		subProduct.Code = context.Message.Code;
 		subProduct.BasePrice = context.Message.BasePrice;
-		
+		subProduct.TaxRate = context.Message.TaxRate != 0 ? context.Message.TaxRate / 100m : 0.00m;
+
 		await subProducts.UpdateAsync(subProduct);
 		logger.LogInformation("Edited subproduct {SubProductId}", subProduct.Id);
 	}

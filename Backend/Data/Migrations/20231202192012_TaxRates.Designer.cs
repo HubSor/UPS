@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(UnitOfWork))]
-    partial class UnitOfWorkModelSnapshot : ModelSnapshot
+    [Migration("20231202192012_TaxRates")]
+    partial class TaxRates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -297,12 +300,6 @@ namespace Data.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("money");
-
-                    b.Property<decimal>("ProductTax")
-                        .HasColumnType("money");
-
                     b.Property<DateTime>("SaleTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -408,12 +405,6 @@ namespace Data.Migrations
 
                     b.Property<int>("SubProductId")
                         .HasColumnType("integer");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("money");
-
-                    b.Property<decimal>("Tax")
-                        .HasColumnType("money");
 
                     b.HasKey("SaleId", "SubProductId");
 

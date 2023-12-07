@@ -120,10 +120,10 @@ export default function SalePathPage() {
 
     const answeredProductParams: AnsweredParameterDto[] = !!state.productAnswers && state.productAnswers.length > 0 ?
         state.productAnswers :
-        state.product?.parameters.map(p => ({ ...p, answer: undefined })) ?? [];
+        state.product?.parameters.map(p => ({ ...p, answer: "" })) ?? [];
     const answeredSubProductsParams: AnsweredParameterDto[] = !!state.subProductAnswers && state.subProductAnswers.length > 0 ?
         state.subProductAnswers :
-        getSelectedSubProducts(state).flatMap(sp => sp.parameters.map(p => ({ ...p, answer: undefined, subProductId: sp.id }))) ?? []
+        getSelectedSubProducts(state).flatMap(sp => sp.parameters.map(p => ({ ...p, answer: "", subProductId: sp.id }))) ?? []
 
     return <>
         <h2>Ścieżka Sprzedaży - Krok {state.step.toString()}</h2>
@@ -157,7 +157,7 @@ export default function SalePathPage() {
         {state.step === SalePathStep.FillParameterAnswers && <FillParameterAnswersStep state={state} dispatch={dispatch}
             paramsFormSubProducts={answeredSubProductsParams} paramsFromProduct={answeredProductParams} nextStepDisabled={nextStepDisabled()}
         />}
-        {state.step === SalePathStep.Summary && <SummaryStep state={state} dispatch={dispatch} />}
+        {state.step === SalePathStep.Summary && !!state.product && <SummaryStep state={state} dispatch={dispatch} product={state.product} />}
         {state.step === SalePathStep.FinishSale && <FinishSaleStep state={state} dispatch={dispatch} />}
     </>
 }

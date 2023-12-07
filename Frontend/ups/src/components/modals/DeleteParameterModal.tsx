@@ -35,6 +35,8 @@ export function DeleteParameterModal({ onSuccess, close, deletedParameter }: Del
                 }
 
                 Api.DeleteParameter(v).then(handleApiResponse)
+
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>

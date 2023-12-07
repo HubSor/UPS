@@ -31,7 +31,7 @@ namespace UPS.Filters
 					if (!validationResult.IsValid)
 					{
 						errors.AddRange(validationResult.Errors);
-						_logger.LogInformation("Validator {Validator} detected validation errors:\n\t{1}",
+						_logger.LogInformation("Validator {Validator} detected validation errors:\n\t{ValidationErrors}",
 							validator.GetType().Name, string.Join("\n\t", errors.ToList()));
 					}
 				}

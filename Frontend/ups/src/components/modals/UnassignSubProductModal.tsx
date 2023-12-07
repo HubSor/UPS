@@ -41,6 +41,8 @@ export function UnassignSubProductModal({ onSuccess, close, subProduct, product 
                 }
 
                 Api.UnassignSubProducts(values).then(handleApiResponse)
+
+                fh.setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => <Form>

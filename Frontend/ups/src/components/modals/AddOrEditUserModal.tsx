@@ -8,6 +8,7 @@ import { ApiResponse } from "../../api/ApiResponses";
 import { toastDefaultError, toastInfo } from "../../helpers/ToastHelpers";
 import { EditUserRequest } from "../../api/ApiRequests";
 import { object, string } from "yup";
+import { GetRoleDisplayName } from "../../helpers/EnumHelpers";
 
 type AddOrEditUserModalProps = {
     onSuccess: () => void
@@ -24,12 +25,19 @@ const addOrEditUserSchema = object<EditUserRequest>().shape({
         .max(128, "Zbyt długie hasło")
 })
 
-const rolesToAddFrom = [
-    { roleId: RoleEnum.Administrator, name: "Administrator" },
-    { roleId: RoleEnum.UserManager, name: "Zarządca użytkowników" },
-    { roleId: RoleEnum.Seller, name: "Sprzedawca" },
-    { roleId: RoleEnum.ProductManager, name: "Zarządca użytkowników" },
+const roles = [
+    RoleEnum.Administrator,
+    RoleEnum.UserManager,
+    RoleEnum.Seller,
+    RoleEnum.ProductManager,
+    RoleEnum.ClientManager,
+    RoleEnum.SaleManager,
 ];
+
+const rolesToAddFrom = roles.map(r => ({
+    roleId: r,
+    name: GetRoleDisplayName(r)
+}))
 
 export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUserModalProps) {
     const editMode = !!editedUser;
@@ -65,6 +73,8 @@ export function AddOrEditUserModal({ onSuccess, close, editedUser }: AddOrEditUs
                 editMode ?
                     Api.EditUser({ ...v, id: editedUser.id }).then(res => handleApiResponse(res, true)) :
                     Api.AddUser(v).then(res => handleApiResponse(res, false))
+                
+                fh.setSubmitting(false);
             }}
         >
             {({values, isSubmitting}) => <Form>

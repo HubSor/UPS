@@ -26,7 +26,7 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 	[Test]
 	public async Task Consume_Ok_AddSimpleSubProduct()
 	{
-		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", null);
+		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 0, null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -38,12 +38,13 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 		Assert.That(newProduct!.Name, Is.EqualTo("Nowy podprodukt"));
 		Assert.That(newProduct!.BasePrice, Is.EqualTo(99.99m));
 		Assert.That(newProduct!.Description, Is.EqualTo("opis"));
+		Assert.That(newProduct!.TaxRate, Is.EqualTo(0.00m));
 	}
-	
+
 	[Test]
 	public async Task Consume_BadRequest_AddSubProductNoRequestClient()
 	{
-		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 1);
+		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 10, 1);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -58,7 +59,7 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 			Code = "TEST1"
 		});
 		
-		var order = new AddSubProductOrder("test1", "Nowy podprodukt", 99.99m, null, null);
+		var order = new AddSubProductOrder("test1", "Nowy podprodukt", 99.99m, null, 10, null);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

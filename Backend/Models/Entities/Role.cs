@@ -14,6 +14,8 @@ namespace Models.Entities
 	
 	public class Role : DictEntity<RoleEnum>
 	{
+		[MaxLength(64)]
+		public string Name { get; set; } = default!;
 		[MaxLength(1000)]
 		public string? Description { get; set; }
 	}

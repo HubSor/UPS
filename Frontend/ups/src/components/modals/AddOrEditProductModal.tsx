@@ -32,7 +32,10 @@ const addOrEditProductSchema = object<EditProductRequest>().shape({
         .min(0, "Zbyt niska cena"),
     description: string()
         .nullable()
-        .max(1000, "Opis zbyt długi")
+        .max(1000, "Opis zbyt długi"),
+    taxRate: number()
+        .max(200, "Zbyt wysoki podatek")
+        .min(0, "Podatek nie może być ujemny")
 })
 
 const productOptions: Option[] = [
@@ -51,7 +54,8 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
         basePrice: editedProduct?.basePrice ?? 0,
         description: editedProduct?.description,
         status: editedProduct?.status ?? ProductStatusEnum.Offered,
-        id: editedProduct?.id ?? -1
+        id: editedProduct?.id ?? -1,
+        taxRate: !!editedProduct ? editedProduct?.taxRate * 100 : 0,
     }
 
     return <Modal show size="lg">
@@ -75,6 +79,8 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                 editMode ?
                     Api.EditProduct(values).then(res => handleApiResponse(res, true)) :
                     Api.AddProduct(values).then(res => handleApiResponse(res, false))
+
+                fh.setSubmitting(false);
             }}
         >
             {function FormInner({ isSubmitting, values, setFieldValue }) {
@@ -94,6 +100,7 @@ export function AddOrEditProductModal({ onSuccess, close, editedProduct }: AddOr
                         <ValidationMessage fieldName="id" />
                         <TypeInputGroup name="code" label="Kod" type="text"/>
                         <TypeInputGroup name="basePrice" label="Podstawowa cena" type="number"/>
+                        <TypeInputGroup name="taxRate" label="Stawka podatku (%)" type="number"/>
                         {editMode && <AsInputGroup name="status" label="Status" as="select" options={productOptions}/>}
                         <CheckboxInputGroup name="anonymousSaleAllowed" label="Anonimowa sprzedaż"/>
                         <AsInputGroup rows={3} name="description" label="Opis" as="textarea"/>

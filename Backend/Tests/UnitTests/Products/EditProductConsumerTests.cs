@@ -22,7 +22,8 @@ public class EditProductConsumerTests : ConsumerTestCase<EditProductConsumer, Ed
 			BasePrice = 99m,
 			Status = ProductStatusEnum.NotOffered,
 			AnonymousSaleAllowed = true,
-			Code = "TEST1"
+			Code = "TEST1",
+			TaxRate = 0.23m
 		});
 
 		consumer = new EditProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
@@ -32,7 +33,7 @@ public class EditProductConsumerTests : ConsumerTestCase<EditProductConsumer, Ed
 	[Test]
 	public async Task Consume_Ok_Edit()
 	{
-		var order = new EditProductOrder(false, "CODE", "new", 10.99m, "test", 1, ProductStatusEnum.Withdrawn);
+		var order = new EditProductOrder(false, "CODE", "new", 10.99m, 10, "test", 1, ProductStatusEnum.Withdrawn);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -45,5 +46,6 @@ public class EditProductConsumerTests : ConsumerTestCase<EditProductConsumer, Ed
 		Assert.That(edited!.BasePrice, Is.EqualTo(10.99m));
 		Assert.That(edited!.Description, Is.EqualTo("test"));
 		Assert.That(edited!.Status, Is.EqualTo(ProductStatusEnum.Withdrawn));
+		Assert.That(edited!.TaxRate, Is.EqualTo(0.1m));
 	}
 }

@@ -162,3 +162,5 @@ export function PaginationBar(props: PaginationBarProps) {
         </ul>
     </nav>;
 }
+
+export const taxText = (taxRate?: number) => !!taxRate ? taxRate * 100 + '%' : undefined;

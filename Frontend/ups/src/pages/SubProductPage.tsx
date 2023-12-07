@@ -12,6 +12,7 @@ import { DisplayInfoRow } from "../components/products/DisplayInfoRow"
 import { EditableParameterRow } from "../components/parameters/EditableParameterRow"
 import { Paths } from "../App"
 import { GetProductStatusDisplayName } from "../helpers/EnumHelpers"
+import { taxText } from "../helpers/FormHelpers"
 
 export default function SubProductPage() {
     const { id } = useParams();
@@ -159,6 +160,7 @@ function SubProductPageInner({ subProductId }: SubProductPageProps) {
                 <DisplayInfoRow value={state.subProduct?.code} name="Kod"/>
                 <DisplayInfoRow value={state.subProduct?.name} name="Nazwa"/>
                 <DisplayInfoRow value={state.subProduct?.basePrice?.toString()} name="Podstawowa cena"/>
+                <DisplayInfoRow value={taxText(state.subProduct?.taxRate)} name="Stawka podatku" />
             </form>
         </div>
         <Form.Label className="align-left">

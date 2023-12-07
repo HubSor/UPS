@@ -14,6 +14,8 @@ namespace Models.Entities
 		public string Name { get; set; } = default!;
 		[Column(TypeName = "money")]
 		public decimal BasePrice { get; set; }
+		[Column(TypeName = "numeric(3, 2)")]
+		public decimal TaxRate { get; set; }
 		public ProductStatusEnum Status { get; set; }
 		public virtual ProductStatus StatusObject { get; set; } = default!;
 		[MaxLength(1000)]
@@ -33,6 +35,8 @@ namespace Models.Entities
 		
 	public class ProductStatus : DictEntity<ProductStatusEnum>
 	{
+		[MaxLength(64)]
+		public string Name { get; set; } = default!;
 		[MaxLength(1000)]
 		public string? Description { get; set; }
 	}

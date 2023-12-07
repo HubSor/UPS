@@ -45,6 +45,7 @@ export type ProductDto = {
     name: string,
     code: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
     status: ProductStatusEnum
 }
@@ -59,7 +60,13 @@ export type SubProductDto = {
     name: string,
     code: string,
     basePrice: number,
+    taxRate: number,
     description?: string,
+}
+
+export type SaleDetailsSubProductDto = SubProductDto & {
+    tax: number,
+    price: number,
 }
 
 export type ExtendedSubProductDto = SubProductDto & {
@@ -142,7 +149,15 @@ export type SaleDetailsDto = {
     companyClient?: CompanyClientDto,
     saleTime: string,
     totalPrice: number,
+    totalTax: number,
+    productPrice: number,
+    productTax: number,
     product: ProductDto,
-    subProducts: SubProductDto[],
+    subProducts: SaleDetailsSubProductDto[],
     parameters: SaleParameterDto[],
+}
+
+export type SaveSaleSubProductDto = {
+    subProductId: number,
+    price: number
 }

@@ -10,6 +10,10 @@ export const GetRoleDisplayName = (role: RoleEnum) => {
             return "Sprzedawca";
         case RoleEnum.ProductManager:
             return "Zarządca produktów";
+        case RoleEnum.ClientManager:
+            return "Zarządca klientów";
+        case RoleEnum.SaleManager:
+            return "Zarządca sprzedaży";
     }
 }
 

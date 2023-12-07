@@ -21,12 +21,12 @@ namespace Data
 					
 			var roles = new List<Role>()
 			{
-				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko." },
-				new (){ Id = RoleEnum.Seller, Description = "Prawa do sprzedaży na ścieżce sprzedaży." },
-				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników." },
-				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami i podproduktami." },
-				new (){ Id = RoleEnum.SaleManager, Description = "Prawo do wyświetlania historii transakcji." },
-				new (){ Id = RoleEnum.ClientManager, Description = "Prawo do zarządzania klientami." },
+				new (){ Id = RoleEnum.Administrator, Description = "Pełne prawa do aplikacji, może wszystko.", Name = "Administrator" },
+				new (){ Id = RoleEnum.Seller, Description = "Prawa do sprzedaży na ścieżce sprzedaży.", Name = "Sprzedawca" },
+				new (){ Id = RoleEnum.UserManager, Description = "Prawa do zarządzania kontami użytkowników.", Name = "Zarządca użytkowników" },
+				new (){ Id = RoleEnum.ProductManager, Description = "Prawa do zarządzania produktami i podproduktami.", Name = "Zarządca produktów" },
+				new (){ Id = RoleEnum.SaleManager, Description = "Prawo do wyświetlania historii transakcji.", Name = "Zarządca sprzedaży" },
+				new (){ Id = RoleEnum.ClientManager, Description = "Prawo do zarządzania klientami.", Name = "Zarządca klientów" },
 			};
 			
 			context.Roles.AddRange(roles);
@@ -54,9 +54,9 @@ namespace Data
 			
 			context.ProductStatuses.AddRange(new List<ProductStatus>()
 			{
-				new (){ Id = ProductStatusEnum.NotOffered, Description = "Sprzedaż tego produktu nie będzie możliwa."},
-				new (){ Id = ProductStatusEnum.Offered, Description = "Sprzedaż tego produktu jest dozwolona"},
-				new (){ Id = ProductStatusEnum.Withdrawn, Description = "Produkt wycofany ze sprzedaży. Sprzedaż niemożliwa."},
+				new (){ Id = ProductStatusEnum.NotOffered, Description = "Sprzedaż tego produktu nie będzie możliwa.", Name = "Nieoferowany" },
+				new (){ Id = ProductStatusEnum.Offered, Description = "Sprzedaż tego produktu jest dozwolona", Name = "Oferowany" },
+				new (){ Id = ProductStatusEnum.Withdrawn, Description = "Produkt wycofany ze sprzedaży. Sprzedaż niemożliwa.", Name = "Wycofany" },
 			});
 
 			context.AddressTypes.AddRange(new List<AddressType>()
@@ -74,6 +74,7 @@ namespace Data
 				AnonymousSaleAllowed = false,
 				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 				BasePrice = 99.99m,
+				TaxRate = 0.23m,
 			});
 			
 			context.SubProducts.Add(new() 
@@ -82,6 +83,7 @@ namespace Data
 				Description = "Testowy podprodukt 1",
 				Code = "PP1",
 				BasePrice = 15.99m,
+				TaxRate = 0.20m,
 			});
 
 			context.SubProducts.Add(new()
@@ -90,6 +92,7 @@ namespace Data
 				Description = "Testowy podprodukt 2",
 				Code = "PP2",
 				BasePrice = 0.99m,
+				TaxRate = 0.01m,
 			});
 
 			context.SubProducts.Add(new()
@@ -98,6 +101,7 @@ namespace Data
 				Description = "Testowy podprodukt 3",
 				Code = "PP3",
 				BasePrice = 4.99m,
+				TaxRate = 0.45m,
 			});
 			
 			context.Clients.Add(new PersonClient()
@@ -157,12 +161,15 @@ namespace Data
 				AnonymousSaleAllowed = true,
 				Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 				BasePrice = 99.99m,
+				TaxRate = 0.09m,
 			});
 
 			context.Sales.Add(new()
 			{
 				ProductId = 1,
 				FinalPrice = 100.99m,
+				ProductPrice = 99.99m,
+				ProductTax = 7.25m,
 				SellerId = 1,
 				ClientId = 1,
 				SaleTime = DateTime.Now
@@ -284,6 +291,8 @@ namespace Data
 			{
 				SaleId = 1,
 				SubProductId = 1,
+				Price = 9m,
+				Tax = 0.9m,
 			});
 			
 			var days = new List<string>()
