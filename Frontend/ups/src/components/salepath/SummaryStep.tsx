@@ -75,9 +75,9 @@ export const SummaryStep = ({ state, dispatch, product }: SummaryProps) => {
 
         Api.SaveSale({
             productId: state.productId!,
-            subProductIds: state.subProductIds,
+            subProducts: localState.subProducts.map(sp => ({ subProductId: sp.id, price: sp.finalPrice })),
             clientId: state.clientId ?? undefined,
-            totalPrice: totalPrice,
+            productPrice: productPrice,
             answers: answers
         }).then(res => {
             if (res.data && res.success){

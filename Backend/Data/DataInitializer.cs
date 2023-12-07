@@ -168,6 +168,8 @@ namespace Data
 			{
 				ProductId = 1,
 				FinalPrice = 100.99m,
+				ProductPrice = 99.99m,
+				ProductTax = 7.25m,
 				SellerId = 1,
 				ClientId = 1,
 				SaleTime = DateTime.Now
@@ -289,6 +291,8 @@ namespace Data
 			{
 				SaleId = 1,
 				SubProductId = 1,
+				Price = 9m,
+				Tax = 0.9m,
 			});
 			
 			var days = new List<string>()

@@ -18,6 +18,8 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 	private readonly IRepository<Product> products;
 	private readonly IRepository<Client> clients;
 	private ICollection<Parameter> RelevantParameters { get; set; } = default!;
+	private Product SelectedProduct { get; set; } = default!;
+	private ICollection<SubProduct> SelectedSubProducts { get; set; } = default!;
 	
 	public SaveSaleConsumer(ILogger<SaveSaleConsumer> logger, IRepository<Sale> sales,
 		IRepository<Parameter> parameters, IRepository<Product> products, 
@@ -82,7 +84,7 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		
 		var subProducts = product.SubProductInProducts
 			.Select(x => x.SubProduct);
-		if (context.Message.SubProductIds.Any(sp => !subProducts.Select(x => x.Id).Contains(sp)))
+		if (context.Message.SubProducts.Any(sp => !subProducts.Select(x => x.Id).Contains(sp.SubProductId)))
 		{
 			await RespondWithValidationFailAsync(context, "SubProductIds", "Nie znaleziono podproduktu");
 			return false;
@@ -150,17 +152,22 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		}
 		
 		RelevantParameters = dbParams;
+		SelectedProduct = product;
+		SelectedSubProducts = subProducts.ToList();
 		return true;
 	}
 
 	public override async Task InTransaction(ConsumeContext<SaveSaleOrder> context)
 	{
+		var totalPrice = context.Message.ProductPrice + context.Message.SubProducts.Select(s => s.Price).Sum();
 		var newSale = new Sale
 		{
 			ClientId = context.Message.ClientId,
 			ProductId = context.Message.ProductId,
 			SellerId = httpContextAccessor.GetUserId(),
-			FinalPrice = context.Message.TotalPrice,
+			FinalPrice = totalPrice,
+			ProductPrice = context.Message.ProductPrice,
+			ProductTax = context.Message.ProductPrice * SelectedProduct.TaxRate,
 			SaleParameters = context.Message.Answers
 				.Where(a => !string.IsNullOrEmpty(a.Answer))
 				.Select(a =>
@@ -176,9 +183,11 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 						OptionId = optionId
 					};
 				}).ToList(),
-			SubProducts = context.Message.SubProductIds.Select(id => new SubProductInSale()
+			SubProducts = context.Message.SubProducts.Select(sp => new SubProductInSale()
 			{
-				SubProductId = id
+				SubProductId = sp.SubProductId,
+				Price = sp.Price,
+				Tax = SelectedSubProducts.First(x => x.Id == sp.SubProductId).TaxRate * sp.Price
 			}).ToList(),
 			SaleTime = DateTime.Now
 		};

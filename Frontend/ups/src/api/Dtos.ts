@@ -148,3 +148,8 @@ export type SaleDetailsDto = {
     subProducts: SubProductDto[],
     parameters: SaleParameterDto[],
 }
+
+export type SaveSaleSubProductDto = {
+    subProductId: number,
+    price: number
+}

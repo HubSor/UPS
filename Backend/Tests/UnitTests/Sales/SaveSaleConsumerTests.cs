@@ -82,7 +82,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	public async Task Consume_Ok_NoParametersNoClient()
 	{
 		parameters.Entities.Clear();
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), null, Array.Empty<SaveSaleParameterDto>(), 99.99m);
+		var order = new SaveSaleOrder(1, null, Array.Empty<SaveSaleParameterDto>(), 99.99m, Array.Empty<SaveSaleSubProductDto>());
 		
 		var then = DateTime.Now;
 		await consumer.Consume(GetConsumeContext(order));
@@ -102,7 +102,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	public async Task Consume_Ok_ClientAndNoParameters()
 	{
 		parameters.Entities.Clear();
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, Array.Empty<SaveSaleParameterDto>(), 99.99m);
+		var order = new SaveSaleOrder(1, 500, Array.Empty<SaveSaleParameterDto>(), 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -118,14 +118,14 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	[Test]
 	public async Task Consume_Ok_ParametersAndClient()
 	{
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, new SaveSaleParameterDto[] 
+		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[] 
 		{
 			new ()
 			{
 				ParameterId = 3,
 				Answer = "10"
 			}
-		}, 99.99m);
+		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -142,7 +142,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	[Test]
 	public async Task Consume_Ok_ParameterOption()
 	{
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, new SaveSaleParameterDto[]
+		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
 			new ()
 			{
@@ -154,7 +154,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 				ParameterId = 3,
 				Answer = "79"
 			}
-		}, 99.99m);
+		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -171,14 +171,14 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	[Test]
 	public async Task Consume_BadRequest_NoRequiredAnswer()
 	{
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, new SaveSaleParameterDto[]
+		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
 			new ()
 			{
 				ParameterId = 33,
 				Answer = "10"
 			}
-		}, 99.99m);
+		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -187,14 +187,14 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	[Test]
 	public async Task Consume_BadRequest_InvalidValue()
 	{
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, new SaveSaleParameterDto[]
+		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
 			new ()
 			{
 				ParameterId = 3,
 				Answer = "test"
 			}
-		}, 99.99m);
+		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -203,7 +203,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 	[Test]
 	public async Task Consume_BadRequest_DuplicatedAnswer()
 	{
-		var order = new SaveSaleOrder(1, Array.Empty<int>(), 500, new SaveSaleParameterDto[]
+		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
 			new ()
 			{
@@ -215,7 +215,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, SaveSale
 				ParameterId = 3,
 				Answer = "3"
 			}
-		}, 99.99m);
+		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

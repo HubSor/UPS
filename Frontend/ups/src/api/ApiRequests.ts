@@ -1,4 +1,4 @@
-import { OptionDto, PaginationDto, ParameterTypeEnum, ProductStatusEnum, SaveSaleParameterDto } from "./Dtos"
+import { OptionDto, PaginationDto, ParameterTypeEnum, ProductStatusEnum, SaveSaleParameterDto, SaveSaleSubProductDto } from "./Dtos"
 
 export type LoginRequest = {
     username: string,
@@ -166,8 +166,8 @@ export type FindClientRequest = {
 
 export type SaveSaleRequest = {
     productId: number,
-    subProductIds: number[],
+    subProducts: SaveSaleSubProductDto[],
     clientId?: number,
     answers: SaveSaleParameterDto[],
-    totalPrice: number,
+    productPrice: number,
 }

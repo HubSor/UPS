@@ -6,6 +6,10 @@ namespace Models.Entities
 	{
 		[Column(TypeName = "money")]
 		public decimal FinalPrice { get; set; }
+		[Column(TypeName = "money")]
+		public decimal ProductPrice { get; set; }
+		[Column(TypeName = "money")]
+		public decimal ProductTax { get; set; }
 		public int ProductId { get; set; }
 		public virtual Product Product { get; set; } = default!;
 		public int SellerId { get; set; }
