@@ -64,6 +64,11 @@ export type SubProductDto = {
     description?: string,
 }
 
+export type SaleDetailsSubProductDto = SubProductDto & {
+    tax: number,
+    price: number,
+}
+
 export type ExtendedSubProductDto = SubProductDto & {
     price: number,
     parameters: ParameterDto[],
@@ -144,8 +149,11 @@ export type SaleDetailsDto = {
     companyClient?: CompanyClientDto,
     saleTime: string,
     totalPrice: number,
+    totalTax: number,
+    productPrice: number,
+    productTax: number,
     product: ProductDto,
-    subProducts: SubProductDto[],
+    subProducts: SaleDetailsSubProductDto[],
     parameters: SaleParameterDto[],
 }
 
