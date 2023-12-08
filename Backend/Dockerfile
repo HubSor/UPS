@@ -6,6 +6,8 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+RUN dotnet dev-certs https -ep /https/upscert.pfx -v -p certpasswd
+
 WORKDIR /src
 COPY ["UPS/UPS.csproj", "UPS/"]
 COPY ["Models/Models.csproj", "Models/"]
@@ -20,4 +22,5 @@ RUN dotnet publish "UPS.csproj" -c Release -o /app/publish /p:UseAppHost=false
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /https/* /https/
 ENTRYPOINT ["dotnet", "UPS.dll"]

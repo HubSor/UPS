@@ -32,8 +32,11 @@ services:
      - ups-net
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     ASPNETCORE_URLS: http://+:80
-     #ASPNETCORE_HTTPS_PORT: 2443
+     ASPNETCORE_URLS: https://+
+     ASPNETCORE_HTTPS_PORT: 2443
+     ASPNETCORE_Kestrel__Certificates__Default__Password: certpasswd
+     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/upscert.pfx
+     
  
  frontend:
    build:
@@ -43,7 +46,7 @@ services:
    networks:
      - ups-net
    environment:
-     REACT_APP_BACKEND_URL: http://localhost:2080
+     REACT_APP_BACKEND_URL: https://localhost:2443
      
 volumes:
  postgres-data:
