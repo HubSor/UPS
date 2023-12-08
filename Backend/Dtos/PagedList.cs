@@ -2,18 +2,24 @@ namespace Dtos;
 
 public class PagedList<T>
 {
-	public ICollection<T> Items { get; set; }
+	public List<T> Items { get; set; }
 	public ResultPaginationDto Pagination { get; set; }
 	
-	public PagedList(ICollection<T> items, int totalCount, int pageIndex, int pageSize)
+	public PagedList() 
 	{
-		Items = items;
+		Items = new();
+		Pagination = new ResultPaginationDto();
+	}
+	
+	public PagedList(IEnumerable<T> items, int totalCount, int pageIndex, int pageSize)
+	{
+		Items = items.ToList();
 		Pagination = new()
 		{
 			TotalCount = totalCount,
 			PageIndex = pageIndex,
 			PageSize = pageSize,
-			Count = items.Count,
+			Count = items.Count(),
 			TotalPages = totalCount > 0 ? ((totalCount + pageSize - 1) / pageSize) : 0
 		};
 	}

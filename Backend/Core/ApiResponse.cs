@@ -16,6 +16,8 @@ namespace Core
 			return new ApiResponse<Response>(apiResponse.StatusCode, apiResponse.Errors);
 		}
 		
+		public ApiResponse() {}
+		
 		public ApiResponse(HttpStatusCode code, IDictionary<string, List<string>>? errors)
 		{
 			StatusCode = code;
