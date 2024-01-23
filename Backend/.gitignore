@@ -57,3 +57,6 @@ Thumbs.db
 /UPS/obj
 ups-passwd
 notes.txt
+lcov.info
+output.xml
+/Tests/coverage
