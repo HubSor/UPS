@@ -55,7 +55,7 @@ async function getApiResponse<R, T>(request: R, url: string): Promise<ApiRespons
 }
 
 export class Api {
-    private static url =  process.env.REACT_APP_BACKEND_URL;
+    private static url = process.env.REACT_APP_BACKEND_URL ?? "https://localhost:2443";
 
     static async Login(request: LoginRequest) {
         return await getApiResponse<LoginRequest, LoginResponse>(request, this.url + "/users/login"); 
