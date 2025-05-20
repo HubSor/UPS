@@ -1,7 +1,7 @@
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using FluentValidation;
-using Messages.Clients;
+using Messages.Commands;
 
 namespace Validators.Clients
 {

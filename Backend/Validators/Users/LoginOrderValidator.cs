@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Messages.Users;
+using Messages.Queries;
 
 namespace Validators.Users
 {
-	public class LoginOrderValidator: AbstractValidator<LoginOrder>
+	public class LoginOrderValidator: AbstractValidator<LoginQuery>
 	{
 		public LoginOrderValidator()
 		{

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-using Messages.Users;
-using Models.Entities;
+using Messages.Commands;
 
 namespace Validators.Users
 {

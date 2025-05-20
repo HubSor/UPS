@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messages.Parameters;
+using Messages.Commands;
 
 namespace Validators.Parameters
 {

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messages.Sales;
+using Messages.Commands;
 
 namespace Validators.Sales
 {

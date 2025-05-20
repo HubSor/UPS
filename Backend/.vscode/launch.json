@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/UPS/bin/Debug/net7.0/UPS.dll",
+            "program": "${workspaceFolder}/UPS/bin/Debug/net8.0/UPS.dll",
             "args": [],
             "cwd": "${workspaceFolder}/UPS",
             "stopAtEntry": false,

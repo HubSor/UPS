@@ -1,7 +1,7 @@
 ﻿using Dtos.Parameters;
 using FluentValidation;
 
-namespace Validators.Products
+namespace Validators.Parameters
 {
 	public class OptionValidator: AbstractValidator<OptionDto>
 	{

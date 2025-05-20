@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Messages.Sales;
+using Messages.Queries;
 
 namespace Validators.Sales
 {
-	public class ListSalesOrderValidator : AbstractValidator<ListSalesOrder>
+	public class ListSalesOrderValidator : AbstractValidator<ListSalesQuery>
 	{
 		public ListSalesOrderValidator()
 		{

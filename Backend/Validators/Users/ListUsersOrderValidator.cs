@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Messages.Users;
+using Messages.Queries;
 
 namespace Validators.Users
 {
-	public class ListUsersOrderValidator: AbstractValidator<ListUsersOrder>
+	public class ListUsersOrderValidator: AbstractValidator<ListUsersQuery>
 	{
 		public ListUsersOrderValidator()
 		{

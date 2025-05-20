@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Messages.Clients;
+using Messages.Queries;
 
 namespace Validators.Clients
 {
-	public class ListClientsOrderValidator : AbstractValidator<ListClientsOrder>
+	public class ListClientsOrderValidator : AbstractValidator<ListClientsQuery>
 	{
 		public ListClientsOrderValidator()
 		{

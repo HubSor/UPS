@@ -1,9 +1,9 @@
 using FluentValidation;
-using Messages.Sales;
+using Messages.Queries;
 
 namespace Validators.Sales
 {
-	public class GetSaleDetailsOrderValidator : AbstractValidator<GetSaleOrder>
+	public class GetSaleDetailsOrderValidator : AbstractValidator<GetSaleQuery>
 	{
 		public GetSaleDetailsOrderValidator()
 		{

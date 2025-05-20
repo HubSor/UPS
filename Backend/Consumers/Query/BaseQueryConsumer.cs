@@ -1,7 +1,7 @@
 using MassTransit;
-using Core;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using Messages.Responses;
 
 namespace Consumers.Query;
 public abstract class BaseQueryConsumer<Order, Response> : IConsumer<Order>

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messages.Products;
+using Messages.Commands;
 
 namespace Validators.Products
 {

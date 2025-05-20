@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Messages.Products;
+using Messages.Queries;
 
 namespace Validators.Products
 {
-	public class GetSubProductOrderValidator : AbstractValidator<GetSubProductOrder>
+	public class GetSubProductOrderValidator : AbstractValidator<GetSubProductQuery>
 	{
 		public GetSubProductOrderValidator()
 		{
