@@ -1,7 +1,7 @@
 using Dtos.Parameters;
 using Models.Entities;
 
-namespace Messages.Parameters;
+namespace Messages.Orders;
 
 public record AddParameterOrder(string Name, bool Required, ParameterTypeEnum Type, int? ProductId, int? SubProductId, ICollection<OptionDto>? Options);
 public record EditParameterOrder(int ParameterId, string Name, bool Required, ParameterTypeEnum Type, ICollection<OptionDto>? Options);

@@ -1,7 +1,7 @@
 ﻿using Dtos;
 using Dtos.Users;
 
-namespace Messages.Users;
+namespace Messages.Responses;
 
 public class LoginResponse 
 {

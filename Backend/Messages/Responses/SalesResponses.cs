@@ -1,7 +1,7 @@
 ﻿using Dtos;
 using Dtos.Sales;
 
-namespace Messages.Sales;
+namespace Messages.Responses;
 
 public class SaveSaleResponse {}
 public class ListSalesResponse 

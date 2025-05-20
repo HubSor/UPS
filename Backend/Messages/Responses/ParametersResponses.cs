@@ -1,4 +1,4 @@
-﻿namespace Messages.Parameters;
+﻿namespace Messages.Responses;
 
 public class AddParameterResponse {}
 public class EditParameterResponse {}

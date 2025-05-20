@@ -1,7 +1,7 @@
 ﻿using Dtos;
 using Dtos.Products;
 
-namespace Messages.Products;
+namespace Messages.Responses;
 
 public class AddProductResponse {}
 public class AddSubProductResponse {}
