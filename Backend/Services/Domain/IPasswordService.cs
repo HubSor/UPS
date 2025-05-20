@@ -1,4 +1,4 @@
-﻿namespace Services;
+﻿namespace Services.Domain;
 public interface IPasswordService
 {
 	byte[] GenerateSalt();

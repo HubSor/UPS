@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Services;
+namespace Services.Domain;
 public class PasswordService : IPasswordService
 {
 	private static readonly int iterations = 65536;

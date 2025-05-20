@@ -19,7 +19,7 @@ namespace UPS.Controllers
 		[Route("add")]
 		public async Task<IActionResult> Add([FromBody] AddParameterOrder order)
 		{
-			return await RespondAsync<AddParameterOrder, AddParameterResponse>(order);
+			return await PerformQuery<AddParameterOrder, AddParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -27,7 +27,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditParameterOrder order)
 		{
-			return await RespondAsync<EditParameterOrder, EditParameterResponse>(order);
+			return await PerformQuery<EditParameterOrder, EditParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -35,7 +35,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteParameterOrder order)
 		{
-			return await RespondAsync<DeleteParameterOrder, DeleteParameterResponse>(order);
+			return await PerformQuery<DeleteParameterOrder, DeleteParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -43,7 +43,7 @@ namespace UPS.Controllers
 		[Route("options/add")]
 		public async Task<IActionResult> AddOption([FromBody] AddOptionOrder order)
 		{
-			return await RespondAsync<AddOptionOrder, AddOptionResponse>(order);
+			return await PerformQuery<AddOptionOrder, AddOptionResponse>(order);
 		}
 
 		[HttpPost]
@@ -51,7 +51,7 @@ namespace UPS.Controllers
 		[Route("options/delete")]
 		public async Task<IActionResult> DeleteOption([FromBody] DeleteOptionOrder order)
 		{
-			return await RespondAsync<DeleteOptionOrder, DeleteOptionResponse>(order);
+			return await PerformQuery<DeleteOptionOrder, DeleteOptionResponse>(order);
 		}
 	}
 }

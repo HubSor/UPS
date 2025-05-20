@@ -1,27 +1,27 @@
-﻿using MassTransit.Mediator;
-using Microsoft.AspNetCore.Mvc;
-using Core;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Application;
+using Messages.Queries;
 
 namespace UPS.Controllers
 {
 	[ApiController]
 	public abstract class BaseController : ControllerBase
 	{
-		protected IMediator Mediator { get; set; }
-		public BaseController(IMediator mediator)
+		protected IQueryService QueryService { get; set; }
+
+		public BaseController(IQueryService queryService)
 		{
-			Mediator = mediator;
+			QueryService = queryService;
 		}
 
-		protected async Task<IActionResult> RespondAsync<O, R>(O order)
-			where O : class
+		protected async Task<IActionResult> PerformQuery<Q, R>(Q query)
+			where Q : Query
 			where R : class
 		{
-			var client = Mediator.CreateRequestClient<O>();
-			var response = await client.GetResponse<ApiResponse<R>>(order);
-            return new ObjectResult(response.Message)
+			var response = await QueryService.PerformQueryAsync<Q, R>(query);
+            return new ObjectResult(response)
             {
-                StatusCode = (int)response.Message.StatusCode
+                StatusCode = (int)response.StatusCode
             };
 		}
 	}

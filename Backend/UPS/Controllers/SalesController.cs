@@ -19,7 +19,7 @@ namespace UPS.Controllers
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
-			return await RespondAsync<SaveSaleOrder, SaveSaleResponse>(order);
+			return await PerformQuery<SaveSaleOrder, SaveSaleResponse>(order);
 		}
 
 		[HttpPost]
@@ -27,7 +27,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
 		{
-			return await RespondAsync<ListSalesOrder, ListSalesResponse>(order);
+			return await PerformQuery<ListSalesOrder, ListSalesResponse>(order);
 		}
 
 		[HttpPost]
@@ -35,7 +35,7 @@ namespace UPS.Controllers
 		[Route("get")]
 		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
 		{
-			return await RespondAsync<GetSaleOrder, GetSaleResponse>(order);
+			return await PerformQuery<GetSaleOrder, GetSaleResponse>(order);
 		}
 	}
 }
