@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using Core;
 using Data;
 using Helpers;
 using MassTransit;
+using Messages.Responses;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;

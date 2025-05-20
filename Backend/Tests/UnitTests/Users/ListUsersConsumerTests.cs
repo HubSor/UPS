@@ -1,14 +1,15 @@
-﻿using Consumers.Users;
+﻿using Consumers.Query;
 using Dtos;
 using Helpers;
-using Messages.Users;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Users;
 
 [TestFixture]
-public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUsersOrder, ListUsersResponse>
+public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUsersQuery, ListUsersResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<User> users = default!;
@@ -63,7 +64,7 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 	[Test]
 	public async Task Consume_Ok_OnePage()
 	{
-		var order = new ListUsersOrder(Pagination);
+		var order = new ListUsersQuery(Pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -88,7 +89,7 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 	{
 		Pagination.PageSize = 2;
 		Pagination.PageIndex = 1;
-		var order = new ListUsersOrder(Pagination);
+		var order = new ListUsersQuery(Pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -111,7 +112,7 @@ public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUs
 	public async Task Consume_Ok_Empty()
 	{
 		users.Entities.Clear();
-		var order = new ListUsersOrder(Pagination);
+		var order = new ListUsersQuery(Pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

@@ -1,10 +1,12 @@
-﻿using Consumers.Products;
+﻿using Consumers.Command;
 using Helpers;
 using MassTransit.Mediator;
-using Messages.Products;
+using Messages.Commands;
+using Messages.Responses;
 using Models.Entities;
 using Moq;
 using NUnit.Framework;
+using Services.Infrastructure;
 
 namespace UnitTests.Products;
 

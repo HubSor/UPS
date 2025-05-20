@@ -1,13 +1,14 @@
-﻿using Consumers.Clients;
+﻿using Consumers.Query;
 using Helpers;
-using Messages.Clients;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientConsumer, FindPersonClientOrder, FindPersonClientResponse>
+public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientConsumer, FindPersonClientQuery, FindPersonClientResponse>
 {
 	private MockRepository<PersonClient> clients = default!;
 	private static readonly string pesel = "00123456789";
@@ -25,14 +26,14 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 			Pesel = pesel
 		});
 
-		consumer = new FindPersonClientConsumer(mockLogger.Object, clients.Object, mockUnitOfWork.Object);
+		consumer = new FindPersonClientConsumer(mockLogger.Object, clients.Object);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_Ok_FindByPesel()
 	{
-		var order = new FindPersonClientOrder(pesel);
+		var order = new FindPersonClientQuery(pesel);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -50,7 +51,7 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 	[Test]
 	public async Task Consume_BadRequest_NotFound()
 	{
-		var order = new FindPersonClientOrder(pesel + '1');
+		var order = new FindPersonClientQuery(pesel + '1');
 
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();

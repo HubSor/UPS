@@ -1,5 +1,5 @@
-﻿using Core;
-using MassTransit;
+﻿using MassTransit;
+using Messages.Responses;
 using Moq;
 
 namespace Helpers;

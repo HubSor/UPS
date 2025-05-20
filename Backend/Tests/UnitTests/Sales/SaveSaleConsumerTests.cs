@@ -1,8 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using Consumers.Sales;
+﻿using Consumers.Command;
 using Dtos.Sales;
 using Helpers;
-using Messages.Sales;
+using Messages.Commands;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 

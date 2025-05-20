@@ -1,6 +1,7 @@
 using System.Net;
 using Dtos;
-using Messages.Users;
+using Messages.Queries;
+using Messages.Responses;
 using Xunit;
 
 namespace IntegrationTests.Users;
@@ -14,7 +15,7 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task Login_Ok_CorrectCredentialsAdmin()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("admin", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("admin", "admin"));
 		
 		var response = await client.SendAsync(req);
 		response.EnsureSuccessStatusCode();
@@ -32,7 +33,7 @@ public class UsersTests : IntegrationTestCase
 	public async Task Logout_BadRequest_Unauthorized()
 	{
 		AuthCookie = "";
-		var req = GetRequestMessage("/users/logout", new LogoutOrder());
+		var req = GetRequestMessage("/users/logout", new LogoutQuery());
 		var response = await client.SendAsync(req);
 		Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
 	}
@@ -40,12 +41,12 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task List_BadRequest_NoPermissionsAsUser()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("test", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("test", "admin"));
 		var response = await client.SendAsync(req);
 		response.EnsureSuccessStatusCode();
 		CheckAuthCookie(response);
 
-		var req2 = GetRequestMessage("/users/list", new ListUsersOrder(new PaginationDto 
+		var req2 = GetRequestMessage("/users/list", new ListUsersQuery(new PaginationDto 
 		{
 			PageIndex = 0, PageSize = 4
 		}));
@@ -56,12 +57,12 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task List_Ok_AsAdmin()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("admin", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("admin", "admin"));
 		var response = await client.SendAsync(req);
 		response.EnsureSuccessStatusCode();
 		CheckAuthCookie(response);
 
-		var req2 = GetRequestMessage("/users/list", new ListUsersOrder(new PaginationDto
+		var req2 = GetRequestMessage("/users/list", new ListUsersQuery(new PaginationDto
 		{
 			PageIndex = 0,
 			PageSize = 4
@@ -82,12 +83,12 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task Logout_Ok_AfterLogin()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("admin", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("admin", "admin"));
 		var response = await client.SendAsync(req);
 		response.EnsureSuccessStatusCode();
 		CheckAuthCookie(response);
 
-		var req2 = GetRequestMessage("/users/logout", new LogoutOrder());
+		var req2 = GetRequestMessage("/users/logout", new LogoutQuery());
 		response = await client.SendAsync(req2);
 		response.EnsureSuccessStatusCode();
 		
@@ -100,7 +101,7 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task Login_Ok_CorrectCredentialsUser()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("test", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("test", "admin"));
 
 		var response = await client.SendAsync(req);
 
@@ -118,12 +119,12 @@ public class UsersTests : IntegrationTestCase
 	[Fact]
 	public async Task Session_Ok_AfterLoginUser()
 	{
-		var req = GetRequestMessage("/users/login", new LoginOrder("test", "admin"));
+		var req = GetRequestMessage("/users/login", new LoginQuery("test", "admin"));
 		var response = await client.SendAsync(req);
 		response.EnsureSuccessStatusCode();
 		CheckAuthCookie(response);
 
-		var req2 = GetRequestMessage("/users/logout", new SessionOrder());
+		var req2 = GetRequestMessage("/users/logout", new SessionQuery());
 		response = await client.SendAsync(req2);
 		response.EnsureSuccessStatusCode();
 	}

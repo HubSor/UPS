@@ -1,6 +1,7 @@
-﻿using Consumers.Users;
+﻿using Consumers.Command;
 using Helpers;
-using Messages.Users;
+using Messages.Commands;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 

@@ -1,14 +1,15 @@
-﻿using Consumers.Products;
+﻿using Consumers.Query;
 using Dtos;
 using Helpers;
-using Messages.Products;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsConsumer, ListSubProductsOrder, ListSubProductsResponse>
+public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsConsumer, ListSubProductsQuery, ListSubProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -47,14 +48,14 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 			SubProductInProducts = new List<SubProductInProduct>()
 		});
 
-		consumer = new ListSubProductsConsumer(mockLogger.Object, products.Object, subProducts.Object, mockUnitOfWork.Object);
+		consumer = new ListSubProductsConsumer(mockLogger.Object, products.Object, subProducts.Object);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_Ok_WithoutProductId()
 	{
-		var order = new ListSubProductsOrder(null, pagination);
+		var order = new ListSubProductsQuery(null, pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -67,7 +68,7 @@ public class ListSubProductsConsumerTests : ConsumerTestCase<ListSubProductsCons
 	[Test]
 	public async Task Consume_Ok_WithProductId()
 	{
-		var order = new ListSubProductsOrder(1, pagination);
+		var order = new ListSubProductsQuery(1, pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

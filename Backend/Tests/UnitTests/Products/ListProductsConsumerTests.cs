@@ -1,14 +1,15 @@
-﻿using Consumers.Products;
+﻿using Consumers.Query;
 using Dtos;
 using Helpers;
-using Messages.Products;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, ListProductsOrder, ListProductsResponse>
+public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, ListProductsQuery, ListProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private readonly PaginationDto pagination = new (){ PageIndex = 0, PageSize = 10 };
@@ -34,14 +35,14 @@ public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, 
 			Code = "TEST2"
 		});
 
-		consumer = new ListProductsConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		consumer = new ListProductsConsumer(mockLogger.Object, products.Object);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_Ok_ListSome()
 	{
-		var order = new ListProductsOrder(new ProductStatusEnum[] { ProductStatusEnum.NotOffered }, pagination);
+		var order = new ListProductsQuery([ProductStatusEnum.NotOffered], pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

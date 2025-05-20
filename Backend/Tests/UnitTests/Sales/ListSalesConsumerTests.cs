@@ -1,14 +1,15 @@
-﻿using Consumers.Sales;
+﻿using Consumers.Query;
 using Dtos;
 using Helpers;
-using Messages.Sales;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Sales;
 
 [TestFixture]
-public class ListSalesConsumerTests : ConsumerTestCase<ListSalesConsumer, ListSalesOrder, ListSalesResponse>
+public class ListSalesConsumerTests : ConsumerTestCase<ListSalesConsumer, ListSalesQuery, ListSalesResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<Sale> sales = default!;
@@ -68,7 +69,7 @@ public class ListSalesConsumerTests : ConsumerTestCase<ListSalesConsumer, ListSa
 	[Test]
 	public async Task Consume_Ok_OnePage()
 	{
-		var order = new ListSalesOrder(Pagination);
+		var order = new ListSalesQuery(Pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

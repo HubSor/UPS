@@ -1,13 +1,14 @@
-﻿using Consumers.Products;
+﻿using Consumers.Query;
 using Helpers;
-using Messages.Products;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetProductOrder, GetProductResponse>
+public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetProductQuery, GetProductResponse>
 {
 	private MockRepository<Product> products = default!;
 
@@ -58,14 +59,14 @@ public class GetProductConsumerTests : ConsumerTestCase<GetProductConsumer, GetP
 			}
 		});
 
-		consumer = new GetProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		consumer = new GetProductConsumer(mockLogger.Object, products.Object);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_Ok_GetWithSubProducts()
 	{
-		var order = new GetProductOrder(1);
+		var order = new GetProductQuery(1);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

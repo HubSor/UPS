@@ -1,14 +1,15 @@
-﻿using Consumers.Clients;
+﻿using Consumers.Query;
 using Dtos;
 using Helpers;
-using Messages.Clients;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
 
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class ListCompanyClientsConsumerTests : ConsumerTestCase<ListCompanyClientsConsumer, ListCompanyClientsOrder, ListCompanyClientsResponse>
+public class ListCompanyClientsConsumerTests : ConsumerTestCase<ListCompanyClientsConsumer, ListCompanyClientsQuery, ListCompanyClientsResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<CompanyClient> clients = default!;
@@ -43,7 +44,7 @@ public class ListCompanyClientsConsumerTests : ConsumerTestCase<ListCompanyClien
 	[Test]
 	public async Task Consume_Ok_OnePage()
 	{
-		var order = new ListCompanyClientsOrder(Pagination);
+		var order = new ListCompanyClientsQuery(Pagination);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

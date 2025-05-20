@@ -1,14 +1,15 @@
-﻿using Consumers.Users;
+﻿using Consumers.Query;
 using Helpers;
-using Messages.Users;
+using Messages.Queries;
+using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
-using Services;
+using Services.Domain;
 
 namespace UnitTests.Users;
 
 [TestFixture]
-public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, LoginResponse>
+public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginQuery, LoginResponse>
 {
 	private static readonly string userPassword = "testowEha5ło";
 	private static readonly string userName= "admin";
@@ -39,14 +40,14 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 				}
 			}
 		});
-		consumer = new LoginConsumer(mockUnitOfWork.Object, users.Object, mockHttpContextAccessor.Object, mockLogger.Object, passwordService);
+		consumer = new LoginConsumer(users.Object, mockHttpContextAccessor.Object, mockLogger.Object, passwordService);
 		return Task.CompletedTask;
 	}
 	
 	[Test]
 	public async Task Consume_BadRequest_NoUser()
 	{
-		var order = new LoginOrder("abc nie ma mnie w bazie", userPassword);
+		var order = new LoginQuery("abc nie ma mnie w bazie", userPassword);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -57,7 +58,7 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 	[Test]
 	public async Task Consume_BadRequest_WrongPassword()
 	{
-		var order = new LoginOrder(userName, userPassword + "test");
+		var order = new LoginQuery(userName, userPassword + "test");
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -68,7 +69,7 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 	public async Task Consume_BadRequest_InactiveUser()
 	{
 		users.Entities.Single().Active = false;
-		var order = new LoginOrder(userName, userPassword);
+		var order = new LoginQuery(userName, userPassword);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -78,7 +79,7 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 	[Test]
 	public async Task Consume_Ok_GoodLogin()
 	{
-		var order = new LoginOrder(userName, userPassword);
+		var order = new LoginQuery(userName, userPassword);
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();

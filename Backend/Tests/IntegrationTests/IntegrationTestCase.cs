@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using Core;
+using Messages.Responses;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
