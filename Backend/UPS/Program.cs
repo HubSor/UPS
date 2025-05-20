@@ -1,5 +1,4 @@
-﻿using Consumers;
-using Consumers.Command;
+﻿using Consumers.Command;
 using Consumers.Query;
 using Core;
 using Data;
@@ -13,6 +12,7 @@ using Services.Infrastructure;
 using Services.Domain;
 using UPS.Filters;
 using Validators.Users;
+using Services.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +72,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
+builder.Services.AddScoped(typeof(ICqrsService), typeof(CqrsService));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));

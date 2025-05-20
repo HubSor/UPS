@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
-using Messages.Sales;
 using Models.Entities;
 using UPS.Attributes;
+using Services.Application;
+using Messages.Commands;
+using Messages.Responses;
+using Messages.Queries;
 
 namespace UPS.Controllers
 {
 	[Route("sales")]
 	public class SalesController : BaseController
 	{
-		public SalesController(IMediator mediator)
-			: base(mediator)
+		public SalesController(ICqrsService cqrsService)
+			: base(cqrsService)
 		{
 		}
 		
@@ -19,23 +21,23 @@ namespace UPS.Controllers
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
-			return await PerformQuery<SaveSaleOrder, SaveSaleResponse>(order);
+			return await PerformCommand<SaveSaleOrder, SaveSaleResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
 		[Route("list")]
-		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
+		public async Task<IActionResult> ListSales([FromBody] ListSalesQuery order)
 		{
-			return await PerformQuery<ListSalesOrder, ListSalesResponse>(order);
+			return await PerformQuery<ListSalesQuery, ListSalesResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
 		[Route("get")]
-		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
+		public async Task<IActionResult> GetSale([FromBody] GetSaleQuery order)
 		{
-			return await PerformQuery<GetSaleOrder, GetSaleResponse>(order);
+			return await PerformQuery<GetSaleQuery, GetSaleResponse>(order);
 		}
 	}
 }

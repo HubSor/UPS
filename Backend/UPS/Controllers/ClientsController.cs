@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
-using Messages.Clients;
+using Services.Application;
+using Messages.Commands;
+using Messages.Responses;
+using Messages.Queries;
 
 namespace UPS.Controllers
 {
 	[Route(template: "clients")]
 	public class ClientsController : BaseController
 	{
-		public ClientsController(IMediator mediator)
-			: base(mediator)
+		public ClientsController(ICqrsService cqrsService)
+			: base(cqrsService)
 		{
 		}
 
@@ -19,39 +21,39 @@ namespace UPS.Controllers
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
-			return await PerformQuery<UpsertClientOrder, UpsertClientResponse>(order);
+			return await PerformCommand<UpsertClientOrder, UpsertClientResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("people/find")]
-		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
+		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientQuery order)
 		{
-			return await PerformQuery<FindPersonClientOrder, FindPersonClientResponse>(order);
+			return await PerformQuery<FindPersonClientQuery, FindPersonClientResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Administrator)]
 		[Route("people/list")]
-		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
+		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsQuery order)
 		{
-			return await PerformQuery<ListPersonClientsOrder, ListPersonClientsResponse>(order);
+			return await PerformQuery<ListPersonClientsQuery, ListPersonClientsResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("companies/find")]
-		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
+		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientQuery order)
 		{
-			return await PerformQuery<FindCompanyClientOrder, FindCompanyClientResponse>(order);
+			return await PerformQuery<FindCompanyClientQuery, FindCompanyClientResponse>(order);
 		}
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Administrator)]
 		[Route("companies/list")]
-		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
+		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsQuery order)
 		{
-			return await PerformQuery<ListCompanyClientsOrder, ListCompanyClientsResponse>(order);
+			return await PerformQuery<ListCompanyClientsQuery, ListCompanyClientsResponse>(order);
 		}
 	}
 }

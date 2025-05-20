@@ -1,25 +1,25 @@
 using Core;
 using Data;
 using MassTransit;
-using MassTransit.Mediator;
 using Messages.Commands;
 using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
+using Services.Infrastructure;
 
 namespace Consumers.Command;
 public class AddSubProductConsumer : BaseCommandConsumer<AddSubProductOrder, AddSubProductResponse>
 {
 	private readonly IRepository<SubProduct> subProducts;
-	private readonly IMediator mediator;
+	private readonly ICommandBus commandBus;
 	private SubProduct subProduct = default!;
 	
-	public AddSubProductConsumer(ILogger<AddSubProductConsumer> logger, IRepository<SubProduct> subProducts, IUnitOfWork unitOfWork, IMediator mediator)
+	public AddSubProductConsumer(ILogger<AddSubProductConsumer> logger, IRepository<SubProduct> subProducts, IUnitOfWork unitOfWork, ICommandBus commandBus)
 		: base(unitOfWork, logger)
 	{
 		this.subProducts = subProducts;
-		this.mediator = mediator;
+		this.commandBus = commandBus;
 	}
 
 	public override async Task<bool> PreTransaction(ConsumeContext<AddSubProductOrder> context)
@@ -56,7 +56,7 @@ public class AddSubProductConsumer : BaseCommandConsumer<AddSubProductOrder, Add
 			var order = new AssignSubProductOrder(context.Message.ProductId.Value, subProduct.Id, subProduct.BasePrice);
 			try
 			{
-				var client = mediator.CreateRequestClient<AssignSubProductOrder>();
+				var client = commandBus.CreateRequestClient<AssignSubProductOrder>();
 				var response = await client.GetResponse<ApiResponse<AssignSubProductResponse>>(order);
 				
 				if (response.Message.Success)

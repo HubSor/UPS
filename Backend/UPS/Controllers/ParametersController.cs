@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
-using Messages.Parameters;
+using Services.Application;
+using Messages.Commands;
+using Messages.Responses;
 
 namespace UPS.Controllers
 {
 	[Route(template: "parameters")]
 	public class ParametersController : BaseController
 	{
-		public ParametersController(IMediator mediator)
-			: base(mediator)
+		public ParametersController(ICqrsService cqrsService)
+			: base(cqrsService)
 		{
 		}
 
@@ -19,7 +20,7 @@ namespace UPS.Controllers
 		[Route("add")]
 		public async Task<IActionResult> Add([FromBody] AddParameterOrder order)
 		{
-			return await PerformQuery<AddParameterOrder, AddParameterResponse>(order);
+			return await PerformCommand<AddParameterOrder, AddParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -27,7 +28,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditParameterOrder order)
 		{
-			return await PerformQuery<EditParameterOrder, EditParameterResponse>(order);
+			return await PerformCommand<EditParameterOrder, EditParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -35,7 +36,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteParameterOrder order)
 		{
-			return await PerformQuery<DeleteParameterOrder, DeleteParameterResponse>(order);
+			return await PerformCommand<DeleteParameterOrder, DeleteParameterResponse>(order);
 		}
 
 		[HttpPost]
@@ -43,7 +44,7 @@ namespace UPS.Controllers
 		[Route("options/add")]
 		public async Task<IActionResult> AddOption([FromBody] AddOptionOrder order)
 		{
-			return await PerformQuery<AddOptionOrder, AddOptionResponse>(order);
+			return await PerformCommand<AddOptionOrder, AddOptionResponse>(order);
 		}
 
 		[HttpPost]
@@ -51,7 +52,7 @@ namespace UPS.Controllers
 		[Route("options/delete")]
 		public async Task<IActionResult> DeleteOption([FromBody] DeleteOptionOrder order)
 		{
-			return await PerformQuery<DeleteOptionOrder, DeleteOptionResponse>(order);
+			return await PerformCommand<DeleteOptionOrder, DeleteOptionResponse>(order);
 		}
 	}
 }
