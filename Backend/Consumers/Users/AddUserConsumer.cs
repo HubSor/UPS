@@ -1,14 +1,15 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Users;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 using Services;
 
 namespace Consumers.Users;
-public class AddUserConsumer : TransactionConsumer<AddUserOrder, AddUserResponse>
+public class AddUserConsumer : BaseCommandConsumer<AddUserOrder, AddUserResponse>
 {
 	private readonly IRepository<User> users;
 	private readonly IRepository<Role> roles;

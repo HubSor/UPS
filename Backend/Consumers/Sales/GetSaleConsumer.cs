@@ -1,37 +1,31 @@
 using Core;
-using Data;
 using Dtos.Sales;
 using MassTransit;
-using Messages.Sales;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Sales;
-public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse>
+public class GetSaleConsumer : BaseQueryConsumer<GetSaleQuery, GetSaleResponse>
 {
 	private readonly IRepository<Sale> sales;
-	private SaleDetailsDto saleDetailsDto = default!;
 	
-	public GetSaleConsumer(ILogger<GetSaleConsumer> logger, IRepository<Sale> sales, IUnitOfWork unitOfWork)
-		: base(unitOfWork, logger)
+	public GetSaleConsumer(ILogger<GetSaleConsumer> logger, IRepository<Sale> sales)
+		: base(logger)
 	{
 		this.sales = sales;
 	}
 
-	public override async Task<bool> PreTransaction(ConsumeContext<GetSaleOrder> context)
+	public override async Task Consume(ConsumeContext<GetSaleQuery> context)
 	{
 		if (!await sales.GetAll().AnyAsync(x => x.Id == context.Message.SaleId))
 		{
 			await RespondWithValidationFailAsync(context, "SaleId", "Nie znaleziono transakcji");
-			return false;
+			return;
 		}
 
-		return true;
-	}
-
-	public override async Task InTransaction(ConsumeContext<GetSaleOrder> context)
-	{
 		var sale = await sales.GetAll()
 			.Include(p => p.Client)
 			.Include(x => x.Product)
@@ -42,12 +36,9 @@ public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse
 			.ThenInclude(x => x.Options)
 			.FirstAsync(p => p.Id == context.Message.SaleId);
 
-		saleDetailsDto = new SaleDetailsDto(sale);
 		logger.LogInformation("Got sale {SaleId} details", sale.Id);
-	}
 
-	public override async Task PostTransaction(ConsumeContext<GetSaleOrder> context)
-	{
+		var saleDetailsDto = new SaleDetailsDto(sale);
 		await RespondAsync(context, new GetSaleResponse()
 		{
 			SaleDetailsDto = saleDetailsDto

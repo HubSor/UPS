@@ -2,14 +2,15 @@ using Core;
 using Dtos;
 using Dtos.Clients;
 using MassTransit;
-using Messages.Clients;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Clients;
-public abstract class ListClientsConsumer<T, O, D, R> : BaseConsumer<O, R>
+public abstract class ListClientsConsumer<T, O, D, R> : BaseQueryConsumer<O, R>
 	where T : Client
-	where O : ListClientsOrder
+	where O : ListClientsQuery
 	where D : ClientDto
 	where R : class
 {
@@ -38,7 +39,7 @@ public abstract class ListClientsConsumer<T, O, D, R> : BaseConsumer<O, R>
 	}
 }
 
-public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListPersonClientsOrder, PersonClientDto, ListPersonClientsResponse>
+public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListPersonClientsQuery, PersonClientDto, ListPersonClientsResponse>
 {
 	public ListPersonClientsConsumer(ILogger<ListPersonClientsConsumer> logger, IRepository<PersonClient> clients)
 	: base(logger, clients)
@@ -47,7 +48,7 @@ public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListP
 
 	protected override PersonClientDto GetClientDto(PersonClient client) => new (client);
 
-	protected override async Task RespondAsync(ConsumeContext<ListPersonClientsOrder> context, ICollection<PersonClientDto> dtos, int count)
+	protected override async Task RespondAsync(ConsumeContext<ListPersonClientsQuery> context, ICollection<PersonClientDto> dtos, int count)
 	{
 		logger.LogInformation("Listing clients of type {ClientType}", nameof(PersonClient));
 		await RespondAsync(context, new ListPersonClientsResponse()
@@ -58,7 +59,7 @@ public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListP
 	}
 }
 
-public class ListCompanyClientsConsumer : ListClientsConsumer<CompanyClient, ListCompanyClientsOrder, CompanyClientDto, ListCompanyClientsResponse>
+public class ListCompanyClientsConsumer : ListClientsConsumer<CompanyClient, ListCompanyClientsQuery, CompanyClientDto, ListCompanyClientsResponse>
 {
 	public ListCompanyClientsConsumer(ILogger<ListCompanyClientsConsumer> logger, IRepository<CompanyClient> clients)
 	: base(logger, clients)
@@ -67,7 +68,7 @@ public class ListCompanyClientsConsumer : ListClientsConsumer<CompanyClient, Lis
 
 	protected override CompanyClientDto GetClientDto(CompanyClient client) => new(client);
 
-	protected override async Task RespondAsync(ConsumeContext<ListCompanyClientsOrder> context, ICollection<CompanyClientDto> dtos, int count)
+	protected override async Task RespondAsync(ConsumeContext<ListCompanyClientsQuery> context, ICollection<CompanyClientDto> dtos, int count)
 	{
 		logger.LogInformation("Listing clients of type {ClientType}", nameof(CompanyClient));
 		await RespondAsync(context, new ListCompanyClientsResponse()

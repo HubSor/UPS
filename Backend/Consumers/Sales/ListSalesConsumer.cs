@@ -4,13 +4,14 @@ using Dtos;
 using Dtos.Clients;
 using Dtos.Sales;
 using MassTransit;
-using Messages.Sales;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Sales;
-public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
+public class ListSalesConsumer : BaseQueryConsumer<ListSalesQuery, ListSalesResponse>
 {
 	private readonly IRepository<Sale> sales;
 	
@@ -28,7 +29,7 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 		new CompanyClientDto(companyClient) :
 		null;
 
-	public override async Task Consume(ConsumeContext<ListSalesOrder> context)
+	public override async Task Consume(ConsumeContext<ListSalesQuery> context)
 	{
 		var saleCount = sales.GetAll().Count();
 		var saleList = await sales.GetAll()

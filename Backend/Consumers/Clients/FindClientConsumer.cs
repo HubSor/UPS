@@ -1,74 +1,66 @@
 using Core;
-using Data;
 using Dtos.Clients;
 using MassTransit;
-using Messages.Clients;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Clients;
-public abstract class FindClientConsumer<T, O, R> : TransactionConsumer<O, R>
+public abstract class FindClientConsumer<T, O, R> : BaseQueryConsumer<O, R>
 	where T : Client
-	where O : FindClientOrder
+	where O : FindClientQuery
 	where R : FindClientResponse
 {
 	protected readonly IRepository<T> clients;
-	protected T client = default!;
-	protected ClientDto clientDto = default!;
 	
-	public FindClientConsumer(ILogger<FindClientConsumer<T, O, R>> logger, IRepository<T> clients, IUnitOfWork unitOfWork)
-		: base(unitOfWork, logger)
+	public FindClientConsumer(ILogger<FindClientConsumer<T, O, R>> logger, IRepository<T> clients)
+		: base(logger)
 	{
 		this.clients = clients;
 	}
 	
 	public abstract Task<T?> GetClientAsync(ConsumeContext<O> context);
-	public abstract ClientDto CreateClientDto(ConsumeContext<O> context);
+	public abstract ClientDto CreateClientDto(T client);
+	public abstract Task Respond(ConsumeContext<O> context, ClientDto clientDto);
 
-	public override async Task<bool> PreTransaction(ConsumeContext<O> context)
+	public override async Task Consume(ConsumeContext<O> context)
 	{
 		var foundClient = await GetClientAsync(context);
 
 		if (foundClient == null)
 		{
 			await RespondWithValidationFailAsync(context, "Identifier", "Nie znaleziono klienta");
-			return false;
+			return;
 		}
 
-		client = foundClient;
-
-		return true;
-	}
-
-	public override Task InTransaction(ConsumeContext<O> context)
-	{
 		logger.LogInformation("Creating found client Dto");
-		clientDto =  CreateClientDto(context);
-		return Task.CompletedTask;
+		var clientDto = CreateClientDto(foundClient);
+
+		await Respond(context, clientDto);
 	}
 }
 
-public class FindPersonClientConsumer : FindClientConsumer<PersonClient, FindPersonClientOrder, FindPersonClientResponse>
+public class FindPersonClientConsumer : FindClientConsumer<PersonClient, FindPersonClientQuery, FindPersonClientResponse>
 {
-	public FindPersonClientConsumer(ILogger<FindPersonClientConsumer> logger, IRepository<PersonClient> clients, IUnitOfWork unitOfWork)
-		: base (logger, clients, unitOfWork)
+	public FindPersonClientConsumer(ILogger<FindPersonClientConsumer> logger, IRepository<PersonClient> clients)
+		: base(logger, clients)
 	{
-		
 	}
 
-	public override async Task<PersonClient?> GetClientAsync(ConsumeContext<FindPersonClientOrder> context)
+	public override async Task<PersonClient?> GetClientAsync(ConsumeContext<FindPersonClientQuery> context)
 	{
 		return await clients.GetAll()
 			.FirstOrDefaultAsync(x => x.Pesel == context.Message.Identifier.ToUpper().Trim() && !x.Deleted);
 	}
 
-	public override ClientDto CreateClientDto(ConsumeContext<FindPersonClientOrder> context)
+	public override ClientDto CreateClientDto(PersonClient client)
 	{
 		return new PersonClientDto(client);
 	}
 
-	public override async Task PostTransaction(ConsumeContext<FindPersonClientOrder> context)
+	public override async Task Respond(ConsumeContext<FindPersonClientQuery> context, ClientDto clientDto)
 	{
 		await RespondAsync(context, new FindPersonClientResponse()
 		{
@@ -77,27 +69,26 @@ public class FindPersonClientConsumer : FindClientConsumer<PersonClient, FindPer
 	}
 }
 
-public class FindCompanyClientConsumer : FindClientConsumer<CompanyClient, FindCompanyClientOrder, FindCompanyClientResponse>
+public class FindCompanyClientConsumer : FindClientConsumer<CompanyClient, FindCompanyClientQuery, FindCompanyClientResponse>
 {
-	public FindCompanyClientConsumer(ILogger<FindCompanyClientConsumer> logger, IRepository<CompanyClient> clients, IUnitOfWork unitOfWork)
-		: base(logger, clients, unitOfWork)
+	public FindCompanyClientConsumer(ILogger<FindCompanyClientConsumer> logger, IRepository<CompanyClient> clients)
+		: base(logger, clients)
 	{
-
 	}
 
-	public override async Task<CompanyClient?> GetClientAsync(ConsumeContext<FindCompanyClientOrder> context)
+	public override async Task<CompanyClient?> GetClientAsync(ConsumeContext<FindCompanyClientQuery> context)
 	{
 		return await clients.GetAll()
 			.FirstOrDefaultAsync(x => !x.Deleted && (x.Nip == context.Message.Identifier.ToUpper().Trim() ||
 				x.Regon == context.Message.Identifier.ToUpper().Trim()));
 	}
 
-	public override ClientDto CreateClientDto(ConsumeContext<FindCompanyClientOrder> context)
+	public override ClientDto CreateClientDto(CompanyClient client)
 	{
 		return new CompanyClientDto(client);
 	}
 
-	public override async Task PostTransaction(ConsumeContext<FindCompanyClientOrder> context)
+	public override async Task Respond(ConsumeContext<FindCompanyClientQuery> context, ClientDto clientDto)
 	{
 		await RespondAsync(context, new FindCompanyClientResponse()
 		{

@@ -3,7 +3,8 @@ using Core;
 using Data;
 using Helpers;
 using MassTransit;
-using Messages.Users;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ using Models.Entities;
 using Services;
 
 namespace Consumers.Users;
-public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserResponse>
+public class EditUserConsumer : BaseCommandConsumer<EditUserOrder, EditUserResponse>
 {
 	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IRepository<User> users;

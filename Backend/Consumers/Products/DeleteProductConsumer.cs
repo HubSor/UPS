@@ -1,13 +1,14 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Products;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Products;
-public class DeleteProductConsumer : TransactionConsumer<DeleteProductOrder, DeleteProductResponse>
+public class DeleteProductConsumer : BaseCommandConsumer<DeleteProductOrder, DeleteProductResponse>
 {
 	private readonly IRepository<Product> products;
 	private readonly IRepository<SubProductInProduct> subProductsInProducts;

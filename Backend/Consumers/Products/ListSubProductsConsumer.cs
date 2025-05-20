@@ -1,41 +1,37 @@
 using Core;
-using Data;
 using Dtos;
 using Dtos.Products;
 using MassTransit;
-using Messages.Products;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Products;
-public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder, ListSubProductsResponse>
+public class ListSubProductsConsumer : BaseQueryConsumer<ListSubProductsQuery, ListSubProductsResponse>
 {
 	private readonly IRepository<Product> products;
 	private readonly IRepository<SubProduct> subProducts;
-	private ListSubProductsResponse response = default!;
 	
-	public ListSubProductsConsumer(ILogger<ListSubProductsConsumer> logger, IRepository<Product> products,
-		IRepository<SubProduct> subProducts, IUnitOfWork unitOfWork)
-		: base(unitOfWork, logger)
+	public ListSubProductsConsumer(
+		ILogger<ListSubProductsConsumer> logger,
+		IRepository<Product> products,
+		IRepository<SubProduct> subProducts
+	) : base(logger)
 	{
 		this.products = products;
 		this.subProducts = subProducts;
 	}
 	
-	public override async Task<bool> PreTransaction(ConsumeContext<ListSubProductsOrder> context)
+	public override async Task Consume(ConsumeContext<ListSubProductsQuery> context)
 	{
 		if (context.Message.ProductId.HasValue && !await products.GetAll().AnyAsync(x => x.Id == context.Message.ProductId.Value))
 		{
 			await RespondWithValidationFailAsync(context, "ProductId", "Nie znaleziono produktu");
-			return false;
+			return;
 		}
-		
-		return true;
-	}
 
-	public override async Task InTransaction(ConsumeContext<ListSubProductsOrder> context)
-	{
 		var query = subProducts.GetAll().Where(sp => !sp.Deleted);
 		if (context.Message.ProductId.HasValue)
 		{
@@ -53,15 +49,12 @@ public class ListSubProductsConsumer : TransactionConsumer<ListSubProductsOrder,
 			.Select(p => new SubProductDto(p))
 			.ToList();
 			
-		response = new ListSubProductsResponse()
+		logger.LogInformation("Listed subproducts");
+		var response = new ListSubProductsResponse()
 		{
 			SubProducts = new PagedList<SubProductDto>(dtos, totalCount, context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)
 		};
-		logger.LogInformation("Listed subproducts");
-	}
 
-	public override async Task PostTransaction(ConsumeContext<ListSubProductsOrder> context)
-	{
 		await RespondAsync(context, response);
 	}
 }

@@ -1,26 +1,25 @@
 using Core;
-using Data;
 using Dtos;
 using Dtos.Products;
 using MassTransit;
-using Messages.Products;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Products;
-public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListProductsResponse>
+public class ListProductsConsumer : BaseQueryConsumer<ListProductsQuery, ListProductsResponse>
 {
 	private readonly IRepository<Product> products;
-	private ListProductsResponse response = default!;
 	
-	public ListProductsConsumer(ILogger<ListProductsConsumer> logger, IRepository<Product> products, IUnitOfWork unitOfWork)
-		: base(unitOfWork, logger)
+	public ListProductsConsumer(ILogger<ListProductsConsumer> logger, IRepository<Product> products)
+		: base(logger)
 	{
 		this.products = products;
 	}
 
-	public override async Task InTransaction(ConsumeContext<ListProductsOrder> context)
+	public override async Task Consume(ConsumeContext<ListProductsQuery> context)
 	{
 		var query = products.GetAll().Where(x => context.Message.Statuses.Contains(x.Status) && !x.Deleted);
 		
@@ -32,15 +31,13 @@ public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListP
 			.Select(p => new ProductDto(p))
 			.ToListAsync();
 			
-		response = new ListProductsResponse()
+		logger.LogInformation("Listed products");
+		
+		var response = new ListProductsResponse()
 		{
 			Products = new PagedList<ProductDto>(dtos, totalCount, context.Message.Pagination.PageIndex, context.Message.Pagination.PageSize)	
 		};
-		logger.LogInformation("Listed products");
-	}
 
-	public override async Task PostTransaction(ConsumeContext<ListProductsOrder> context)
-	{
 		await RespondAsync(context, response);
 	}
 }

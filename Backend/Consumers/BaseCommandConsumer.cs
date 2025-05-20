@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Consumers;
 
-public abstract class TransactionConsumer<Order, Response> : BaseConsumer<Order, Response>
+public abstract class BaseCommandConsumer<Order, Response> : BaseQueryConsumer<Order, Response>
 	where Order : class
 	where Response : class
 {
 	protected readonly IUnitOfWork unitOfWork;
-	public TransactionConsumer(IUnitOfWork unitOfWork, ILogger<BaseConsumer<Order,Response>> logger)
+	public BaseCommandConsumer(IUnitOfWork unitOfWork, ILogger<BaseQueryConsumer<Order,Response>> logger)
 		: base(logger)
 	{
 		this.unitOfWork = unitOfWork;

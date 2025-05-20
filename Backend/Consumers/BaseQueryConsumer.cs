@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Consumers;
 
-public abstract class BaseConsumer<Order, Response> : IConsumer<Order>
+public abstract class BaseQueryConsumer<Order, Response> : IConsumer<Order>
 	where Order : class 
 	where Response : class
 {
-	protected readonly ILogger<BaseConsumer<Order, Response>> logger;
+	protected readonly ILogger<BaseQueryConsumer<Order, Response>> logger;
 	
-	public BaseConsumer(ILogger<BaseConsumer<Order, Response>> logger)
+	public BaseQueryConsumer(ILogger<BaseQueryConsumer<Order, Response>> logger)
 	{
 		this.logger = logger;
 	}

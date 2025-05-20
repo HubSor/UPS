@@ -1,13 +1,14 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Clients;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Clients;
-public class UpsertClientConsumer : TransactionConsumer<UpsertClientOrder, UpsertClientResponse>
+public class UpsertClientConsumer : BaseCommandConsumer<UpsertClientOrder, UpsertClientResponse>
 {
 	private readonly IRepository<Client> clients;
 	private Client? client;

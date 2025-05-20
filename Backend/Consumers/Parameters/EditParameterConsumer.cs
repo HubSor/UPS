@@ -1,13 +1,14 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Parameters;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Parameters;
-public class EditParameterConsumer : TransactionConsumer<EditParameterOrder, EditParameterResponse>
+public class EditParameterConsumer : BaseCommandConsumer<EditParameterOrder, EditParameterResponse>
 {
 	private readonly IRepository<Parameter> parameters;
 	private readonly IRepository<ParameterOption> options;

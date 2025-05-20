@@ -2,14 +2,15 @@ using Core;
 using Data;
 using Helpers;
 using MassTransit;
-using Messages.Users;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Users;
-public class DeleteUserConsumer : TransactionConsumer<DeleteUserOrder, DeleteUserResponse>
+public class DeleteUserConsumer : BaseCommandConsumer<DeleteUserOrder, DeleteUserResponse>
 {
 	private readonly IRepository<User> users;
 	private readonly IHttpContextAccessor httpContextAccessor;

@@ -1,13 +1,14 @@
 using Core;
 using Data;
 using MassTransit;
-using Messages.Products;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Products;
-public class EditSubProductConsumer : TransactionConsumer<EditSubProductOrder, EditSubProductResponse>
+public class EditSubProductConsumer : BaseCommandConsumer<EditSubProductOrder, EditSubProductResponse>
 {
 	private readonly IRepository<SubProduct> subProducts;
 	

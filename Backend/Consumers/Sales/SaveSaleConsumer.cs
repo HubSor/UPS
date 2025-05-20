@@ -3,14 +3,15 @@ using Core;
 using Data;
 using Helpers;
 using MassTransit;
-using Messages.Sales;
+using Messages.Orders;
+using Messages.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Sales;
-public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleResponse>
+public class SaveSaleConsumer : BaseCommandConsumer<SaveSaleOrder, SaveSaleResponse>
 {
 	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IRepository<Sale> sales;

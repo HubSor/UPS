@@ -2,13 +2,14 @@ using Core;
 using Dtos;
 using Dtos.Users;
 using MassTransit;
-using Messages.Users;
+using Messages.Queries;
+using Messages.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Consumers.Users;
-public class ListUsersConsumer : BaseConsumer<ListUsersOrder, ListUsersResponse>
+public class ListUsersConsumer : BaseQueryConsumer<ListUsersQuery, ListUsersResponse>
 {
 	private readonly IRepository<User> users;
 	
@@ -18,7 +19,7 @@ public class ListUsersConsumer : BaseConsumer<ListUsersOrder, ListUsersResponse>
 		this.users = users;
 	}
 
-	public override async Task Consume(ConsumeContext<ListUsersOrder> context)
+	public override async Task Consume(ConsumeContext<ListUsersQuery> context)
 	{
 		var userCount = users.GetAll().Count();
 		var userList = await users.GetAll()
