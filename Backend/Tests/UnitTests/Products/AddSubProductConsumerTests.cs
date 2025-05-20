@@ -6,7 +6,6 @@ using Messages.Responses;
 using Models.Entities;
 using Moq;
 using NUnit.Framework;
-using Services.Infrastructure;
 
 namespace UnitTests.Products;
 

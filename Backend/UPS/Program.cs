@@ -1,14 +1,10 @@
-﻿using Consumers.Command;
-using Consumers.Query;
+﻿using Consumers.Query;
 using Core;
 using Data;
 using FluentValidation;
 using MassTransit;
-using Messages.Commands;
-using Messages.Queries;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Services.Infrastructure;
 using Services.Domain;
 using UPS.Filters;
 using Validators.Users;
@@ -44,28 +40,14 @@ builder.Services.AddCors(op =>
 	});
 });
 
-builder.Services.AddMassTransit<ICommandBus>(x =>
+builder.Services.AddMediator(mrc =>
 {
-    x.AddRequestClient<Command>();
-
-	x.UsingInMemory((context, cfg) =>
+	mrc.AddConsumers(typeof(BaseQueryConsumer<,>).Assembly);
+	
+	mrc.ConfigureMediator((context, cfg) =>
 	{
 		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
 	});
-    
-	x.AddConsumersFromNamespaceContaining(typeof(BaseCommandConsumer<,>));
-});
-
-builder.Services.AddMassTransit<IQueryBus>(x =>
-{
-	x.AddRequestClient<Query>();
-
-	x.UsingInMemory((context, cfg) =>
-	{
-		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
-	});
-
-	x.AddConsumersFromNamespaceContaining(typeof(BaseQueryConsumer<,>));
 });
 
 builder.Services.AddHttpContextAccessor();

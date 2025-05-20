@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Models.Entities;
-using Validators.Products;
 using Messages.Commands;
 
 namespace Validators.Parameters
