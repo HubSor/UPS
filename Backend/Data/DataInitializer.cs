@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.Entities;
-using Services;
+using Services.Domain;
 
 namespace Data
 {
