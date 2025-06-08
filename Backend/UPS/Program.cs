@@ -29,20 +29,15 @@ catch (Exception)
 }
 
 builder.Services.AddControllersWithViews(x => x.Filters.Add(typeof(ExceptionFilter)));
-
-var skipCors = builder.Configuration.GetValue<string>("SKIP_CORS");
-if (skipCors != "1")
+builder.Services.AddCors(op =>
 {
-	builder.Services.AddCors(op =>
+	op.AddPolicy("AllowFrontend", pol =>
 	{
-		op.AddPolicy("AllowFrontend", pol =>
-		{
-			pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "", "https://localhost:3000", "http://localhost:3000")
-				.AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-			pol.SetPreflightMaxAge(TimeSpan.FromMinutes(15));
-		});
+		pol.WithOrigins(builder.Configuration.GetValue<string>("FRONTEND_ORIGIN") ?? "", "https://localhost:3000", "http://localhost:3000")
+			.AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+		pol.SetPreflightMaxAge(TimeSpan.FromMinutes(15));
 	});
-}
+});
 
 builder.Services.AddMediator(mrc => 
 {
