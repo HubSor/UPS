@@ -32,7 +32,6 @@ services:
      - ups-net
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     SKIP_CORS: 1
      ASPNETCORE_URLS: https://+
      ASPNETCORE_HTTPS_PORT: 2443
      ASPNETCORE_Kestrel__Certificates__Default__Password: certpasswd
