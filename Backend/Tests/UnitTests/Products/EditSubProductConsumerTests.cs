@@ -1,9 +1,9 @@
 ﻿using Consumers.Command;
-using Helpers;
 using Messages.Commands;
 using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
+using TestHelpers;
 
 namespace UnitTests.Products;
 

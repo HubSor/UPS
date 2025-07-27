@@ -1,9 +1,9 @@
 ﻿using Consumers.Query;
-using Helpers;
 using Messages.Queries;
 using Messages.Responses;
 using Models.Entities;
 using NUnit.Framework;
+using TestHelpers;
 
 namespace UnitTests.Products;
 

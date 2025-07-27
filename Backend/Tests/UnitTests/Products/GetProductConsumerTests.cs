@@ -1,5 +1,5 @@
 ﻿using Consumers.Query;
-using Helpers;
+using TestHelpers;
 using Messages.Queries;
 using Messages.Responses;
 using Models.Entities;

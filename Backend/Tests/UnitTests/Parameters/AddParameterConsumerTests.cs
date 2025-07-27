@@ -1,10 +1,10 @@
 ﻿using Consumers.Command;
 using Dtos.Parameters;
-using Helpers;
-using Messages.Commands;
-using Messages.Responses;
+using TestHelpers;
 using Models.Entities;
 using NUnit.Framework;
+using Messages.Commands;
+using Messages.Responses;
 
 namespace UnitTests.Parameters;
 

@@ -1,9 +1,9 @@
-﻿using Consumers.Command;
-using Helpers;
-using Messages.Commands;
-using Messages.Responses;
+﻿using TestHelpers;
 using Models.Entities;
 using NUnit.Framework;
+using Consumers.Command;
+using Messages.Commands;
+using Messages.Responses;
 
 namespace UnitTests.Parameters;
 

@@ -1,9 +1,9 @@
-﻿using Consumers.Query;
-using Helpers;
-using Messages.Queries;
-using Messages.Responses;
+﻿using TestHelpers;
 using Models.Entities;
 using NUnit.Framework;
+using Consumers.Query;
+using Messages.Queries;
+using Messages.Responses;
 
 namespace UnitTests.Clients;
 
@@ -15,8 +15,8 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 	protected override Task SetUp()
 	{
 		clients = new MockRepository<PersonClient>();
-		
-		clients.Entities.Add(new PersonClient() 
+
+		clients.Entities.Add(new PersonClient()
 		{
 			Id = 1,
 			FirstName = "jan",
@@ -29,15 +29,15 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 		consumer = new FindPersonClientConsumer(mockLogger.Object, clients.Object);
 		return Task.CompletedTask;
 	}
-	
+
 	[Test]
 	public async Task Consume_Ok_FindByPesel()
 	{
 		var order = new FindPersonClientQuery(pesel);
-		
+
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
-		
+
 		var personClient = responses.Single().Data?.PersonClient;
 		Assert.That(personClient, Is.Not.Null);
 

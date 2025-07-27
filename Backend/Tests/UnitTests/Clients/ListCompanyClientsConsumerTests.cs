@@ -1,10 +1,10 @@
 ﻿using Consumers.Query;
 using Dtos;
-using Helpers;
-using Messages.Queries;
-using Messages.Responses;
+using TestHelpers;
 using Models.Entities;
 using NUnit.Framework;
+using Messages.Queries;
+using Messages.Responses;
 
 namespace UnitTests.Clients;
 
