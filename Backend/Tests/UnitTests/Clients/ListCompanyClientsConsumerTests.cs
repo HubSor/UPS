@@ -1,6 +1,6 @@
 ﻿using Consumers.Clients;
 using Dtos;
-using Helpers;
+using TestHelpers;
 using Messages.Clients;
 using Models.Entities;
 using NUnit.Framework;

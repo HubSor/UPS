@@ -373,8 +373,10 @@ namespace Data
 				.ToList()
 				.ForEach(tableName =>
 				{
-					context.Database.ExecuteSqlRaw($"TRUNCATE \"{tableName}\" RESTART IDENTITY CASCADE;");
-				});
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+                    context.Database.ExecuteSqlRaw($"TRUNCATE \"{tableName}\" RESTART IDENTITY CASCADE;");
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
+                });
 
 			context.SaveChanges();
 		}

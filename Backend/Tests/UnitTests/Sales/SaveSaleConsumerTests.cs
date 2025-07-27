@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Consumers.Sales;
 using Dtos.Sales;
-using Helpers;
+using TestHelpers;
 using Messages.Sales;
 using Models.Entities;
 using NUnit.Framework;

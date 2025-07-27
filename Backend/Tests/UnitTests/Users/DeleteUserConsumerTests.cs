@@ -1,5 +1,5 @@
 ﻿using Consumers.Users;
-using Helpers;
+using TestHelpers;
 using Messages.Users;
 using Models.Entities;
 using NUnit.Framework;

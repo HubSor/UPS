@@ -54,6 +54,7 @@ Thumbs.db
 /Models/bin/Debug
 /Models/obj/Debug
 /UPS/bin/Debug/net7.0
+/UPS/bin/Debug/net9.0
 /UPS/obj
 ups-passwd
 notes.txt

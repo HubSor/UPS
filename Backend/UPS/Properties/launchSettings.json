@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development" 
       },
       "applicationUrl": "https://localhost:2006",
-      "launchUrl": "http://localhost:5000/swagger/index.html"
+      "launchUrl": "https://localhost:2006/swagger/index.html"
     },
     "Docker": {
       "commandName": "Docker",

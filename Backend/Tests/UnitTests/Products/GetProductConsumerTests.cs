@@ -1,5 +1,5 @@
 ﻿using Consumers.Products;
-using Helpers;
+using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;

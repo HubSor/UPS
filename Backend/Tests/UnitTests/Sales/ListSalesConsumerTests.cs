@@ -1,6 +1,6 @@
 ﻿using Consumers.Sales;
 using Dtos;
-using Helpers;
+using TestHelpers;
 using Messages.Sales;
 using Models.Entities;
 using NUnit.Framework;
