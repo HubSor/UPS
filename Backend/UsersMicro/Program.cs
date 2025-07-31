@@ -6,13 +6,14 @@ using Services;
 using WebCommons;
 using Validators.Users;
 using Consumers;
+using UsersMicro;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); //specific uow
+builder.Services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -35,7 +36,7 @@ try
 {
 	using var scope = app.Services.CreateScope();
 	{
-		var context = scope.ServiceProvider.GetRequiredService<UnitOfWork>(); // specific initializer
+		var context = scope.ServiceProvider.GetRequiredService<UsersUnitOfWork>();
 		var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
 		DataInitializer.Initialize(context, passwordService);
 	}
