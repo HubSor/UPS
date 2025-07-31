@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Models.Entities;
 
-namespace UPS.Attributes;
+namespace WebCommons;
 
 public class AuthorizeRolesAttribute: AuthorizeAttribute
 {

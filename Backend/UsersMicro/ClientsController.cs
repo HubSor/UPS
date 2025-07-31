@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MassTransit.Mediator;
 using Models.Entities;
-using UPS.Attributes;
 using Messages.Clients;
 using WebCommons;
 
-namespace UPS.Controllers
+namespace UsersMicro
 {
 	[Route(template: "clients")]
-	public class ClientsController : BaseController
+	public class ClientsController(IMediator mediator) : BaseController(mediator)
 	{
-		public ClientsController(IMediator mediator)
-			: base(mediator)
-		{
-		}
-
-		[HttpPost]
+        [HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
