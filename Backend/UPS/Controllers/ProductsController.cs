@@ -3,6 +3,7 @@ using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
 using Messages.Products;
+using WebCommons;
 using Microsoft.AspNetCore.Authorization;
 
 namespace UPS.Controllers

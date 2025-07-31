@@ -3,19 +3,14 @@ using Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace UPS.Filters;
+namespace WebCommons;
 
-public class ExceptionFilter : IExceptionFilter
+public class ExceptionFilter(IHostEnvironment hostEnvironment, ILogger<ExceptionFilter> logger) : IExceptionFilter
 {
-	private readonly ILogger<ExceptionFilter> _logger;
-	private readonly IHostEnvironment _hostEnvironment;
-	public ExceptionFilter(IHostEnvironment hostEnvironment, ILogger<ExceptionFilter> logger)
-	{
-		_logger = logger;
-		_hostEnvironment = hostEnvironment;
-	}
-	public void OnException(ExceptionContext context)
+    public void OnException(ExceptionContext context)
 	{
 		if (context.Exception is MassTransit.RequestException requestException && requestException.InnerException is ValidationException validationException)
 		{
@@ -26,10 +21,10 @@ public class ExceptionFilter : IExceptionFilter
 		}
 		else
 		{
-			_logger.LogError(context.Exception, "Http request failed");
+			logger.LogError(context.Exception, "Http request failed");
 			context.Result = new ContentResult
 			{
-				Content = _hostEnvironment.IsDevelopment() ? context.Exception.ToString() : "Błąd serwera",
+				Content = hostEnvironment.IsDevelopment() ? context.Exception.ToString() : "Błąd serwera",
 				StatusCode = (int)HttpStatusCode.InternalServerError
 			};
 		}

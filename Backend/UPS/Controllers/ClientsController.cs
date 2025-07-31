@@ -3,6 +3,7 @@ using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
 using Messages.Clients;
+using WebCommons;
 
 namespace UPS.Controllers
 {

@@ -2,18 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Core;
 
-namespace UPS.Controllers
+namespace WebCommons
 {
 	[ApiController]
-	public abstract class BaseController : ControllerBase
+	public abstract class BaseController(IMediator mediator) : ControllerBase
 	{
-		protected IMediator Mediator { get; set; }
-		public BaseController(IMediator mediator)
-		{
-			Mediator = mediator;
-		}
+        protected IMediator Mediator { get; set; } = mediator;
 
-		protected async Task<IActionResult> RespondAsync<O, R>(O order)
+        protected async Task<IActionResult> RespondAsync<O, R>(O order)
 			where O : class
 			where R : class
 		{

@@ -1,34 +1,15 @@
-﻿using Consumers;
-using Core;
+﻿using Core;
 using Data;
 using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 using Services;
-using UPS.Filters;
+using WebCommons;
 using Validators.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-try
-{
-	builder.Services.AddDbContext<UnitOfWork>(options => 
-	{
-		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
-			op => {
-				op.MigrationsAssembly(typeof(UnitOfWork).Assembly.FullName);
-				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-			});
-	});
-}
-catch (Exception)
-{
-	Console.WriteLine("Database connection error");
-	throw;
-}
-
-builder.Services.AddControllersWithViews(x => x.Filters.Add(typeof(ExceptionFilter)));
+builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
 builder.Services.AddCors(op =>
 {
 	op.AddPolicy("AllowFrontend", pol =>
@@ -39,20 +20,10 @@ builder.Services.AddCors(op =>
 	});
 });
 
-builder.Services.AddMediator(mrc => 
-{
-	mrc.ConfigureMediator((context, cfg) => 
-	{
-		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
-	});
-	
-	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
-});
-
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
@@ -83,22 +54,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddSession();
 
 var app = builder.Build();
-
-try 
-{
-	using var scope = app.Services.CreateScope();
-	{
-		var context = scope.ServiceProvider.GetRequiredService<UnitOfWork>();
-		var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-		DataInitializer.Initialize(context, passwordService);
-	}
-}
-catch (Exception)
-{
-	Console.WriteLine("Database initialization error");
-	throw;
-}
-
 
 if (!app.Environment.IsDevelopment())
 {
