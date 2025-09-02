@@ -1,24 +1,32 @@
-﻿using MassTransit.Mediator;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Core;
 
 namespace WebCommons
 {
 	[ApiController]
-	public abstract class BaseController(IMediator mediator) : ControllerBase
+	public abstract class BaseController : ControllerBase
 	{
-        protected IMediator Mediator { get; set; } = mediator;
+		protected abstract string TargetMicroUrl { get; }
 
-        protected async Task<IActionResult> RespondAsync<O, R>(O order)
-			where O : class
-			where R : class
+		protected HttpClient _httpClient = new();
+
+		protected async Task<IActionResult> RelayMessage()
 		{
-			var client = Mediator.CreateRequestClient<O>();
-			var response = await client.GetResponse<ApiResponse<R>>(order);
-            return new ObjectResult(response.Message)
-            {
-                StatusCode = (int)response.Message.StatusCode
-            };
+			var original = HttpContext.Request;
+
+			original.Headers.Remove("host");
+
+			var msg = new HttpRequestMessage(
+				HttpMethod.Parse(original.Method),
+				TargetMicroUrl + "/" + original.Path
+			)
+			{
+				Content = new StreamContent(original.Body),
+			};
+
+			var resp = await _httpClient.SendAsync(msg);
+
+			return new ObjectResult(resp);
 		}
 	}
 }

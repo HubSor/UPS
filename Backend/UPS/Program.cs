@@ -1,9 +1,6 @@
-﻿using Core;
-using Data;
-using FluentValidation;
+﻿using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Services;
 using WebCommons;
 using Validators.Users;
 
@@ -21,9 +18,6 @@ builder.Services.AddCors(op =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));

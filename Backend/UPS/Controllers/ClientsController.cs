@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
 using Messages.Clients;
 using WebCommons;
 
-namespace UsersMicro
+namespace UPS.Controllers
 {
 	[Route(template: "clients")]
-	public class ClientsController(IMediator mediator) : BaseMediatorController(mediator)
+	public class ClientsController : BaseController
 	{
+        protected override string TargetMicroUrl => "";
+
         [HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
-			return await RespondAsync<UpsertClientOrder, UpsertClientResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -22,7 +23,7 @@ namespace UsersMicro
 		[Route("people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
-			return await RespondAsync<FindPersonClientOrder, FindPersonClientResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -30,7 +31,7 @@ namespace UsersMicro
 		[Route("people/list")]
 		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
 		{
-			return await RespondAsync<ListPersonClientsOrder, ListPersonClientsResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -38,7 +39,7 @@ namespace UsersMicro
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
 		{
-			return await RespondAsync<FindCompanyClientOrder, FindCompanyClientResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -46,7 +47,7 @@ namespace UsersMicro
 		[Route("companies/list")]
 		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
 		{
-			return await RespondAsync<ListCompanyClientsOrder, ListCompanyClientsResponse>(order);
+			return await RelayMessage();
 		}
 	}
 }

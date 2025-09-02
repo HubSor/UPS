@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
-using UPS.Attributes;
 using Messages.Products;
 using WebCommons;
 using Microsoft.AspNetCore.Authorization;
@@ -11,17 +9,14 @@ namespace UPS.Controllers
 	[Route(template: "products")]
 	public class ProductsController : BaseController
 	{
-		public ProductsController(IMediator mediator)
-			: base(mediator)
-		{
-		}
+		protected override string TargetMicroUrl => "";
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator, RoleEnum.Seller)]
 		[Route("get")]
 		public async Task<IActionResult> Get([FromBody] GetProductOrder order)
 		{
-			return await RespondAsync<GetProductOrder, GetProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -29,7 +24,7 @@ namespace UPS.Controllers
 		[Route("add")]
 		public async Task<IActionResult> Add([FromBody] AddProductOrder order)
 		{
-			return await RespondAsync<AddProductOrder, AddProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -37,7 +32,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditProductOrder order)
 		{
-			return await RespondAsync<EditProductOrder, EditProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -45,7 +40,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteProductOrder order)
 		{
-			return await RespondAsync<DeleteProductOrder, DeleteProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -53,7 +48,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> List([FromBody] ListProductsOrder order)
 		{
-			return await RespondAsync<ListProductsOrder, ListProductsResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -61,7 +56,7 @@ namespace UPS.Controllers
 		[Route("subproducts/get")]
 		public async Task<IActionResult> GetSubProduct([FromBody] GetSubProductOrder order)
 		{
-			return await RespondAsync<GetSubProductOrder, GetSubProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -69,7 +64,7 @@ namespace UPS.Controllers
 		[Route("subproducts/add")]
 		public async Task<IActionResult> AddSubProduct([FromBody] AddSubProductOrder order)
 		{
-			return await RespondAsync<AddSubProductOrder, AddSubProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -77,7 +72,7 @@ namespace UPS.Controllers
 		[Route("subproducts/edit")]
 		public async Task<IActionResult> EditSubProduct([FromBody] EditSubProductOrder order)
 		{
-			return await RespondAsync<EditSubProductOrder, EditSubProductResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -85,7 +80,7 @@ namespace UPS.Controllers
 		[Route("subproducts/delete")]
 		public async Task<IActionResult> DeleteSubProduct([FromBody] DeleteSubProductOrder order)
 		{
-			return await RespondAsync<DeleteSubProductOrder, DeleteSubProductResponse>(order);
+			return await RelayMessage();;
 		}
 
 		[HttpPost]
@@ -93,7 +88,7 @@ namespace UPS.Controllers
 		[Route("subproducts/assign")]
 		public async Task<IActionResult> AssignSubProduct([FromBody] AssignSubProductOrder order)
 		{
-			return await RespondAsync<AssignSubProductOrder, AssignSubProductResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -101,7 +96,7 @@ namespace UPS.Controllers
 		[Route("subproducts/unassign")]
 		public async Task<IActionResult> UnassignSubProducts([FromBody] UnassignSubProductsOrder order)
 		{
-			return await RespondAsync<UnassignSubProductsOrder, UnassignSubProductsResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -109,7 +104,7 @@ namespace UPS.Controllers
 		[Route("subproducts/list")]
 		public async Task<IActionResult> ListSubProducts([FromBody] ListSubProductsOrder order)
 		{
-			return await RespondAsync<ListSubProductsOrder, ListSubProductsResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -117,7 +112,7 @@ namespace UPS.Controllers
 		[Route("subproducts/assignments/edit")]
 		public async Task<IActionResult> EditSubProductAssignment([FromBody] EditSubProductAssignmentOrder order)
 		{
-			return await RespondAsync<EditSubProductAssignmentOrder, EditSubProductAssignmentResponse>(order);
+			return await RelayMessage();
 		}
 	}
 }

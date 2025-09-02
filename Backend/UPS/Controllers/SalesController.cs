@@ -2,13 +2,12 @@
 using MassTransit.Mediator;
 using Messages.Sales;
 using Models.Entities;
-using UPS.Attributes;
 using WebCommons;
 
 namespace UPS.Controllers
 {
 	[Route("sales")]
-	public class SalesController : BaseController
+	public class SalesController : BaseMediatorController
 	{
 		public SalesController(IMediator mediator)
 			: base(mediator)
