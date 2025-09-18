@@ -1,8 +1,5 @@
 namespace Core;
 
-public class UPSException : Exception
+public class UPSException(string message) : Exception(message)
 {
-	public UPSException(string message) : base(message)
-	{
-	}
 }

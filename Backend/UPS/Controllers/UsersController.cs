@@ -5,24 +5,26 @@ using Microsoft.AspNetCore.Authorization;
 using Models.Entities;
 using WebCommons;
 
-namespace UsersMicro
+namespace UPS.Controllers
 {
 	[Route("users")]
-	public class UsersController(IMediator mediator) : BaseMediatorController(mediator)
+	public class UsersController : BaseController
 	{
+		protected override string TargetMicroUrl => "";
+
         [HttpPost]
 		[Authorize]
 		[Route("session")]
-		public IActionResult Session()
+		public async Task<IActionResult> SessionAsync()
 		{
-			return Ok(HttpContext.User.Identity?.IsAuthenticated ?? false);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginOrder order)
 		{
-			return await RespondAsync<LoginOrder, LoginResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -30,7 +32,7 @@ namespace UsersMicro
 		[Route("logout")]
 		public async Task<IActionResult> Logout([FromBody] LogoutOrder order)
 		{
-			return await RespondAsync<LogoutOrder, LogoutResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -38,7 +40,7 @@ namespace UsersMicro
 		[Route("add")]
 		public async Task<IActionResult> AddUser([FromBody] AddUserOrder order)
 		{
-			return await RespondAsync<AddUserOrder, AddUserResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -46,7 +48,7 @@ namespace UsersMicro
 		[Route("list")]
 		public async Task<IActionResult> ListUsers([FromBody] ListUsersOrder order)
 		{
-			return await RespondAsync<ListUsersOrder, ListUsersResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -54,7 +56,7 @@ namespace UsersMicro
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditUserOrder order)
 		{
-			return await RespondAsync<EditUserOrder, EditUserResponse>(order);
+			return await RelayMessage();
 		}
 		
 		[HttpPost]
@@ -62,7 +64,7 @@ namespace UsersMicro
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteUserOrder order)
 		{
-			return await RespondAsync<DeleteUserOrder, DeleteUserResponse>(order);
+			return await RelayMessage();
 		}
 	}
 }

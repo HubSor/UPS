@@ -2,16 +2,12 @@
 
 namespace Core
 {
-	public class Repository<TEntity> : IRepository<TEntity>
+	public class Repository<TEntity>(BaseUnitOfWork context) : IRepository<TEntity>
 		where TEntity : class
 	{
-		protected readonly UnitOfWork context;
-		public Repository(UnitOfWork context)
-		{
-			this.context = context;
-		}
+		protected readonly BaseUnitOfWork context = context;
 
-		public async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
 		{
 			await context.Set<TEntity>().AddAsync(entity);
 			await context.SaveChangesAsync();

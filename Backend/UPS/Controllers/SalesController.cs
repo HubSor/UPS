@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Messages.Sales;
 using Models.Entities;
 using WebCommons;
@@ -7,19 +6,16 @@ using WebCommons;
 namespace UPS.Controllers
 {
 	[Route("sales")]
-	public class SalesController : BaseMediatorController
+	public class SalesController : BaseController
 	{
-		public SalesController(IMediator mediator)
-			: base(mediator)
-		{
-		}
+		protected override string TargetMicroUrl => "";
 		
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
-			return await RespondAsync<SaveSaleOrder, SaveSaleResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -27,7 +23,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
 		{
-			return await RespondAsync<ListSalesOrder, ListSalesResponse>(order);
+			return await RelayMessage();
 		}
 
 		[HttpPost]
@@ -35,7 +31,7 @@ namespace UPS.Controllers
 		[Route("get")]
 		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
 		{
-			return await RespondAsync<GetSaleOrder, GetSaleResponse>(order);
+			return await RelayMessage();
 		}
 	}
 }
