@@ -9,7 +9,7 @@ namespace UPS.Controllers
 	[Route("users")]
 	public class UsersController : BaseController
 	{
-		protected override string TargetMicroUrl => "";
+		protected override string TargetMicroUrl => "https://localhost:2107";
 
         [HttpPost]
 		[Authorize]
@@ -23,7 +23,7 @@ namespace UPS.Controllers
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 		
 		[HttpPost]
@@ -31,7 +31,7 @@ namespace UPS.Controllers
 		[Route("logout")]
 		public async Task<IActionResult> Logout([FromBody] LogoutOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 		
 		[HttpPost]
@@ -39,7 +39,7 @@ namespace UPS.Controllers
 		[Route("add")]
 		public async Task<IActionResult> AddUser([FromBody] AddUserOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 		
 		[HttpPost]
@@ -47,7 +47,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListUsers([FromBody] ListUsersOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 		
 		[HttpPost]
@@ -55,7 +55,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditUserOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 		
 		[HttpPost]
@@ -63,7 +63,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteUserOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 	}
 }

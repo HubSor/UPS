@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Net.Http.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebCommons
@@ -13,20 +14,38 @@ namespace WebCommons
 		protected async Task<IActionResult> RelayMessage()
 		{
 			var original = HttpContext.Request;
-
 			original.Headers.Remove("host");
 
-			var msg = new HttpRequestMessage(
-				HttpMethod.Parse(original.Method),
-				TargetMicroUrl + "/" + original.Path
-			)
-			{
-				Content = new StreamContent(original.Body),
-			};
-
-			var resp = await _httpClient.SendAsync(msg);
-
-			return new ObjectResult(resp);
+			var content = new StringContent("");
+			return await ForwardContent(content);
 		}
-	}
+
+		protected async Task<IActionResult> RelayMessage<TOrder>(TOrder order)
+        {
+            var original = HttpContext.Request;
+            original.Headers.Remove("host");
+
+            var content = JsonContent.Create(order);
+            return await ForwardContent(content);
+        }
+
+        private async Task<IActionResult> ForwardContent(HttpContent content)
+        {
+            var msg = new HttpRequestMessage(
+				HttpMethod.Parse(HttpContext.Request.Method),
+				TargetMicroUrl + HttpContext.Request.Path
+			)
+            {
+                Content = content,
+            };
+
+            var resp = await _httpClient.SendAsync(msg);
+            var responseBody = await resp.Content.ReadAsStringAsync();
+
+            return new ObjectResult(responseBody)
+            {
+                StatusCode = (int)resp.StatusCode,
+            };
+        }
+    }
 }

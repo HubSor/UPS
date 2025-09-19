@@ -64,6 +64,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy(new CookiePolicyOptions(){ Secure = CookieSecurePolicy.None});
 app.UseSession();
+app.UseHttpsRedirection();
 
 app.MapControllerRoute(
 	name: "default",

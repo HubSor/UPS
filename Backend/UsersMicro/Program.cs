@@ -8,6 +8,7 @@ using Validators.Users;
 using Consumers;
 using UsersMicro;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,13 +41,13 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
 
-builder.Services.AddMediator(mrc => 
+builder.Services.AddMediator(mrc =>
 {
-	mrc.ConfigureMediator((context, cfg) => 
+	mrc.ConfigureMediator((context, cfg) =>
 	{
 		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
 	});
-	
+
 	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
 });
 
@@ -79,6 +80,7 @@ else
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseHttpsRedirection();
 
 app.MapControllerRoute(
 	name: "default",

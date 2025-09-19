@@ -1,10 +1,12 @@
-namespace Data
+using Microsoft.EntityFrameworkCore;
+
+namespace Data;
+
+public interface IUnitOfWork : IDisposable
 {
-	public interface IUnitOfWork : IDisposable
-	{
-		public Task BeginTransasctionAsync(CancellationToken cancellationToken = default);
-		public Task CommitTransasctionAsync(CancellationToken cancellationToken = default);
-		public Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
-		public Task<int> FlushAsync(CancellationToken cancellationToken = default);
-	}
+	public Task BeginTransasctionAsync(CancellationToken cancellationToken = default);
+	public Task CommitTransasctionAsync(CancellationToken cancellationToken = default);
+	public Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+	public Task<int> FlushAsync(CancellationToken cancellationToken = default);
+	public DbContext Context { get; }
 }

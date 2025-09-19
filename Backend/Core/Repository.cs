@@ -1,11 +1,12 @@
 ﻿using Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core
 {
-	public class Repository<TEntity>(BaseUnitOfWork context) : IRepository<TEntity>
+	public class Repository<TEntity>(IUnitOfWork context) : IRepository<TEntity>
 		where TEntity : class
 	{
-		protected readonly BaseUnitOfWork context = context;
+		protected readonly DbContext context = context.Context;
 
         public async Task AddAsync(TEntity entity)
 		{

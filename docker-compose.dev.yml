@@ -23,9 +23,9 @@ services:
      - base
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     ASPNETCORE_HTTP_PORTS: 2007
+     ASPNETCORE_HTTP_PORTS: 2106
    ports:
-     - 2007:2007
+     - 2106:2106
      
 volumes:
  postgres-data:

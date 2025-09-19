@@ -17,6 +17,8 @@ namespace Data
 		public DbSet<SaleParameter> SaleParameters { get; set; }
 		public DbSet<SubProductInSale> SubProductsInSales { get; set; }
 		public DbSet<AddressType> AddressTypes { get; set; }
+
+		public DbContext Context => this;
 		
 		public BaseUnitOfWork(DbContextOptions options) : base(options)
 		{
