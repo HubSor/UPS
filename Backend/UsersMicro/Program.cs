@@ -7,8 +7,28 @@ using WebCommons;
 using Validators.Users;
 using Consumers;
 using UsersMicro;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+try
+{
+	builder.Services.AddDbContext<UsersUnitOfWork>(options => 
+	{
+		options.UseNpgsql(
+			builder.Configuration.GetConnectionString("Users_Connection"),
+			op => {
+				op.MigrationsAssembly(typeof(BaseUnitOfWork).Assembly.FullName);
+				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+			}
+		);
+	});
+}
+catch (Exception)
+{
+	Console.WriteLine("Database connection error");
+	throw;
+}
 
 builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
 

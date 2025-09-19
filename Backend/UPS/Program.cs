@@ -53,11 +53,9 @@ if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Error");
 }
-else
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");
