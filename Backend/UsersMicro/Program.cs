@@ -8,7 +8,6 @@ using Validators.Users;
 using Consumers;
 using UsersMicro;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +50,10 @@ builder.Services.AddMediator(mrc =>
 	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
 });
 
+Installer.InstallAuth(builder.Services);
+
+Installer.InstallDataProtection(builder.Services);
+
 var app = builder.Build();
 
 try 
@@ -80,6 +83,9 @@ else
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSession();
 app.UseHttpsRedirection();
 
 app.MapControllerRoute(

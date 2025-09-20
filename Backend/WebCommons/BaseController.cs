@@ -42,10 +42,17 @@ namespace WebCommons
             var resp = await _httpClient.SendAsync(msg);
             var responseBody = await resp.Content.ReadAsStringAsync();
 
-            return new ObjectResult(responseBody)
+            var responseHeaders = resp.Headers.NonValidated.ToDictionary();
+            foreach (var header in responseHeaders)
+            {
+                HttpContext.Response.Headers.Append(header.Key, header.Value.FirstOrDefault());
+            }
+
+            var result = new ObjectResult(responseBody)
             {
                 StatusCode = (int)resp.StatusCode,
             };
+            return result; 
         }
     }
 }

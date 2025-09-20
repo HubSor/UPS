@@ -22,30 +22,9 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(conf => 
-	{
-		conf.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-		conf.SlidingExpiration = true;
-		conf.Events.OnRedirectToLogin = context => 
-		{
-			context.Response.StatusCode = 401;
-			return Task.CompletedTask;
-		};
-		conf.AccessDeniedPath = "/";
-		conf.Events.OnRedirectToAccessDenied = context =>
-		{
-			context.Response.StatusCode = 401;
-			return Task.CompletedTask;	
-		};
-		conf.Cookie.IsEssential = true;
-		conf.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-		conf.Cookie.HttpOnly = true;
-		conf.Cookie.Name="UPSAuth";
-		conf.Cookie.SameSite = SameSiteMode.Strict;
-	});
-builder.Services.AddAuthorization();
-builder.Services.AddSession();
+Installer.InstallAuth(builder.Services);
+
+Installer.InstallDataProtection(builder.Services);
 
 var app = builder.Build();
 
@@ -62,7 +41,6 @@ app.UseCors("AllowFrontend");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCookiePolicy(new CookiePolicyOptions(){ Secure = CookieSecurePolicy.None});
 app.UseSession();
 app.UseHttpsRedirection();
 
