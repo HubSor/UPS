@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using WebCommons;
 using Validators.Users;
 

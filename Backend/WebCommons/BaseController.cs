@@ -39,6 +39,11 @@ namespace WebCommons
                 Content = content,
             };
 
+            if (HttpContext.Request.Headers.TryGetValue("Cookie", out var cookies))
+            {
+                msg.Headers.TryAddWithoutValidation("Cookie", cookies.FirstOrDefault());
+            }
+
             var resp = await _httpClient.SendAsync(msg);
             var responseBody = await resp.Content.ReadAsStringAsync();
 
