@@ -19,7 +19,6 @@ builder.Services.AddCors(op =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
 
 Installer.InstallAuth(builder.Services);
 
@@ -38,10 +37,9 @@ app.UseSwaggerUI();
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
 app.UseHttpsRedirection();
+
+Installer.EnableAuth(app);
 
 app.MapControllerRoute(
 	name: "default",

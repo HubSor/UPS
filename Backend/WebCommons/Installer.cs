@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,5 +41,12 @@ public static class Installer
             });
         services.AddAuthorization();
         services.AddSession();
+    }
+
+    public static void EnableAuth(WebApplication app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseSession();
     }
 }

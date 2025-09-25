@@ -71,22 +71,15 @@ catch (Exception)
 	throw;
 }
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-}
-else
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
 app.UseHttpsRedirection();
+
+Installer.EnableAuth(app);
 
 app.MapControllerRoute(
 	name: "default",
