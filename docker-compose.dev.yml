@@ -14,18 +14,6 @@ services:
    restart: always
    ports:
      - 8080:8080
-
- proxy:
-   build:
-     context: ./Backend
-     dockerfile: ./proxy.Dockerfile
-   depends_on:
-     - base
-   environment:
-     FRONTEND_ORIGIN: https://localhost:3000
-     ASPNETCORE_HTTP_PORTS: 2106
-   ports:
-     - 2106:2106
      
 volumes:
  postgres-data:
