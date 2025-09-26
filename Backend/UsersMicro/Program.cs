@@ -6,8 +6,8 @@ using Services;
 using WebCommons;
 using Validators.Users;
 using Consumers;
-using UsersMicro;
 using Microsoft.EntityFrameworkCore;
+using UsersMicro.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +62,7 @@ try
 	{
 		var context = scope.ServiceProvider.GetRequiredService<UsersUnitOfWork>();
 		var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-		DataInitializer.Initialize(context, passwordService);
+		UsersDataInitializer.Initialize(context, passwordService);
 	}
 }
 catch (Exception)

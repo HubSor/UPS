@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 using Services;
 
-namespace UsersMicro
+namespace UsersMicro.Data
 {
-	public class DataInitializer : BaseDataInitializer
+	public class UsersDataInitializer : BaseDataInitializer
 	{
 		public static void InitializeTest(UsersUnitOfWork context, IPasswordService passwordService)
 		{

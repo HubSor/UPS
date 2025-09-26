@@ -1,7 +1,5 @@
-﻿using FluentValidation;
-using MassTransit;
+﻿using MassTransit;
 using WebCommons;
-using Validators.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 

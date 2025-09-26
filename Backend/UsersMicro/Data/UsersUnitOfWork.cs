@@ -2,7 +2,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
-namespace UsersMicro
+namespace UsersMicro.Data
 {
 	public class UsersUnitOfWork(DbContextOptions options) : BaseUnitOfWork(options), IUnitOfWork
 	{

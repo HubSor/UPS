@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Models.Entities;
 using WebCommons;
 
-namespace UsersMicro
+namespace UsersMicro.Controllers
 {
 	[Route("users")]
 	public class UsersController(IMediator mediator) : BaseMediatorController(mediator)

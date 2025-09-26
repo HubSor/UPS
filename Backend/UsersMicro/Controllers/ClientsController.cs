@@ -4,7 +4,7 @@ using Models.Entities;
 using Messages.Clients;
 using WebCommons;
 
-namespace UsersMicro
+namespace UsersMicro.Controllers
 {
 	[Route(template: "clients")]
 	public class ClientsController(IMediator mediator) : BaseMediatorController(mediator)
