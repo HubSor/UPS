@@ -1,7 +1,7 @@
-using Dtos;
+using Core.Dtos;
 using FluentValidation;
 
-namespace Validators
+namespace Core.Validators
 {
 	public class PaginationValidator: AbstractValidator<PaginationDto>
 	{

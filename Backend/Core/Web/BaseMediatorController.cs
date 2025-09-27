@@ -1,8 +1,7 @@
-﻿using MassTransit.Mediator;
-using Microsoft.AspNetCore.Mvc;
-using Core;
+﻿using Microsoft.AspNetCore.Mvc;
+using MassTransit;
 
-namespace WebCommons
+namespace Core.Web
 {
 	[ApiController]
 	public abstract class BaseMediatorController(IMediator mediator) : ControllerBase

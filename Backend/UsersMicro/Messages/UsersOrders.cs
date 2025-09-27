@@ -1,5 +1,5 @@
 using Dtos;
-using Models.Entities;
+using UsersMicro.Models;
 
 namespace UsersMicro.Messages;
 

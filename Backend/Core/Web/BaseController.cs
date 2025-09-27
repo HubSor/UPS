@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebCommons
+namespace Core.Web
 {
 	[ApiController]
 	public abstract class BaseController : ControllerBase

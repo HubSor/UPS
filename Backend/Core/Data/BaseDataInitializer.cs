@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Data
+namespace Core.Data
 {
 	public abstract class BaseDataInitializer
 	{

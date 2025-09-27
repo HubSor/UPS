@@ -1,7 +1,6 @@
-﻿using Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Core
+namespace Core.Data
 {
 	public class Repository<TEntity>(IUnitOfWork context) : IRepository<TEntity>
 		where TEntity : class

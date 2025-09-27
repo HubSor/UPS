@@ -1,6 +1,6 @@
-using Models.Entities;
+using UsersMicro.Models;
 
-namespace Dtos.Clients
+namespace UsersMicro.Dtos
 {
 	public abstract class ClientDto
 	{

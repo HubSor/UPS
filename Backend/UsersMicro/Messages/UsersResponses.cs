@@ -1,5 +1,5 @@
 ﻿using Dtos;
-using Dtos.Users;
+using UsersMicro.Dtos;
 
 namespace UsersMicro.Messages;
 

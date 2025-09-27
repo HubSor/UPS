@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Data;
 
-namespace UsersMicro.Models
+namespace Core.Models
 {
 	public enum RoleEnum
 	{

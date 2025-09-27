@@ -1,8 +1,8 @@
-using Data;
+using Core.Data;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace WebCommons;
+namespace Core;
 
 public abstract class TransactionConsumer<Order, Response> : BaseConsumer<Order, Response>
 	where Order : class

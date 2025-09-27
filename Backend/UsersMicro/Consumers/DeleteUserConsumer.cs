@@ -3,8 +3,8 @@ using Data;
 using Helpers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 using UsersMicro.Messages;
+using UsersMicro.Models;
 using WebCommons;
 
 namespace UsersMicro.Consumers;

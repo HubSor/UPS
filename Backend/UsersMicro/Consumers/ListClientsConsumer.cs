@@ -1,9 +1,10 @@
 using Core;
 using Dtos;
-using Dtos.Clients;
 using MassTransit;
 using Models.Entities;
+using UsersMicro.Dtos;
 using UsersMicro.Messages;
+using UsersMicro.Models;
 using WebCommons;
 
 namespace UsersMicro.Consumers;

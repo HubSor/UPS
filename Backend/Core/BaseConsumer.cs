@@ -3,7 +3,7 @@ using Core;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-namespace WebCommons;
+namespace Core;
 
 public abstract class BaseConsumer<Order, Response> : IConsumer<Order>
 	where Order : class 

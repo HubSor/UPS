@@ -1,7 +1,8 @@
+using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
-namespace Data
+namespace Core.Data
 {
 	public abstract class BaseUnitOfWork : DbContext, IUnitOfWork
 	{

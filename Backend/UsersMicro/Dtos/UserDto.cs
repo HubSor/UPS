@@ -1,4 +1,5 @@
-﻿namespace Dtos.Users;
+﻿namespace UsersMicro.Dtos;
+
 public class UserDto
 {
 	public int Id { get; set; }

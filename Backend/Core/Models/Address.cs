@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Data
+namespace Core.Models
 {	
 	public abstract class Address: Entity<int>
 	{

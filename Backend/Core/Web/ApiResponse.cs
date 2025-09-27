@@ -1,7 +1,7 @@
 using System.Net;
 using FluentValidation.Results;
 
-namespace Core
+namespace Core.Web
 {
 	public class ApiResponse<Response> where Response : class
 	{

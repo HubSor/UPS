@@ -1,9 +1,9 @@
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Models.Entities;
 
-namespace WebCommons;
+namespace Core.Web;
 
-public class AuthorizeRolesAttribute: AuthorizeAttribute
+public class AuthorizeRolesAttribute : AuthorizeAttribute
 {
 	public AuthorizeRolesAttribute(params RoleEnum[] roles): base()
 	{
