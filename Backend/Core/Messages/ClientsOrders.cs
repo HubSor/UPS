@@ -1,6 +1,6 @@
-using Dtos;
+using Core.Dtos;
 
-namespace UsersMicro.Messages;
+namespace Core.Messages;
 
 public abstract record FindClientOrder(string Identifier);
 public record FindPersonClientOrder(string Identifier) : FindClientOrder(Identifier);

@@ -1,8 +1,8 @@
-using Messages.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Models.Entities;
-using WebCommons;
+using Core.Web;
+using Core.Messages;
+using Core.Models;
 
 namespace UPS.Controllers
 {

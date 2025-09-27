@@ -1,6 +1,5 @@
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 
 namespace Core.Data
 {

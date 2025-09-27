@@ -1,7 +1,7 @@
-using Dtos;
-using UsersMicro.Models;
+using Core.Dtos;
+using Core.Models;
 
-namespace UsersMicro.Messages;
+namespace Core.Messages;
 
 public record LoginOrder(string Username, string Password);
 public record LogoutOrder();

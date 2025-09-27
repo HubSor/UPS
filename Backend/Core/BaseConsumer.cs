@@ -1,7 +1,7 @@
 using MassTransit;
-using Core;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using Core.Web;
 
 namespace Core;
 

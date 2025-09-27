@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit;
+using MassTransit.Mediator;
 
 namespace Core.Web
 {

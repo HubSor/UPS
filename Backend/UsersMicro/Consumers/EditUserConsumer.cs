@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using Core;
-using Data;
-using Helpers;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
+using Core.Web;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Messages;
 using UsersMicro.Models;
 using UsersMicro.Services;
 using WebCommons;

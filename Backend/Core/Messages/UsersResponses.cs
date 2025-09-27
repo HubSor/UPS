@@ -1,7 +1,6 @@
-﻿using Dtos;
-using UsersMicro.Dtos;
+﻿using Core.Dtos;
 
-namespace UsersMicro.Messages;
+namespace Core.Messages;
 
 public class LoginResponse 
 {

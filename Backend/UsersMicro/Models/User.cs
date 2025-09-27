@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
-using Data;
+using Core.Models;
+using Core.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace UsersMicro.Models
@@ -9,8 +9,6 @@ namespace UsersMicro.Models
 	[Index(nameof(Name), IsUnique = true)]
 	public class User : Entity<int>
 	{
-		[NotMapped]
-		public static readonly string IdClaimType = "Id"; 
 		[MaxLength(128)]
 		public string Name { get; set; } = default!;
 		[MaxLength(64)]
@@ -25,7 +23,7 @@ namespace UsersMicro.Models
 			var claims = new List<Claim>()
 			{
 				new (ClaimTypes.Name, Name),
-				new (IdClaimType, Id.ToString())
+				new (HttpContextHelpers.IdClaimType, Id.ToString())
 			};
 			claims.AddRange(Roles.Select(r => new Claim(ClaimTypes.Role, r.Id.ToString())));
 			return claims;

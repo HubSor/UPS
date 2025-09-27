@@ -1,11 +1,11 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Messages;
 using UsersMicro.Models;
 using UsersMicro.Services;
-using WebCommons;
 
 namespace UsersMicro.Consumers;
 

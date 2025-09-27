@@ -1,4 +1,4 @@
-using Data;
+using Core.Models;
 
 namespace UsersMicro.Models;
 
