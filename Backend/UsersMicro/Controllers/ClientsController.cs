@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MassTransit.Mediator;
 using Models.Entities;
-using Messages.Clients;
 using WebCommons;
+using UsersMicro.Messages;
 
 namespace UsersMicro.Controllers
 {

@@ -2,12 +2,11 @@ using Core;
 using Data;
 using FluentValidation;
 using MassTransit;
-using Services;
 using WebCommons;
-using Validators.Users;
-using Consumers;
 using Microsoft.EntityFrameworkCore;
 using UsersMicro.Data;
+using UsersMicro.Services;
+using UsersMicro.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
 ﻿using Data;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
-using Services;
+using UsersMicro.Services;
 
 namespace UsersMicro.Data
 {
