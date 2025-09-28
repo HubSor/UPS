@@ -1,9 +1,9 @@
-using ClientsMicro.Data;
 using Core.Web;
+using ProductsMicro.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Installer.InstallCommonServices<ClientsUnitOfWork>(builder);
+Installer.InstallCommonServices<ProductsUnitOfWork>(builder);
 
 var app = builder.Build();
 
@@ -11,8 +11,8 @@ try
 {
 	using var scope = app.Services.CreateScope();
 	{
-		var context = scope.ServiceProvider.GetRequiredService<ClientsUnitOfWork>();
-		ClientsDataInitializer.Initialize(context);
+		var context = scope.ServiceProvider.GetRequiredService<ProductsUnitOfWork>();
+		ProductsDataInitializer.Initialize(context);
 	}
 }
 catch (Exception)

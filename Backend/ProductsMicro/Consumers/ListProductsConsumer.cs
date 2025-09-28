@@ -1,14 +1,13 @@
 using Core;
-using Data;
-using Dtos;
-using Dtos.Products;
+using Core.Data;
+using Core.Dtos;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Products;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Products;
+namespace ProductsMicro.Consumers;
+
 public class ListProductsConsumer : TransactionConsumer<ListProductsOrder, ListProductsResponse>
 {
 	private readonly IRepository<Product> products;

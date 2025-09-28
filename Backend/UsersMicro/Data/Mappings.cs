@@ -2,13 +2,13 @@ using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ClientsMicro.Models
-{	
-	public class ClientMapping : IEntityTypeConfiguration<Client>
+namespace UsersMicro.Data
+{
+	public class UserMapping : IEntityTypeConfiguration<User>
 	{
-		public void Configure(EntityTypeBuilder<Client> builder)
+		public void Configure(EntityTypeBuilder<User> builder)
 		{
-			builder.HasMany(x => x.Addresses).WithOne(x => x.Client).HasForeignKey(x => x.ClientId);
+			builder.HasMany(x => x.Roles).WithMany().UsingEntity("UserRoles");
 		}
 	}
 

@@ -16,7 +16,7 @@ namespace UPS.Controllers
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -24,7 +24,7 @@ namespace UPS.Controllers
 		[Route("people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -32,7 +32,7 @@ namespace UPS.Controllers
 		[Route("people/list")]
 		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -40,7 +40,7 @@ namespace UPS.Controllers
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -48,7 +48,7 @@ namespace UPS.Controllers
 		[Route("companies/list")]
 		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 	}
 }

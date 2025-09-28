@@ -1,12 +1,12 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Products;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Products;
+namespace ProductsMicro.Consumers;
+
 public class UnassignSubProductsConsumer : TransactionConsumer<UnassignSubProductsOrder, UnassignSubProductsResponse>
 {
 	private readonly IRepository<SubProduct> subProducts;

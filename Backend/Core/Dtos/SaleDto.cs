@@ -1,6 +1,4 @@
-﻿using Dtos.Clients;
-
-namespace Core.Dtos;
+﻿namespace Core.Dtos;
 
 public class SaleDto
 {

@@ -4,7 +4,7 @@ using Core.Models;
 using Core.Web;
 using Microsoft.EntityFrameworkCore;
 
-namespace UsersMicro.Models
+namespace Core.Models
 {
 	[Index(nameof(Name), IsUnique = true)]
 	public class User : Entity<int>

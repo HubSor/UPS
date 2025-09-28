@@ -1,4 +1,4 @@
-using Dtos.Parameters;
+using Core.Models;
 
 namespace Core.Dtos
 {

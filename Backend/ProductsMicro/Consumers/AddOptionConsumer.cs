@@ -1,10 +1,10 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Parameters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Models.Entities;
 
 namespace ProductsMicro.Consumers;
 

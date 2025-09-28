@@ -1,4 +1,4 @@
-using Dtos.Products;
+using Core.Models;
 
 namespace Core.Dtos;
 
@@ -24,10 +24,10 @@ public class SaleDetailsDto
 		ProductPrice = sale.ProductPrice;
 		ProductTax = sale.ProductTax;
 		PersonClient = sale.Client is PersonClient personClient ?
-			new PersonClientDto(personClient) :
+			personClient.ToDto() :
 			null;
 		CompanyClient = sale.Client is CompanyClient companyClient ?
-			new CompanyClientDto(companyClient) :
+			companyClient.ToDto() :
 			null;
 		Product = new ProductDto(sale.Product);
 		SubProducts = sale.SubProducts.Select(x => new SaleDetailsSubProductDto(x.SubProduct, x)).ToList();

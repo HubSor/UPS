@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Core.Dtos;
 using Core.Models;
 
-namespace ClientsMicro.Models
+namespace Core.Models
 {
 	public abstract class Client : Entity<int>
 	{

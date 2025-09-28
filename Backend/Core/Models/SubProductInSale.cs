@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models.Entities
+namespace Core.Models
 {
 	public class SubProductInSale : IEntity
 	{

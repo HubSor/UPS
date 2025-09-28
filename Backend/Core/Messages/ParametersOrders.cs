@@ -1,6 +1,5 @@
 using Core.Dtos;
 using Core.Models;
-using Models.Entities;
 
 namespace Core.Messages;
 

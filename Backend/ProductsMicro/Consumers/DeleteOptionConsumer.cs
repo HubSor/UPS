@@ -1,12 +1,11 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Parameters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Parameters;
+namespace ProductsMicro.Consumers;
 public class DeleteOptionConsumer : TransactionConsumer<DeleteOptionOrder, DeleteOptionResponse>
 {
 	private readonly IRepository<ParameterOption> options;

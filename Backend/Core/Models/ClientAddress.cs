@@ -1,6 +1,6 @@
 using Core.Models;
 
-namespace ClientsMicro.Models;
+namespace Core.Models;
 
 public class ClientAddress : Address
 {

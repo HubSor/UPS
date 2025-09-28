@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Messages.Sales;
-using Models.Entities;
-using WebCommons;
 using Core.Web;
 using Core.Models;
+using Core.Messages;
 
 namespace UPS.Controllers
 {
 	[Route("sales")]
 	public class SalesController : BaseController
 	{
-		protected override string TargetMicroUrl => "";
+		protected override string TargetMicroUrl => "https://localhost:2110";
 		
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -25,7 +23,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 
 		[HttpPost]
@@ -33,7 +31,7 @@ namespace UPS.Controllers
 		[Route("get")]
 		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
 		{
-			return await RelayMessage();
+			return await RelayMessage(order);
 		}
 	}
 }

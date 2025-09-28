@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Models.Entities
+namespace Core.Models
 {
 	public class SaleParameter : IEntity
 	{
