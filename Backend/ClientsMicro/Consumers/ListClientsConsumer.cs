@@ -1,12 +1,12 @@
+using ClientsMicro.Models;
 using Core;
 using Core.Data;
 using Core.Dtos;
 using Core.Messages;
 using MassTransit;
-using UsersMicro.Models;
 using WebCommons;
 
-namespace UsersMicro.Consumers;
+namespace ClientsMicro.Consumers;
 
 public abstract class ListClientsConsumer<T, O, D, R> : BaseConsumer<O, R>
 	where T : Client

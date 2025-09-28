@@ -1,7 +1,7 @@
 using Core.Messages;
 using FluentValidation;
 
-namespace UsersMicro.Validators
+namespace ClientsMicro.Validators
 {
 	public class FindClientOrderValidator : AbstractValidator<FindClientOrder>
 	{

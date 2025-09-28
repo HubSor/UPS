@@ -1,12 +1,12 @@
+using ClientsMicro.Models;
 using Core;
 using Core.Data;
 using Core.Messages;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
 using WebCommons;
 
-namespace UsersMicro.Consumers;
+namespace ClientsMicro.Consumers;
 
 public class UpsertClientConsumer : TransactionConsumer<UpsertClientOrder, UpsertClientResponse>
 {

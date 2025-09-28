@@ -9,9 +9,5 @@ namespace UsersMicro.Data
 	{
 		public DbSet<User> Users { get; set; }
 		public DbSet<Role> Roles { get; set; }
-		public DbSet<ClientAddress> ClientAddresses { get; set; }
-		public DbSet<Client> Clients { get; set; }
-		public DbSet<PersonClient> PersonClients { get; set; }
-		public DbSet<CompanyClient> CompanyClients { get; set; }
 	}
 }

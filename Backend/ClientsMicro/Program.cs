@@ -3,17 +3,15 @@ using FluentValidation;
 using MassTransit;
 using WebCommons;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Data;
-using UsersMicro.Services;
-using UsersMicro.Validators;
-using Core.Data;
 using Core.Web;
+using ClientsMicro.Data;
+using Core.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-	builder.Services.AddDbContext<UsersUnitOfWork>(options => 
+	builder.Services.AddDbContext<ClientsUnitOfWork>(options => 
 	{
 		options.UseNpgsql(
 			builder.Configuration.GetConnectionString("Users_Connection"),
@@ -33,9 +31,8 @@ catch (Exception)
 builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, ClientsUnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
@@ -60,9 +57,8 @@ try
 {
 	using var scope = app.Services.CreateScope();
 	{
-		var context = scope.ServiceProvider.GetRequiredService<UsersUnitOfWork>();
-		var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-		UsersDataInitializer.Initialize(context, passwordService);
+		var context = scope.ServiceProvider.GetRequiredService<ClientsUnitOfWork>();
+		ClientsDataInitializer.Initialize(context);
 	}
 }
 catch (Exception)

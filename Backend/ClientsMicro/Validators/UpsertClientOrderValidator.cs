@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Core.Messages;
 using FluentValidation;
 
-namespace Validators.Clients
+namespace ClientsMicro.Clients
 {
 	public partial class UpsertClientOrderValidator : AbstractValidator<UpsertClientOrder>
 	{

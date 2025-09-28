@@ -5,7 +5,7 @@ using Core.Web;
 using Core.Models;
 using Core.Messages;
 
-namespace UsersMicro.Controllers
+namespace ClientsMicro.Controllers
 {
 	[Route(template: "clients")]
 	public class ClientsController(IMediator mediator) : BaseMediatorController(mediator)

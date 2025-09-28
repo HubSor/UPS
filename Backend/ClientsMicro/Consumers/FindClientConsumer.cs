@@ -1,13 +1,13 @@
+using ClientsMicro.Models;
 using Core;
 using Core.Data;
 using Core.Dtos;
 using Core.Messages;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
 using WebCommons;
 
-namespace UsersMicro.Consumers;
+namespace ClientsMicro.Consumers;
 
 public abstract class FindClientConsumer<T, O, R> : TransactionConsumer<O, R>
 	where T : Client

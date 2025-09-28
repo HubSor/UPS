@@ -2,7 +2,7 @@
 using Core.Validators;
 using FluentValidation;
 
-namespace UsersMicro.Validators
+namespace ClientsMicro.Validators
 {
 	public class ListClientsOrderValidator : AbstractValidator<ListClientsOrder>
 	{
