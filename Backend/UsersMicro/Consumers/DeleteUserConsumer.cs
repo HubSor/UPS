@@ -5,8 +5,6 @@ using Core.Models;
 using Core.Web;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
-using WebCommons;
 
 namespace UsersMicro.Consumers;
 

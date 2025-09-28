@@ -3,13 +3,12 @@ using Core;
 using Core.Data;
 using Core.Dtos;
 using Core.Messages;
+using Core.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
 using UsersMicro.Services;
-using WebCommons;
 
 namespace UsersMicro.Consumers;
 

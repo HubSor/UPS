@@ -4,7 +4,6 @@ using Core.Messages;
 using Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
 using UsersMicro.Services;
 
 namespace UsersMicro.Consumers;

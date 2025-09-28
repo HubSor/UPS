@@ -1,7 +1,6 @@
 ﻿using Core.Data;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Models;
 using UsersMicro.Services;
 
 namespace UsersMicro.Data

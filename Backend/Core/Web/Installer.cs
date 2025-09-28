@@ -109,13 +109,16 @@ public static class Installer
         app.UseRouting();
         app.UseHttpsRedirection();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseSession();
-
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=test}/{action=get}"
         );
+    }
+
+    public static void EnableAuth(WebApplication app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseSession();
     }
 }

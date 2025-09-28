@@ -1,5 +1,4 @@
-﻿using ClientsMicro.Models;
-using Core.Data;
+﻿using Core.Data;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
 
