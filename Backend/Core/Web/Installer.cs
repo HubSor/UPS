@@ -1,13 +1,70 @@
+using Core.Data;
+using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebCommons;
 
 namespace Core.Web;
 
 public static class Installer
 {
+    public static void InstallCommonServices<TUnitOfWork>(WebApplicationBuilder builder) where TUnitOfWork : DbContext, IUnitOfWork
+    {
+        InstallDbContext<TUnitOfWork>(builder);
+
+        builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IUnitOfWork, TUnitOfWork>();
+        builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddValidatorsFromAssemblyContaining(typeof(TUnitOfWork));
+
+        builder.Services.AddMediator(mrc =>
+        {
+            mrc.ConfigureMediator((context, cfg) =>
+            {
+                cfg.UseSendFilter(typeof(ValidationFilter<>), context);
+            });
+
+            mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
+        });
+
+        InstallAuth(builder.Services);
+
+        InstallDataProtection(builder.Services);
+    }
+
+    private static void InstallDbContext<TUnitOfWork>(WebApplicationBuilder builder) where TUnitOfWork : DbContext, IUnitOfWork
+    {
+        try
+        {
+            builder.Services.AddDbContext<TUnitOfWork>(options =>
+            {
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("Connection"),
+                    op =>
+                    {
+                        op.MigrationsAssembly(typeof(BaseUnitOfWork).Assembly.FullName);
+                        op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    }
+                );
+            });
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Database connection error");
+            throw;
+        }
+    }
+
     public static void InstallDataProtection(IServiceCollection services)
     {
         services.AddDataProtection()
@@ -43,10 +100,22 @@ public static class Installer
         services.AddSession();
     }
 
-    public static void EnableAuth(WebApplication app)
+    public static void EnableCommonServices(WebApplication app)
     {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseHttpsRedirection();
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseSession();
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=test}/{action=get}"
+        );
     }
 }

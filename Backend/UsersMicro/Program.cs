@@ -1,58 +1,11 @@
-using Core;
-using FluentValidation;
-using MassTransit;
-using WebCommons;
-using Microsoft.EntityFrameworkCore;
 using UsersMicro.Data;
 using UsersMicro.Services;
-using UsersMicro.Validators;
-using Core.Data;
 using Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
-try
-{
-	builder.Services.AddDbContext<UsersUnitOfWork>(options => 
-	{
-		options.UseNpgsql(
-			builder.Configuration.GetConnectionString("Users_Connection"),
-			op => {
-				op.MigrationsAssembly(typeof(BaseUnitOfWork).Assembly.FullName);
-				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-			}
-		);
-	});
-}
-catch (Exception)
-{
-	Console.WriteLine("Database connection error");
-	throw;
-}
-
-builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+Installer.InstallCommonServices<UsersUnitOfWork>(builder);
 builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
-
-builder.Services.AddMediator(mrc =>
-{
-	mrc.ConfigureMediator((context, cfg) =>
-	{
-		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
-	});
-
-	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
-});
-
-Installer.InstallAuth(builder.Services);
-
-Installer.InstallDataProtection(builder.Services);
 
 var app = builder.Build();
 
@@ -71,20 +24,7 @@ catch (Exception)
 	throw;
 }
 
-
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseStaticFiles();
-app.UseRouting();
-app.UseHttpsRedirection();
-
-Installer.EnableAuth(app);
-
-app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=test}/{action=get}"
-);
+Installer.EnableCommonServices(app);
 
 app.Run();
 
