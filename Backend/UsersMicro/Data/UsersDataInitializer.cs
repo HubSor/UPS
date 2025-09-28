@@ -1,6 +1,7 @@
-﻿using Data;
+﻿using Core.Data;
+using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
+using UsersMicro.Models;
 using UsersMicro.Services;
 
 namespace UsersMicro.Data

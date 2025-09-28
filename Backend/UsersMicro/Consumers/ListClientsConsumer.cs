@@ -1,9 +1,8 @@
 using Core;
-using Dtos;
+using Core.Data;
+using Core.Dtos;
+using Core.Messages;
 using MassTransit;
-using Models.Entities;
-using UsersMicro.Dtos;
-using UsersMicro.Messages;
 using UsersMicro.Models;
 using WebCommons;
 
@@ -47,7 +46,7 @@ public class ListPersonClientsConsumer : ListClientsConsumer<PersonClient, ListP
 	{
 	}
 
-	protected override PersonClientDto GetClientDto(PersonClient client) => new (client);
+	protected override PersonClientDto GetClientDto(PersonClient client) => client.ToDto();
 
 	protected override async Task RespondAsync(ConsumeContext<ListPersonClientsOrder> context, ICollection<PersonClientDto> dtos, int count)
 	{
@@ -67,7 +66,7 @@ public class ListCompanyClientsConsumer : ListClientsConsumer<CompanyClient, Lis
 	{
 	}
 
-	protected override CompanyClientDto GetClientDto(CompanyClient client) => new(client);
+	protected override CompanyClientDto GetClientDto(CompanyClient client) => client.ToDto();
 
 	protected override async Task RespondAsync(ConsumeContext<ListCompanyClientsOrder> context, ICollection<CompanyClientDto> dtos, int count)
 	{

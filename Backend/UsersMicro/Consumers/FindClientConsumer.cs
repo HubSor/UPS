@@ -1,9 +1,9 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Dtos;
+using Core.Messages;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Dtos;
-using UsersMicro.Messages;
 using UsersMicro.Models;
 using WebCommons;
 
@@ -66,7 +66,7 @@ public class FindPersonClientConsumer : FindClientConsumer<PersonClient, FindPer
 
 	public override ClientDto CreateClientDto(ConsumeContext<FindPersonClientOrder> context)
 	{
-		return new PersonClientDto(client);
+		return client.ToDto();
 	}
 
 	public override async Task PostTransaction(ConsumeContext<FindPersonClientOrder> context)
@@ -95,7 +95,7 @@ public class FindCompanyClientConsumer : FindClientConsumer<CompanyClient, FindC
 
 	public override ClientDto CreateClientDto(ConsumeContext<FindCompanyClientOrder> context)
 	{
-		return new CompanyClientDto(client);
+		return client.ToDto();
 	}
 
 	public override async Task PostTransaction(ConsumeContext<FindCompanyClientOrder> context)

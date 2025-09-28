@@ -1,5 +1,6 @@
-﻿using FluentValidation;
-using UsersMicro.Messages;
+﻿using Core.Messages;
+using Core.Validators;
+using FluentValidation;
 
 namespace UsersMicro.Validators
 {

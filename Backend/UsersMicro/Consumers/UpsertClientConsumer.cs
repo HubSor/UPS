@@ -1,8 +1,8 @@
 using Core;
-using Data;
+using Core.Data;
+using Core.Messages;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using UsersMicro.Messages;
 using UsersMicro.Models;
 using WebCommons;
 
