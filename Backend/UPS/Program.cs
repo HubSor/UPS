@@ -1,6 +1,5 @@
 ﻿using Core.Web;
 using MassTransit;
-using WebCommons;
 
 var builder = WebApplication.CreateBuilder(args);
 

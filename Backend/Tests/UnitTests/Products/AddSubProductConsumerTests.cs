@@ -1,8 +1,5 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using MassTransit.Mediator;
-using Messages.Products;
-using Models.Entities;
 using Moq;
 using NUnit.Framework;
 

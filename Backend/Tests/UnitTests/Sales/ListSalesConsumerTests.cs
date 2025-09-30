@@ -1,8 +1,4 @@
-﻿using Consumers.Sales;
-using Dtos;
-using TestHelpers;
-using Messages.Sales;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
 
 namespace UnitTests.Sales;

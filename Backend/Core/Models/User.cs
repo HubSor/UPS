@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using Core.Models;
 using Core.Web;
 using Microsoft.EntityFrameworkCore;
 

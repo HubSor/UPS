@@ -4,7 +4,6 @@ using Core.Dtos;
 using Core.Messages;
 using Core.Models;
 using MassTransit;
-using WebCommons;
 
 namespace ClientsMicro.Consumers;
 

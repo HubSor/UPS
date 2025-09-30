@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Core.Dtos;
-using Core.Models;
 
 namespace Core.Models
 {

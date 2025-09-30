@@ -1,6 +1,4 @@
 using System.Net;
-using Dtos;
-using Messages.Users;
 using Xunit;
 
 namespace IntegrationTests.Users;

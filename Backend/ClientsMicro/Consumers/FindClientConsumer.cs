@@ -5,7 +5,6 @@ using Core.Messages;
 using Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using WebCommons;
 
 namespace ClientsMicro.Consumers;
 

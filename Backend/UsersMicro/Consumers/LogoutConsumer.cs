@@ -2,7 +2,6 @@ using Core;
 using Core.Messages;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication;
-using WebCommons;
 
 namespace UsersMicro.Consumers;
 

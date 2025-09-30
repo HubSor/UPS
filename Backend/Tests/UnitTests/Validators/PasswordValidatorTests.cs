@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Validators.Users;
 
 namespace UnitTests.Validators;
 

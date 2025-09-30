@@ -1,7 +1,4 @@
-﻿using Consumers.Products;
-using TestHelpers;
-using Messages.Products;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
 
 namespace UnitTests.Products;

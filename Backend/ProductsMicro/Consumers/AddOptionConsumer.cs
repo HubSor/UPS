@@ -4,7 +4,6 @@ using Core.Messages;
 using Core.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace ProductsMicro.Consumers;
 

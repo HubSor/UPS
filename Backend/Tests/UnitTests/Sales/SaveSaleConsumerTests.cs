@@ -1,9 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Consumers.Sales;
-using Dtos.Sales;
-using TestHelpers;
-using Messages.Sales;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
 
 namespace UnitTests.Sales;

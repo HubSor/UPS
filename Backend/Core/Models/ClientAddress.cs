@@ -1,5 +1,3 @@
-using Core.Models;
-
 namespace Core.Models;
 
 public class ClientAddress : Address

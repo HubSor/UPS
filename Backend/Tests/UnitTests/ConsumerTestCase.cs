@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using Core;
-using Data;
 using Helpers;
 using MassTransit;
 using Microsoft.Extensions.Logging;

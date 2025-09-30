@@ -1,8 +1,4 @@
-﻿using Consumers.Parameters;
-using Dtos.Parameters;
-using TestHelpers;
-using Messages.Parameters;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
 
 namespace UnitTests.Parameters;

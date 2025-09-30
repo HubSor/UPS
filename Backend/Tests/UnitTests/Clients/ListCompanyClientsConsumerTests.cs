@@ -1,8 +1,4 @@
-﻿using Consumers.Clients;
-using Dtos;
-using TestHelpers;
-using Messages.Clients;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
 
 namespace UnitTests.Clients;

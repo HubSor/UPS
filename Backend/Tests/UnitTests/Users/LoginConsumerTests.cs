@@ -1,9 +1,5 @@
-﻿using Consumers.Users;
-using TestHelpers;
-using Messages.Users;
-using Models.Entities;
+﻿using TestHelpers;
 using NUnit.Framework;
-using Services;
 
 namespace UnitTests.Users;
 

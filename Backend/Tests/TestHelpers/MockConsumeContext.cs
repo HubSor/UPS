@@ -1,5 +1,4 @@
-﻿using Core;
-using MassTransit;
+﻿using MassTransit;
 using Moq;
 
 namespace Helpers;
