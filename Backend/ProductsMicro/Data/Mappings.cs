@@ -16,16 +16,6 @@ namespace ProductsMicro.Data
 		}
 	}
 
-	public class SaleParameterMapping : IEntityTypeConfiguration<SaleParameter>
-	{
-		public void Configure(EntityTypeBuilder<SaleParameter> builder)
-		{
-			builder.HasKey(x => new { x.SaleId, x.ParameterId });
-			builder.HasOne(x => x.Parameter).WithMany(x => x.SaleParameters).HasForeignKey(x => x.ParameterId);
-			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId).OnDelete(DeleteBehavior.SetNull);
-		}
-	}
-
 	public class ProductMapping : IEntityTypeConfiguration<Product>
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)

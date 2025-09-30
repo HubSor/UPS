@@ -7,9 +7,6 @@ namespace Core.Data
 	{
 		public bool InTransaction => Database.CurrentTransaction != null;
 
-		public DbSet<Sale> Sales { get; set; }
-		public DbSet<SaleParameter> SaleParameters { get; set; }
-		public DbSet<SubProductInSale> SubProductsInSales { get; set; }
 		public DbSet<AddressType> AddressTypes { get; set; }
 
 		public DbContext Context => this;

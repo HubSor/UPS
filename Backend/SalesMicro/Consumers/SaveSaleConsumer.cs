@@ -1,15 +1,14 @@
 using System.Globalization;
 using Core;
-using Data;
-using Helpers;
+using Core.Data;
+using Core.Messages;
+using Core.Models;
+using Core.Web;
 using MassTransit;
-using Messages.Sales;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Sales;
+namespace SalesMicro.Consumers;
+
 public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleResponse>
 {
 	private readonly IHttpContextAccessor httpContextAccessor;
@@ -20,9 +19,9 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 	private ICollection<Parameter> RelevantParameters { get; set; } = default!;
 	private Product SelectedProduct { get; set; } = default!;
 	private ICollection<SubProduct> SelectedSubProducts { get; set; } = default!;
-	
+
 	public SaveSaleConsumer(ILogger<SaveSaleConsumer> logger, IRepository<Sale> sales,
-		IRepository<Parameter> parameters, IRepository<Product> products, 
+		IRepository<Parameter> parameters, IRepository<Product> products,
 		IRepository<Client> clients, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
 		: base(unitOfWork, logger)
 	{
@@ -32,7 +31,7 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 		this.clients = clients;
 		this.httpContextAccessor = httpContextAccessor;
 	}
-	
+
 	private static bool ValidateAnswer(Parameter parameter, string answer)
 	{
 		if (parameter.Type == ParameterTypeEnum.Integer)
@@ -46,13 +45,13 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			if (!decimal.TryParse(answer, CultureInfo.InvariantCulture, out _))
 				return false;
 		}
-		
+
 		if (parameter.Type == ParameterTypeEnum.Select)
 		{
 			if (!parameter.Options.Select(o => o.Value).Contains(answer))
 				return false;
 		}
-		
+
 		if (parameter.Type == ParameterTypeEnum.Checkbox)
 		{
 			if (answer != "TAK" && answer != "NIE")
@@ -75,13 +74,13 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			await RespondWithValidationFailAsync(context, "ProductId", "Nie znaleziono produktu");
 			return false;
 		}
-		
+
 		if (product.Status != ProductStatusEnum.Offered)
 		{
 			await RespondWithValidationFailAsync(context, "ProductId", "Próba sprzedaży nieoferowanego produktu");
 			return false;
 		}
-		
+
 		var subProducts = product.SubProductInProducts
 			.Select(x => x.SubProduct);
 		if (context.Message.SubProducts.Any(sp => !subProducts.Select(x => x.Id).Contains(sp.SubProductId)))
@@ -89,7 +88,7 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			await RespondWithValidationFailAsync(context, "SubProductIds", "Nie znaleziono podproduktu");
 			return false;
 		}
-		
+
 		if (context.Message.ClientId.HasValue)
 		{
 			var client = await clients.GetAll().FirstOrDefaultAsync(c => c.Id == context.Message.ClientId && !c.Deleted);
@@ -99,12 +98,12 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 				return false;
 			}
 		}
-		
+
 		var requiredParamsSubProduct = product.SubProductInProducts.SelectMany(x => x.SubProduct.Parameters.Where(s => s.Required));
 		var requiredParamsProduct = product.Parameters.Where(p => p.Required);
 		var requiredParams = requiredParamsSubProduct.Union(requiredParamsProduct);
 		var respondedParamIds = context.Message.Answers.Select(a => a.ParameterId).ToList();
-		
+
 		if (!requiredParams.All(rp => respondedParamIds.Contains(rp.Id) && !string.IsNullOrEmpty(context.Message.Answers.First(x => x.ParameterId == rp.Id).Answer)))
 		{
 			await RespondWithValidationFailAsync(context, "Answers", "Nie podano wszystkich wymaganych odpowiedzi");
@@ -121,14 +120,14 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			await RespondWithValidationFailAsync(context, "Answers", "Nie znaleziono parametru");
 			return false;
 		}
-		
+
 		var dbSubProductIds = subProducts.Select(x => x.Id).ToList();
 		if (!dbParams.All(p => dbSubProductIds.Contains(p.SubProductId ?? -1) || p.ProductId == product.Id))
 		{
 			await RespondWithValidationFailAsync(context, "Answers", "Próba zapisu parametru nieprzypisanego do produktu lub podproduktu");
 			return false;
 		}
-		
+
 		foreach (var dbParam in dbParams)
 		{
 			var answer = context.Message.Answers.FirstOrDefault(x => x.ParameterId == dbParam.Id);
@@ -137,20 +136,20 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 				await RespondWithValidationFailAsync(context, "Answers", "Nie znaleziono parametru");
 				return false;
 			}
-			
+
 			if (dbParam.Required && string.IsNullOrEmpty(answer.Answer))
 			{
 				await RespondWithValidationFailAsync(context, "Answers", "Nie podano wszystkich wymaganych odpowiedzi");
 				return false;
 			}
-			
+
 			if (!string.IsNullOrEmpty(answer.Answer) && !ValidateAnswer(dbParam, answer.Answer))
 			{
 				await RespondWithValidationFailAsync(context, "Answers", "Nie wszystkie odpowiedzi są poprawne");
 				return false;
 			}
 		}
-		
+
 		RelevantParameters = dbParams;
 		SelectedProduct = product;
 		SelectedSubProducts = subProducts.ToList();
@@ -191,9 +190,9 @@ public class SaveSaleConsumer : TransactionConsumer<SaveSaleOrder, SaveSaleRespo
 			}).ToList(),
 			SaleTime = DateTime.Now
 		};
-		
+
 		await sales.AddAsync(newSale);
-		
+
 		logger.LogInformation("Saved new sale {SaleId}", newSale.Id);
 	}
 

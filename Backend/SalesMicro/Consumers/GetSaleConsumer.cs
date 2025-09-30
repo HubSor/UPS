@@ -1,13 +1,13 @@
 using Core;
-using Data;
-using Dtos.Sales;
+using Core.Data;
+using Core.Dtos;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Sales;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Sales;
+namespace SalesMicro.Consumers;
+
 public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse>
 {
 	private readonly IRepository<Sale> sales;

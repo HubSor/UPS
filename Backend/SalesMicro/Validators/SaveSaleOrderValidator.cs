@@ -1,7 +1,7 @@
-﻿using FluentValidation;
-using Messages.Sales;
+﻿using Core.Messages;
+using FluentValidation;
 
-namespace Validators.Sales
+namespace SalesMicro.Validators
 {
 	public class SaveSaleOrderValidator : AbstractValidator<SaveSaleOrder>
 	{

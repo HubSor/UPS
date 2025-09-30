@@ -1,15 +1,14 @@
 using System.Globalization;
 using Core;
-using Dtos;
-using Dtos.Clients;
-using Dtos.Sales;
+using Core.Data;
+using Core.Dtos;
+using Core.Messages;
+using Core.Models;
 using MassTransit;
-using Messages.Sales;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models.Entities;
 
-namespace Consumers.Sales;
+namespace SalesMicro.Consumers;
+
 public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 {
 	private readonly IRepository<Sale> sales;
@@ -21,11 +20,11 @@ public class ListSalesConsumer : BaseConsumer<ListSalesOrder, ListSalesResponse>
 	}
 
 	private static PersonClientDto? GetPersonClient(Client? client) => client is PersonClient personClient ?
-		new PersonClientDto(personClient) :
+		personClient.ToDto() :
 		null;
 
 	private static CompanyClientDto? GetCompanyClient(Client? client) => client is CompanyClient companyClient ?
-		new CompanyClientDto(companyClient) :
+		companyClient.ToDto() :
 		null;
 
 	public override async Task Consume(ConsumeContext<ListSalesOrder> context)

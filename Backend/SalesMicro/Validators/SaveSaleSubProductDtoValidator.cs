@@ -1,7 +1,7 @@
-using Dtos.Sales;
+using Core.Dtos;
 using FluentValidation;
 
-namespace Validators.Sales
+namespace SalesMicro.Validators
 {
 	public class SaveSaleSubProductDtoValidator : AbstractValidator<SaveSaleSubProductDto>
 	{
