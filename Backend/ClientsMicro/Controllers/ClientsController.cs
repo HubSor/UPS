@@ -34,6 +34,14 @@ namespace ClientsMicro.Controllers
 		}
 
 		[HttpPost]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
+		[Route("get")]
+		public async Task<IActionResult> GetClient([FromBody] GetClientOrder order)
+		{
+			return await RespondAsync<GetClientOrder, GetClientResponse>(order);
+		}
+
+		[HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
