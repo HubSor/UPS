@@ -8,3 +8,4 @@ public record EditParameterOrder(int ParameterId, string Name, bool Required, Pa
 public record DeleteParameterOrder(int ParameterId);
 public record AddOptionOrder(int ParameterId, string Value);
 public record DeleteOptionOrder(int OptionId);
+public record GetSaleParametersOrder(int SaleId, int ProductId);

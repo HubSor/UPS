@@ -33,16 +33,18 @@ public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse
 	public override async Task InTransaction(ConsumeContext<GetSaleOrder> context)
 	{
 		var sale = await sales.GetAll()
-			.Include(p => p.Client)
-			.Include(x => x.Product)
-			.Include(x => x.SubProducts)
-			.ThenInclude(x => x.SubProduct)
-			.Include(x => x.SaleParameters)
-			.ThenInclude(x => x.Parameter)
-			.ThenInclude(x => x.Options)
 			.FirstAsync(p => p.Id == context.Message.SaleId);
 
-		saleDetailsDto = new SaleDetailsDto(sale);
+		saleDetailsDto = new SaleDetailsDto()
+		{
+			SaleId = sale.Id,
+			SaleTime = sale.SaleTime.ToString("dd/MM/yyyy HH:mm"),
+			TotalPrice = sale.FinalPrice,
+			ProductPrice = sale.ProductPrice,
+			ProductTax = sale.ProductTax,
+			ClientId = sale.ClientId,
+		};
+
 		logger.LogInformation("Got sale {SaleId} details", sale.Id);
 	}
 

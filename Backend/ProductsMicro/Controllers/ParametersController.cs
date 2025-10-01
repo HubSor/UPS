@@ -48,5 +48,13 @@ namespace ProductsMicro.Controllers
 		{
 			return await RespondAsync<DeleteOptionOrder, DeleteOptionResponse>(order);
 		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
+		[Route("sale")]
+		public async Task<IActionResult> GetSaleParameters([FromBody] GetSaleParametersOrder order)
+		{
+			return await RespondAsync<GetSaleParametersOrder, GetSaleParametersResponse>(order);
+		}
 	}
 }

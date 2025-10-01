@@ -11,3 +11,4 @@ public record UpsertClientOrder(bool IsCompany, int? ClientId, string? PhoneNumb
 public abstract record ListClientsOrder(PaginationDto Pagination);
 public record ListPersonClientsOrder(PaginationDto Pagination) : ListClientsOrder(Pagination);
 public record ListCompanyClientsOrder(PaginationDto Pagination) : ListClientsOrder(Pagination);
+public record GetClientOrder(int ClientId);

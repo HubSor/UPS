@@ -24,7 +24,13 @@ public class ListCompanyClientsResponse
 	public PagedList<CompanyClientDto> Clients { get; set; } = default!;
 }
 
-public class ListPersonClientsResponse 
+public class ListPersonClientsResponse
 {
 	public PagedList<PersonClientDto> Clients { get; set; } = default!;
+}
+
+public class GetClientResponse
+{
+	public PersonClientDto? PersonClient { get; set; }
+	public CompanyClientDto? CompanyClient { get; set; }
 }
