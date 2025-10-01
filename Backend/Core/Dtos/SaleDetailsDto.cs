@@ -15,23 +15,4 @@ public class SaleDetailsDto
 	public ProductDto Product { get; set; } = default!;
 	public ICollection<SaleDetailsSubProductDto> SubProducts { get; set; } = default!;
 	public ICollection<SaleParameterDto> Parameters { get; set; } = default!;
-	
-	public SaleDetailsDto(Sale sale)
-	{
-		SaleId = sale.Id;
-		SaleTime = sale.SaleTime.ToString("dd/MM/yyyy HH:mm");
-		TotalPrice = sale.FinalPrice;
-		ProductPrice = sale.ProductPrice;
-		ProductTax = sale.ProductTax;
-		PersonClient = sale.Client is PersonClient personClient ?
-			personClient.ToDto() :
-			null;
-		CompanyClient = sale.Client is CompanyClient companyClient ?
-			companyClient.ToDto() :
-			null;
-		Product = new ProductDto(sale.Product);
-		SubProducts = sale.SubProducts.Select(x => new SaleDetailsSubProductDto(x.SubProduct, x)).ToList();
-		Parameters = sale.SaleParameters.OrderBy(x => x.Parameter.Id).Select(sp => new SaleParameterDto(sp.Parameter, sp.Value)).ToList();
-		TotalTax = sale.ProductTax + sale.SubProducts.Select(x => x.Tax).Sum();
-	}
 }

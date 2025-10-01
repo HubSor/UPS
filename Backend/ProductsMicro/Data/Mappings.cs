@@ -48,12 +48,31 @@ namespace ProductsMicro.Data
 			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
 		}
 	}
-	
+
 	public class ProductStatusMapping : IEntityTypeConfiguration<ProductStatus>
 	{
 		public void Configure(EntityTypeBuilder<ProductStatus> builder)
 		{
 			builder.Property(x => x.Id).HasConversion<int>().IsRequired();
+		}
+	}
+	
+	public class SubProductInSaleMapping : IEntityTypeConfiguration<SubProductInSale>
+	{
+		public void Configure(EntityTypeBuilder<SubProductInSale> builder)
+		{
+			builder.HasKey(x => new { x.SaleId, x.SubProductId });
+			builder.HasOne(x => x.SubProduct).WithMany(x => x.SubProductInSales).HasForeignKey(x => x.SubProductId);
+		}
+	}
+	
+	public class SaleParameterMapping : IEntityTypeConfiguration<SaleParameter>
+	{
+		public void Configure(EntityTypeBuilder<SaleParameter> builder)
+		{
+			builder.HasKey(x => new { x.SaleId, x.ParameterId });
+			builder.HasOne(x => x.Parameter).WithMany(x => x.SaleParameters).HasForeignKey(x => x.ParameterId);
+			builder.HasOne(x => x.Option).WithMany().HasForeignKey(x => x.OptionId).OnDelete(DeleteBehavior.SetNull);
 		}
 	}
 }
