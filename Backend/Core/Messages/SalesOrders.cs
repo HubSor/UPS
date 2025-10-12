@@ -3,6 +3,7 @@ using Core.Dtos;
 namespace Core.Messages;
 
 public record SaveSaleOrder(int ProductId, int? ClientId, SaveSaleParameterDto[] Answers, decimal ProductPrice, SaveSaleSubProductDto[] SubProducts);
+public record SaveSaleProductsMicroOrder(int SaleId, SaveSaleParameterDto[] Parameters, SaveSaleSubProductDto[] SubProducts);
 public record ExtendedSaveSaleOrder(
     int ProductId,
     int? ClientId,

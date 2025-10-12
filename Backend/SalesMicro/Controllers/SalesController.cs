@@ -60,6 +60,24 @@ namespace SalesMicro.Controllers
                     StatusCode = (int)saleResponse.Message.StatusCode,
                 };
             }
+
+            var saveSaleInProductsResponse = await MakeMicroRequest<SaveSaleProductsMicroOrder, SaveSaleResponse>(
+                ProductsMicroUrl + "/sales/save",
+                new SaveSaleProductsMicroOrder(saleResponse.Message.Data!.SaleId, order.Answers, order.SubProducts)
+            );
+
+            if (saveSaleInProductsResponse?.Success != true)
+            {
+                return new ObjectResult(saveSaleInProductsResponse)
+                {
+                    StatusCode = 400,
+                };
+            }
+
+            return new ObjectResult(saleResponse)
+            {
+                StatusCode = (int)saleResponse.Message.StatusCode,
+            };
 		}
 
 		[HttpPost]

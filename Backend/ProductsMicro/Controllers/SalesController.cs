@@ -16,5 +16,13 @@ namespace ProductsMicro.Controllers
 		{
 			return await RespondAsync<GetSaleParametersOrder, GetSaleParametersResponse>(order);
 		}
+
+		[HttpPost]
+		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Administrator)]
+		[Route("save")]
+		public async Task<IActionResult> SaveSale([FromBody] SaveSaleProductsMicroOrder order)
+		{
+			return await RespondAsync<SaveSaleProductsMicroOrder, SaveSaleResponse>(order);
+		}
 	}
 }
