@@ -17,8 +17,49 @@ namespace SalesMicro.Controllers
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
-		{
-			return await RespondAsync<SaveSaleOrder, SaveSaleResponse>(order);
+        {
+            var clientName = "";
+            if (order.ClientId.HasValue)
+            {
+                var clientResponse = await MakeMicroRequest<GetClientOrder, GetClientResponse>(ClientsMicroUrl + "/clients/get", new GetClientOrder(order.ClientId.Value));
+                if (clientResponse?.Success != true)
+                {
+                    return new ObjectResult(clientResponse)
+                    {
+                        StatusCode = 400,
+                    };
+                }
+
+                clientName = clientResponse.Data!.CompanyClient?.CompanyName ?? clientResponse.Data.PersonClient?.GetName() ?? "";
+            }
+
+            var productResponse = await MakeMicroRequest<GetProductOrder, GetProductResponse>(ProductsMicroUrl + "/products/get", new GetProductOrder(order.ProductId));
+            if (productResponse?.Success != true)
+            {
+                return new ObjectResult(productResponse)
+                {
+                    StatusCode = 400,
+                };
+            }
+
+			var client = Mediator.CreateRequestClient<ExtendedSaveSaleOrder>();
+			var saleResponse = await client.GetResponse<ApiResponse<SaveSaleResponse>>(new ExtendedSaveSaleOrder(
+                order.ProductId,
+                order.ClientId,
+                order.Answers,
+                order.ProductPrice,
+                order.SubProducts,
+                productResponse.Data!.Product,
+                clientName
+            ));
+
+            if (!saleResponse.Message.Success)
+            {
+                return new ObjectResult(saleResponse)
+                {
+                    StatusCode = (int)saleResponse.Message.StatusCode,
+                };
+            }
 		}
 
 		[HttpPost]
@@ -57,7 +98,7 @@ namespace SalesMicro.Controllers
         private async Task FetchRelatedData(SaleDetailsDto saleDto)
         {
             var paramsResponse = await MakeMicroRequest<GetSaleParametersOrder, GetSaleParametersResponse>(
-                ProductsMicroUrl + "/parameters/sale",
+                ProductsMicroUrl + "/sales/parameters",
                 new GetSaleParametersOrder(saleDto.SaleId, saleDto.ProductId)
             );
 
