@@ -1,5 +1,9 @@
 ﻿using TestHelpers;
 using NUnit.Framework;
+using SalesMicro.Consumers;
+using Core.Messages;
+using Core.Dtos;
+using Core.Models;
 
 namespace UnitTests.Sales;
 
@@ -20,40 +24,17 @@ public class ListSalesConsumerTests : ConsumerTestCase<ListSalesConsumer, ListSa
 			{
 				Id = 1,
 				SaleTime = new DateTime(2000, 1, 1),
-				Client = null,
-				Product = new Product()
-				{
-					Id = 1,
-					Code = "TEST01"
-				},
-				SubProducts = new List<SubProductInSale>(),
-				FinalPrice = 99.99m
+				FinalPrice = 99.99m,
+				ProductCode = "TEST01",
+				SubProductCodes = "SUB01;SUB02",
 			},
 			new ()
 			{
 				Id = 2,
 				SaleTime = new DateTime(2020, 1, 1, 15, 15, 15),
-				Client = new PersonClient()
-				{
-					FirstName = "Jan",
-					LastName = "Łoś",
-				},
-				Product = new Product()
-				{
-					Id = 2,
-					Code = "TEST02"
-				},
-				SubProducts = new List<SubProductInSale>() 
-				{
-					new()
-					{
-						SubProduct = new SubProduct()
-						{
-							Code = "SUB01"
-						}
-					}
-				},
-				FinalPrice = 09.99m
+				FinalPrice = 09.99m,
+				SubProductCodes = "",
+				ProductCode = "TEST02",
 			},
 		});
 		

@@ -1,13 +1,15 @@
 ﻿using System.Security.Claims;
+using Core.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
-namespace Helpers;
+namespace TestHelpers;
+
 public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 {
 	public bool SignedIn { get; set; }
-	public ICollection<Claim> Claims { get; set; } = new List<Claim>();
+	public ICollection<Claim> Claims { get; set; } = [];
 	
 	public MockHttpContextAccessor()
 	{

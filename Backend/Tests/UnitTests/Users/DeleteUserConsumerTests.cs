@@ -1,5 +1,8 @@
 ﻿using TestHelpers;
 using NUnit.Framework;
+using UsersMicro.Consumers;
+using Core.Messages;
+using Core.Models;
 
 namespace UnitTests.Users;
 

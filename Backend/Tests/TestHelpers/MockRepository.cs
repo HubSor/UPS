@@ -1,4 +1,5 @@
-﻿using MockQueryable;
+﻿using Core.Data;
+using MockQueryable;
 using Moq;
 
 namespace TestHelpers;

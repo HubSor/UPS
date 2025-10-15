@@ -205,11 +205,19 @@ namespace ProductsMicro.Data
 				"Sobota",
 				"Niedziela"
 			};
-			
+
 			var dayOptions = days.Select(d => new ParameterOption()
 			{
 				ParameterId = dayParam.Id,
 				Value = d,
+			});
+			
+			context.SaleParameters.Add(new ()
+			{
+				SaleId = 1,
+				ParameterId = dayParam.Id,
+				Value = "Środa",
+				OptionId = context.ParameterOptions.FirstOrDefault(o => o.Value == "Środa")?.Id
 			});
 
 			context.ParameterOptions.AddRange(dayOptions);

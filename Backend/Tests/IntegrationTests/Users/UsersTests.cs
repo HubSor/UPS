@@ -1,15 +1,13 @@
 using System.Net;
+using Core.Dtos;
+using Core.Messages;
 using Xunit;
 
 namespace IntegrationTests.Users;
 
-public class UsersTests : IntegrationTestCase
+public class UsersTests(UPSWebApplicationFactory<Program> factory) : IntegrationTestCase(factory)
 {
-	public UsersTests(UPSWebApplicationFactory<Program> factory) : base(factory)
-	{
-	}
-	
-	[Fact]
+    [Fact]
 	public async Task Login_Ok_CorrectCredentialsAdmin()
 	{
 		var req = GetRequestMessage("/users/login", new LoginOrder("admin", "admin"));

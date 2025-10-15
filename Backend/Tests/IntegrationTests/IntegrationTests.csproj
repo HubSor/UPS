@@ -27,8 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
     <ProjectReference Include="..\..\Core\Core.csproj" />
-    <ProjectReference Include="..\..\Data\Data.csproj" />
-    <ProjectReference Include="..\..\UPS\UPS.csproj" />
+    <ProjectReference Include="..\..\UsersMicro\UsersMicro.csproj" />
   </ItemGroup>
 
 </Project>

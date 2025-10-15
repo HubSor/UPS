@@ -10,7 +10,7 @@ namespace SalesMicro.Consumers;
 
 public class SaveSaleConsumer(
 	ILogger<SaveSaleConsumer> _logger,
-	Repository<Sale> sales,
+	IRepository<Sale> sales,
 	IUnitOfWork unitOfWork,
 	IHttpContextAccessor httpContextAccessor
 ) : TransactionConsumer<ExtendedSaveSaleOrder, SaveSaleResponse>(unitOfWork, _logger)

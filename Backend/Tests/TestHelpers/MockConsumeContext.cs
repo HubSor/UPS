@@ -1,7 +1,9 @@
-﻿using MassTransit;
+﻿using Core.Web;
+using MassTransit;
 using Moq;
 
-namespace Helpers;
+namespace TestHelpers;
+
 public class MockConsumeContext<O, R> : Mock<ConsumeContext<O>>
 	where O : class
 	where R : class

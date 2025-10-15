@@ -23,7 +23,7 @@ public class ListSalesConsumer(ILogger<ListSalesConsumer> _logger, IRepository<S
 				SaleId = s.Id,
 				SaleTime = s.SaleTime.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
 				ProductCode = s.ProductCode,
-				SubProductCodes = s.SubProductCodes.Split(";"),
+				SubProductCodes = s.SubProductCodes == "" ? [] : s.SubProductCodes.Split(";"),
 				ClientName = s.ClientName,
 				TotalPrice = s.FinalPrice,
 			});

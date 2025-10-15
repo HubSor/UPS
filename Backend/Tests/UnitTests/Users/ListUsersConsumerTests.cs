@@ -1,5 +1,9 @@
 ﻿using TestHelpers;
 using NUnit.Framework;
+using Core.Dtos;
+using Core.Models;
+using UsersMicro.Consumers;
+using Core.Messages;
 
 namespace UnitTests.Users;
 

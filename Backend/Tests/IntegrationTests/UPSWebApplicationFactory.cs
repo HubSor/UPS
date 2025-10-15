@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using UsersMicro.Data;
+using UsersMicro.Services;
 
 namespace IntegrationTests;
 
@@ -14,7 +16,7 @@ public class UPSWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram
 	{
 		builder.ConfigureServices(services =>
 		{
-			var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<UnitOfWork>));
+			var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<UsersUnitOfWork>));
 			if (dbContextDescriptor is not null)
 				services.Remove(dbContextDescriptor);
 
@@ -25,7 +27,7 @@ public class UPSWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram
 			var conn = new SqliteConnection($"DataSource={Guid.NewGuid()}-integration-tests.db");
 			conn.Open();
 
-			services.AddDbContext<UnitOfWork>((options) =>
+			services.AddDbContext<UsersUnitOfWork>((options) =>
 			{
 				options.UseSqlite(conn);
 			});
@@ -34,12 +36,12 @@ public class UPSWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram
 
 			using var scope = serviceProvider.CreateScope();
 
-			var uow = scope.ServiceProvider.GetRequiredService<UnitOfWork>();
+			var uow = scope.ServiceProvider.GetRequiredService<UsersUnitOfWork>();
 			var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
 
 			try 
 			{
-				DataInitializer.InitializeTest(uow, passwordService);
+				UsersDataInitializer.InitializeTest(uow, passwordService);
 			}
 			catch (Exception)
 			{

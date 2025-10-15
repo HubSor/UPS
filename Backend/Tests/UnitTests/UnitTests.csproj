@@ -20,10 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Messages\Messages.csproj" />
-    <ProjectReference Include="..\..\Models\Models.csproj" />
-    <ProjectReference Include="..\..\Consumers\Consumers.csproj" />
-    <ProjectReference Include="..\..\Validators\Validators.csproj" />
+    <ProjectReference Include="..\..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\ProductsMicro\ProductsMicro.csproj" />
+    <ProjectReference Include="..\..\UsersMicro\UsersMicro.csproj" />
+    <ProjectReference Include="..\..\SalesMicro\SalesMicro.csproj" />
+    <ProjectReference Include="..\..\ClientsMicro\ClientsMicro.csproj" />
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 
