@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { Api } from "../api/Api"
 import { ResultPaginationDto, SaleDto } from "../api/Dtos"
-import { PaginationBar, defaultPagination, getClientName } from "../helpers/FormHelpers"
+import { PaginationBar, defaultPagination } from "../helpers/FormHelpers"
 import { toastDefaultError } from "../helpers/ToastHelpers"
 import { useNavigate } from "react-router-dom"
 import { Paths } from "../App"
@@ -70,10 +70,7 @@ export default function SaleListPage() {
                 </tr>
             </thead>
             <tbody>
-                {state.sales.map(s => {
-                    const clientString = getClientName(s.personClient, s.companyClient);
-
-                    return <tr key={s.saleId} onClick={() => {
+                {state.sales.map(s => <tr key={s.saleId} onClick={() => {
                         nav(Paths.sale.replace(":id", s.saleId.toString()))
                     }}>
                         <td>
@@ -89,13 +86,13 @@ export default function SaleListPage() {
                             {s.totalPrice.toFixed(2).replace('.', ',')}
                         </td>
                         <td>
-                            {clientString}
+                            {s.clientName}
                         </td>
                         <td>
                             {s.saleTime}
                         </td>
                     </tr>
-                })}
+                )}
             </tbody>
         </table>
         <PaginationBar currentIndex={state.pagination.pageIndex} maxIndex={state.pagination.totalPages - 1} 

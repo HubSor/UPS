@@ -137,8 +137,7 @@ export type SaleDto = {
     saleId: number,
     productCode: string,
     subProductCodes: string[],
-    personClient?: PersonClientDto,
-    companyClient?: CompanyClientDto,
+    clientName: string,
     saleTime: string,
     totalPrice: number,
 }
