@@ -52,7 +52,7 @@ public static class Installer
                     builder.Configuration.GetConnectionString("Connection"),
                     op =>
                     {
-                        op.MigrationsAssembly(typeof(BaseUnitOfWork).Assembly.FullName);
+                        op.MigrationsAssembly(typeof(TUnitOfWork).Assembly.FullName);
                         op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                     }
                 );
