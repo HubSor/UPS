@@ -7,7 +7,7 @@ services:
    ports:
      - 3107:5432
    volumes:
-     - postgres-data:/var/lib/postgresql/data
+     - users-data:/var/lib/postgresql/data
 
  adminer:
    image: adminer
@@ -16,4 +16,4 @@ services:
      - 8080:8080
      
 volumes:
- postgres-data:
+ users-data:
