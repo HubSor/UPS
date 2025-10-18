@@ -34,7 +34,7 @@ public static class Installer
                 cfg.UseSendFilter(typeof(ValidationFilter<>), context);
             });
 
-            mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
+            mrc.AddConsumers(typeof(TUnitOfWork).Assembly);
         });
 
         InstallAuth(builder.Services);
@@ -113,6 +113,8 @@ public static class Installer
             name: "default",
             pattern: "{controller=test}/{action=get}"
         );
+
+        EnableAuth(app);
     }
 
     public static void EnableAuth(WebApplication app)

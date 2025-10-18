@@ -8,6 +8,36 @@ services:
      - 3107:5432
    volumes:
      - users-data:/var/lib/postgresql/data
+     
+ clients-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   ports:
+     - 3108:5432
+   volumes:
+     - clients-data:/var/lib/postgresql/data
+     
+ products-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   ports:
+     - 3109:5432
+   volumes:
+     - products-data:/var/lib/postgresql/data
+     
+ sales-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   ports:
+     - 3110:5432
+   volumes:
+     - sales-data:/var/lib/postgresql/data
 
  adminer:
    image: adminer
@@ -17,3 +47,6 @@ services:
      
 volumes:
  users-data:
+ clients-data:
+ products-data:
+ sales-data:

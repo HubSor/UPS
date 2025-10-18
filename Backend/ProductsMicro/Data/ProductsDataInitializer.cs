@@ -68,6 +68,8 @@ namespace ProductsMicro.Data
 				TaxRate = 0.45m,
 			});
 
+			context.SaveChanges();
+
 			context.SubProductsInProducts.Add(new()
 			{
 				ProductId = 1,

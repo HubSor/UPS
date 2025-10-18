@@ -23,7 +23,10 @@ namespace SalesMicro.Data
 				ProductTax = 7.25m,
 				SellerId = 1,
 				ClientId = 1,
-				SaleTime = DateTime.Now
+				SaleTime = DateTime.Now,
+				ProductCode = "POSOB",
+				SubProductCodes = "",
+				ClientName = "Jan Kowalski",
 			});
 
 			context.SaveChanges();

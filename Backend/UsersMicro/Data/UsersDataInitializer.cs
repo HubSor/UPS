@@ -97,6 +97,8 @@ namespace UsersMicro.Data
 				new (){ Id = AddressTypeEnum.Correspondence, Name = "Adres korespondencyjny"},
 				new (){ Id = AddressTypeEnum.Registered, Name = "Adres zameldowania"},
 			});
+
+			context.SaveChanges();
 		}
 	}
 }
