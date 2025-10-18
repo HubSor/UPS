@@ -8,7 +8,7 @@ namespace UPS.Controllers
 	[Route(template: "clients")]
 	public class ClientsController : BaseController
 	{
-		protected override string TargetMicroUrl => "https://localhost:2108";
+		protected override string TargetMicroUrl => Environment.GetEnvironmentVariable("CLIENTS_URL") ?? "https://localhost:2108";
 
         [HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]

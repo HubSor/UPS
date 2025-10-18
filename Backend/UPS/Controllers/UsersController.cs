@@ -9,7 +9,7 @@ namespace UPS.Controllers
 	[Route("users")]
 	public class UsersController : BaseController
 	{
-		protected override string TargetMicroUrl => "https://localhost:2107";
+		protected override string TargetMicroUrl => Environment.GetEnvironmentVariable("USERS_URL") ?? "https://localhost:2107";
 
         [HttpPost]
 		[Authorize]

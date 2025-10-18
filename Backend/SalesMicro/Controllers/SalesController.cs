@@ -10,8 +10,8 @@ namespace SalesMicro.Controllers
 	[Route("sales")]
 	public class UsersController(IMediator mediator) : BaseMediatorController(mediator)
 	{
-		protected const string ClientsMicroUrl = "https://localhost:2108";
-		protected const string ProductsMicroUrl = "https://localhost:2109";
+		protected readonly string ClientsMicroUrl = Environment.GetEnvironmentVariable("CLIENTS_URL") ?? "https://localhost:2108";
+		protected readonly string ProductsMicroUrl = Environment.GetEnvironmentVariable("PRODUCTS_URL") ?? "https://localhost:2109";
 
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]

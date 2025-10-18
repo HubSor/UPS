@@ -2,13 +2,43 @@ networks:
   ups-net:
 
 services:
- base:
+ users-base:
    image: postgres:16
    restart: always
    environment:
      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
    volumes:
-     - postgres-data:/var/lib/postgresql/data
+     - users-data:/var/lib/postgresql/data
+   networks:
+     - ups-net
+  
+ clients-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - clients-data:/var/lib/postgresql/data
+   networks:
+     - ups-net
+ 
+ products-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - products-data:/var/lib/postgresql/data
+   networks:
+     - ups-net
+ 
+ sales-base:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - sales-data:/var/lib/postgresql/data
    networks:
      - ups-net
 
@@ -20,60 +50,84 @@ services:
    networks:
      - ups-net
 
- backend:
+ proxy:
    build:
      context: ./Backend
-   ports:
-     - 2443:443
-     - 2080:80
-   depends_on:
-     - base
-   networks:
-     - ups-net
+     dockerfile: ./proxy.Dockerfile
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     ASPNETCORE_URLS: https://+
-     ASPNETCORE_HTTPS_PORT: 2443
-     ASPNETCORE_Kestrel__Certificates__Default__Password: certpasswd
-     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/upscert.pfx
-     
-#  proxy:
-#    build:
-#      context: ./Backend
-#      dockerfile: ./proxy.Dockerfile
-#    depends_on:
-#      - base
-#    environment:
-#      FRONTEND_ORIGIN: https://localhost:3000
-#      ASPNETCORE_HTTP_PORTS: 2106
-#    ports:
-#      - 2106:2106
-#    volumes:
-#      - key-data:/app/keys
-     
-#  users_micro:
-#    build:
-#      context: ./Backend
-#      dockerfile: ./users.Dockerfile
-#    depends_on:
-#      - proxy
-#    environment:
-#      ASPNETCORE_HTTP_PORTS: 2107
-#    ports:
-#      - 2107:2107
-#    volumes:
-#      - key-data:/app/keys
-     
-# volumes:
-#  postgres-data:
-#  key-data:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      device: "./protection"
-#      o: bind
-     
- 
+     ASPNETCORE_HTTP_PORTS: 2106
+     USERS_URL: "http://localhost:2107"
+     CLIENTS_URL: "http://localhost:2108"
+     PRODUCTS_URL: "http://localhost:2109"
+     SALES_URL: "http://localhost:2110"
+   ports:
+     - 2106:2106
+   volumes:
+     - key-data:/app/keys
+
+ users-micro:
+   build:
+     context: ./Backend
+     dockerfile: ./users.Dockerfile
+   depends_on:
+     - users-base
+   environment:
+     ASPNETCORE_HTTP_PORTS: 2107
+   ports:
+     - 2107:2107
+   volumes:
+     - key-data:/app/keys
+   networks:
+     - ups-net
+
+ clients-micro:
+   build:
+     context: ./Backend
+     dockerfile: ./clients.Dockerfile
+   depends_on:
+     - clients-base
+   environment:
+     ASPNETCORE_HTTP_PORTS: 2108
+   ports:
+     - 2108:2108
+   volumes:
+     - key-data:/app/keys
+   networks:
+     - ups-net
+
+ products-micro:
+   build:
+     context: ./Backend
+     dockerfile: ./products.Dockerfile
+   depends_on:
+     - products-base
+   environment:
+     ASPNETCORE_HTTP_PORTS: 2109
+   ports:
+     - 2109:2109
+   volumes:
+     - key-data:/app/keys
+   networks:
+     - ups-net
+
+ sales-micro:
+   build:
+     context: ./Backend
+     dockerfile: ./sales.Dockerfile
+   depends_on:
+     - sales-base
+   environment:
+     ASPNETCORE_HTTP_PORTS: 2110
+     CLIENTS_URL: "http://localhost:2108"
+     PRODUCTS_URL: "http://localhost:2109"
+   ports:
+     - 2110:2110
+   volumes:
+     - key-data:/app/keys
+   networks:
+     - ups-net
+
  frontend:
    build:
      context: ./Frontend/ups
@@ -82,7 +136,16 @@ services:
    networks:
      - ups-net
    environment:
-     REACT_APP_BACKEND_URL: https://localhost:2443
+     REACT_APP_BACKEND_URL: http://localhost:2106
      
 volumes:
- postgres-data:
+ users-data:
+ clients-data:
+ products-data:
+ sales-data:
+ key-data:
+   driver: local
+   driver_opts:
+     type: none
+     device: "./protection"
+     o: bind
