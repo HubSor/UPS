@@ -9,8 +9,6 @@ namespace Core.Web
 	{
 		protected abstract string TargetMicroUrl { get; }
 
-		protected HttpClient _httpClient = new();
-
 		protected async Task<IActionResult> RelayMessage()
 		{
 			var original = HttpContext.Request;
@@ -32,9 +30,9 @@ namespace Core.Web
         private async Task<IActionResult> ForwardContent(HttpContent content)
         {
             var msg = new HttpRequestMessage(
-				HttpMethod.Parse(HttpContext.Request.Method),
-				TargetMicroUrl + HttpContext.Request.Path
-			)
+                HttpMethod.Parse(HttpContext.Request.Method),
+                TargetMicroUrl + HttpContext.Request.Path
+            )
             {
                 Content = content,
             };
@@ -44,7 +42,13 @@ namespace Core.Web
                 msg.Headers.TryAddWithoutValidation("Cookie", cookies.FirstOrDefault());
             }
 
-            var resp = await _httpClient.SendAsync(msg);
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (a, b, c, d) => true
+            };
+            var client = new HttpClient(handler);
+
+            var resp = await client.SendAsync(msg);
             var responseBody = await resp.Content.ReadAsStringAsync();
 
             var responseHeaders = resp.Headers.NonValidated.ToDictionary();

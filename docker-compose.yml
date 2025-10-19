@@ -56,15 +56,20 @@ services:
      dockerfile: ./proxy.Dockerfile
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     ASPNETCORE_HTTP_PORTS: 2106
-     USERS_URL: "http://localhost:2107"
-     CLIENTS_URL: "http://localhost:2108"
-     PRODUCTS_URL: "http://localhost:2109"
-     SALES_URL: "http://localhost:2110"
+     USERS_URL: "https://users-micro:2107"
+     CLIENTS_URL: "https://clients-micro:2108"
+     PRODUCTS_URL: "https://products-micro:2109"
+     SALES_URL: "https://sales-micro:2110"
+     ASPNETCORE_HTTPS_PORTS: 2106
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
    ports:
      - 2106:2106
    volumes:
      - key-data:/app/keys
+     - ~/.dotnet/https:/https:ro
+   networks:
+     - ups-net
 
  users-micro:
    build:
@@ -73,11 +78,14 @@ services:
    depends_on:
      - users-base
    environment:
-     ASPNETCORE_HTTP_PORTS: 2107
+     ASPNETCORE_HTTPS_PORTS: 2107
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
    ports:
      - 2107:2107
    volumes:
      - key-data:/app/keys
+     - ~/.dotnet/https:/https:ro
    networks:
      - ups-net
 
@@ -88,11 +96,14 @@ services:
    depends_on:
      - clients-base
    environment:
-     ASPNETCORE_HTTP_PORTS: 2108
+     ASPNETCORE_HTTPS_PORTS: 2108
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
    ports:
      - 2108:2108
    volumes:
      - key-data:/app/keys
+     - ~/.dotnet/https:/https:ro
    networks:
      - ups-net
 
@@ -103,11 +114,14 @@ services:
    depends_on:
      - products-base
    environment:
-     ASPNETCORE_HTTP_PORTS: 2109
+     ASPNETCORE_HTTPS_PORTS: 2109
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
    ports:
      - 2109:2109
    volumes:
      - key-data:/app/keys
+     - ~/.dotnet/https:/https:ro
    networks:
      - ups-net
 
@@ -118,13 +132,16 @@ services:
    depends_on:
      - sales-base
    environment:
-     ASPNETCORE_HTTP_PORTS: 2110
-     CLIENTS_URL: "http://localhost:2108"
-     PRODUCTS_URL: "http://localhost:2109"
+     ASPNETCORE_HTTPS_PORTS: 2110
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+     CLIENTS_URL: "https://clients-micro:2108"
+     PRODUCTS_URL: "https://products-micro:2109"
    ports:
      - 2110:2110
    volumes:
      - key-data:/app/keys
+     - ~/.dotnet/https:/https:ro
    networks:
      - ups-net
 
@@ -136,7 +153,7 @@ services:
    networks:
      - ups-net
    environment:
-     REACT_APP_BACKEND_URL: http://localhost:2106
+     REACT_APP_BACKEND_URL: https://localhost:2106
      
 volumes:
  users-data:

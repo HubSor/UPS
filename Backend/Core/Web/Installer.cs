@@ -1,3 +1,4 @@
+using System.Net;
 using Core.Data;
 using FluentValidation;
 using MassTransit;
