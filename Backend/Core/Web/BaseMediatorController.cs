@@ -8,7 +8,6 @@ namespace Core.Web
 	public abstract class BaseMediatorController(IMediator mediator) : ControllerBase
 	{
 		protected IMediator Mediator { get; set; } = mediator;
-		protected HttpClient _httpClient = new();
 
 		protected async Task<IActionResult> RespondAsync<O, R>(O order)
 			where O : class
@@ -38,7 +37,12 @@ namespace Core.Web
                 msg.Headers.TryAddWithoutValidation("Cookie", cookies.FirstOrDefault());
             }
 
-            var resp = await _httpClient.SendAsync(msg);
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (a, b, c, d) => true
+            };
+            var client = new HttpClient(handler);
+			var resp = await client.SendAsync(msg);
 			return await resp.Content.ReadFromJsonAsync<ApiResponse<TResponse>>();
         }
 	}

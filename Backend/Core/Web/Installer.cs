@@ -1,4 +1,3 @@
-using System.Net;
 using Core.Data;
 using FluentValidation;
 using MassTransit;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using WebCommons;
 
 namespace Core.Web;
@@ -40,7 +40,7 @@ public static class Installer
 
         InstallAuth(builder.Services);
 
-        InstallDataProtection(builder.Services);
+        InstallDataProtection(builder.Services, builder.Environment.IsDevelopment());
     }
 
     private static void InstallDbContext<TUnitOfWork>(WebApplicationBuilder builder) where TUnitOfWork : DbContext, IUnitOfWork
@@ -66,10 +66,10 @@ public static class Installer
         }
     }
 
-    public static void InstallDataProtection(IServiceCollection services)
+    public static void InstallDataProtection(IServiceCollection services, bool isDev)
     {
         services.AddDataProtection()
-            .PersistKeysToFileSystem(new DirectoryInfo("/home/hubert/studia/UPS/protection"))
+            .PersistKeysToFileSystem(new DirectoryInfo(isDev ? "/home/hubert/studia/UPS/protection" : "/app/keys"))
             .SetApplicationName("UPS");
     }
 

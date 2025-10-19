@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 Installer.InstallAuth(builder.Services);
 
-Installer.InstallDataProtection(builder.Services);
+Installer.InstallDataProtection(builder.Services, builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 
@@ -29,20 +29,8 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Error");
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseStaticFiles();
+Installer.EnableCommonServices(app);
 app.UseCors("AllowFrontend");
-app.UseRouting();
-app.UseHttpsRedirection();
-
-Installer.EnableAuth(app);
-
-app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=test}/{action=get}"
-);
 
 app.Run();
 
