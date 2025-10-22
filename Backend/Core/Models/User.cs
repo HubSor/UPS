@@ -22,7 +22,7 @@ namespace Core.Models
 			var claims = new List<Claim>()
 			{
 				new (ClaimTypes.Name, Name),
-				new (HttpContextHelpers.IdClaimType, Id.ToString())
+				new (ClaimsHelpers.IdClaimType, Id.ToString())
 			};
 			claims.AddRange(Roles.Select(r => new Claim(ClaimTypes.Role, r.Id.ToString())));
 			return claims;

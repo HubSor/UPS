@@ -41,8 +41,7 @@ public class DeleteUserConsumerTests : ConsumerTestCase<DeleteUserConsumer, Dele
 		
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
-		consumer = new DeleteUserConsumer(mockLogger.Object, users.Object,
-		mockUnitOfWork.Object, mockHttpContextAccessor.Object);
+		consumer = new DeleteUserConsumer(mockLogger.Object, users.Object, mockUnitOfWork.Object);
 		return Task.CompletedTask;
 	}
 	

@@ -34,7 +34,7 @@ public class SaveSaleConsumerTests : ConsumerTestCase<SaveSaleConsumer, Extended
 			Code = "1"
 		};
 
-		consumer = new SaveSaleConsumer(mockLogger.Object, sales.Object, mockUnitOfWork.Object, mockHttpContextAccessor.Object);
+		consumer = new SaveSaleConsumer(mockLogger.Object, sales.Object, mockUnitOfWork.Object);
 		return Task.CompletedTask;
 	}
 	

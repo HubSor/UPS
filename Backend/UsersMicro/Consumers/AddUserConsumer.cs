@@ -59,11 +59,3 @@ public class AddUserConsumer : TransactionConsumer<AddUserOrder, AddUserResponse
 		await RespondAsync(context, new AddUserResponse());
 	}
 }
-
-public class AddUserConsumerDefinition : ConsumerDefinition<AddUserConsumer>
-{
-	public AddUserConsumerDefinition()
-	{
-		EndpointName = nameof(AddUserConsumer);
-	}
-}

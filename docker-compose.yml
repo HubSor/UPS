@@ -154,6 +154,14 @@ services:
      - ups-net
    environment:
      REACT_APP_BACKEND_URL: https://localhost:2106
+
+ rabbit:
+   image: masstransit/rabbitmq:latest
+   ports:
+     - "5672:5672"
+     - "15672:15672"
+   networks:
+     - ups-net
      
 volumes:
  users-data:

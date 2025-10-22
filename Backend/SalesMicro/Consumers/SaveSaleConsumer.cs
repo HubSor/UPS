@@ -11,8 +11,7 @@ namespace SalesMicro.Consumers;
 public class SaveSaleConsumer(
 	ILogger<SaveSaleConsumer> _logger,
 	IRepository<Sale> sales,
-	IUnitOfWork unitOfWork,
-	IHttpContextAccessor httpContextAccessor
+	IUnitOfWork unitOfWork
 ) : TransactionConsumer<ExtendedSaveSaleOrder, SaveSaleResponse>(unitOfWork, _logger)
 {
 	public override async Task InTransaction(ConsumeContext<ExtendedSaveSaleOrder> context)
@@ -27,7 +26,7 @@ public class SaveSaleConsumer(
 			ProductCode = context.Message.ProductDto.Code,
 			SubProductCodes = string.Join(',', selectedSubProducts.Select(x => x.Code)),
 			ClientName = context.Message.ClientName,
-			SellerId = httpContextAccessor.GetUserId(),
+			SellerId = context.Message.GetUserId(),
 			FinalPrice = totalPrice,
 			ProductPrice = context.Message.ProductPrice,
 			ProductTax = context.Message.ProductPrice * context.Message.ProductDto.TaxRate,

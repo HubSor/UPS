@@ -106,7 +106,7 @@ public static class Installer
 
                 conf.ConfigureEndpoints(ctx);
 
-                conf.Host("rabbitmq://rabbit", h =>
+                conf.Host("rabbitmq://localhost", h =>
                 {
                     h.Username("guest");
                     h.Password("guest");

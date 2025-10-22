@@ -38,14 +38,14 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 			return false;
 		}
 		
-		var isAdmin = httpContextAccessor.HasAnyRole(RoleEnum.Administrator);
-		if (!isAdmin && httpContextAccessor.GetUserId() == context.Message.Id)
+		var isAdmin = context.Message.HasAnyRole(RoleEnum.Administrator);
+		if (!isAdmin && context.Message.GetUserId() == context.Message.Id)
 		{
 			await RespondWithValidationFailAsync(context, "Username", "Tylko administrator może edytować swoje konto");
 			return false;
 		}
 		
-		if (isAdmin && !context.Message.RoleIds.Contains(RoleEnum.Administrator) && httpContextAccessor.GetUserId() == context.Message.Id)
+		if (isAdmin && !context.Message.RoleIds.Contains(RoleEnum.Administrator) && context.Message.GetUserId() == context.Message.Id)
 		{
 			await RespondWithValidationFailAsync(context, "RoleIds", "Administrator nie może odebrać sobie uprawnień administratora");
 			return false;
@@ -70,7 +70,7 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 			
 		logger.LogInformation("Editing user {UserId}", user.Id);
 		
-		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !httpContextAccessor.HasAnyRole(RoleEnum.Administrator))
+		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !context.Message.HasAnyRole(RoleEnum.Administrator))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie można edytować administratora");
 			return;
@@ -89,7 +89,7 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 		
 		await users.UpdateAsync(user);
 
-		if (user.Id == httpContextAccessor.GetUserId())
+		if (user.Id == context.Message.GetUserId())
 			editedUser = user;
 	}
 

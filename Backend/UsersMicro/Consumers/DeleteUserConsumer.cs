@@ -11,14 +11,12 @@ namespace UsersMicro.Consumers;
 public class DeleteUserConsumer : TransactionConsumer<DeleteUserOrder, DeleteUserResponse>
 {
 	private readonly IRepository<User> users;
-	private readonly IHttpContextAccessor httpContextAccessor;
 	private User? user;
 	
-	public DeleteUserConsumer(ILogger<DeleteUserConsumer> logger, IRepository<User> users, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+	public DeleteUserConsumer(ILogger<DeleteUserConsumer> logger, IRepository<User> users, IUnitOfWork unitOfWork)
 		: base(unitOfWork, logger)
 	{
 		this.users = users;
-		this.httpContextAccessor = httpContextAccessor;
 	}
 
 	public override async Task<bool> PreTransaction(ConsumeContext<DeleteUserOrder> context)
@@ -33,13 +31,13 @@ public class DeleteUserConsumer : TransactionConsumer<DeleteUserOrder, DeleteUse
 			return false;
 		}
 		
-		if (user.Id == httpContextAccessor.GetUserId())
+		if (user.Id == context.Message.GetUserId())
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie można usunąć samego siebie");
 			return false;
 		}
 		
-		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !httpContextAccessor.HasAnyRole(RoleEnum.Administrator))
+		if (user.Roles.Any(r => r.Id == RoleEnum.Administrator) && !context.Message.HasAnyRole(RoleEnum.Administrator))
 		{
 			await RespondWithValidationFailAsync(context, "Id", "Nie można usunąć administratora");
 			return false;

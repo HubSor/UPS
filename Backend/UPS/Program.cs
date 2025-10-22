@@ -37,7 +37,7 @@ builder.Services.AddMassTransit(x =>
 
 		conf.ConfigureEndpoints(ctx);
 
-		conf.Host("rabbitmq://rabbit", h =>
+		conf.Host("rabbitmq://localhost", h =>
 		{
 			h.Username("guest");
 			h.Password("guest");
