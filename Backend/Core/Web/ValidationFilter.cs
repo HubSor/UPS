@@ -3,7 +3,7 @@ using FluentValidation.Results;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace WebCommons;
+namespace Core.Web;
 
 public class ValidationFilter<T>(ILogger<ValidationFilter<T>> logger, IEnumerable<IValidator<T>> validators) : IFilter<SendContext<T>>
 	where T : class

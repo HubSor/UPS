@@ -1,4 +1,5 @@
-﻿using Core.Web;
+﻿using Core.Messages;
+using Core.Web;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,21 @@ builder.Services.AddCors(op =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMassTransit(x =>
+{
+	// dodać konsumentów, ale tak żeby było wiadomo gdzie co idzie, chyba że  defaultu tak będzie
+	// a może to w mikro?
+	x.AddConsumer()
+
+	x.UsingRabbitMq((ctx, conf) =>
+	{
+		conf.AddPublishMessageTypesFromNamespaceContaining<LoginOrder>();
+		conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
+
+		conf.ConfigureEndpoints(ctx);
+	});
+});
 
 Installer.InstallAuth(builder.Services);
 

@@ -6,16 +6,14 @@ using Core.Messages;
 namespace UPS.Controllers
 {
 	[Route(template: "clients")]
-	public class ClientsController : BaseController
+	public class ClientsController(IServiceProvider sp) : BaseController(sp)
 	{
-		protected override string TargetMicroUrl => Environment.GetEnvironmentVariable("CLIENTS_URL") ?? "https://localhost:2108";
-
         [HttpPost]
 		[AuthorizeRoles(RoleEnum.ClientManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<UpsertClientOrder, UpsertClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -23,7 +21,7 @@ namespace UPS.Controllers
 		[Route("people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<FindPersonClientOrder, FindPersonClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -31,7 +29,7 @@ namespace UPS.Controllers
 		[Route("people/list")]
 		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<ListPersonClientsOrder, ListPersonClientsResponse>(order);
 		}
 
 		[HttpPost]
@@ -39,7 +37,7 @@ namespace UPS.Controllers
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<FindCompanyClientOrder, FindCompanyClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -47,7 +45,7 @@ namespace UPS.Controllers
 		[Route("companies/list")]
 		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<ListCompanyClientsOrder, ListCompanyClientsResponse>(order);
 		}
 	}
 }

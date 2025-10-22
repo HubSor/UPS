@@ -6,16 +6,14 @@ using Core.Messages;
 namespace UPS.Controllers
 {
 	[Route("sales")]
-	public class SalesController : BaseController
+	public class SalesController(IServiceProvider sp) : BaseController(sp)
 	{
-		protected override string TargetMicroUrl => Environment.GetEnvironmentVariable("SALES_URL") ?? "https://localhost:2110";
-		
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
 		public async Task<IActionResult> SaveSale([FromBody] SaveSaleOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<SaveSaleOrder, SaveSaleResponse>(order);
 		}
 
 		[HttpPost]
@@ -23,7 +21,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListSales([FromBody] ListSalesOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<ListSalesOrder, ListSalesResponse>(order);
 		}
 
 		[HttpPost]
@@ -31,7 +29,7 @@ namespace UPS.Controllers
 		[Route("get")]
 		public async Task<IActionResult> GetSale([FromBody] GetSaleOrder order)
 		{
-			return await RelayMessage(order);
+			return await RespondAsync<GetSaleOrder, GetSaleResponse>(order);
 		}
 	}
 }
