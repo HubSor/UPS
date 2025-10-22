@@ -3,7 +3,7 @@ using Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Installer.InstallCommonServices<ClientsUnitOfWork>(builder);
+Installer.InstallCommonMicroServices<ClientsUnitOfWork>(builder);
 
 var app = builder.Build();
 

@@ -1,4 +1,4 @@
-﻿using Core.Messages;
+﻿using System.Reflection;
 using Core.Web;
 using MassTransit;
 
@@ -21,16 +21,27 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMassTransit(x =>
 {
-	// dodać konsumentów, ale tak żeby było wiadomo gdzie co idzie, chyba że  defaultu tak będzie
-	// a może to w mikro?
-	x.AddConsumer()
+	var requestTypes = Assembly.GetExecutingAssembly()
+		.GetTypes()
+		.Where(t => t.Namespace == "Core.Messages" && t.IsClass)
+		.ToList();
+
+	foreach (var type in requestTypes)
+	{
+		x.AddRequestClient(type);
+	}
 
 	x.UsingRabbitMq((ctx, conf) =>
 	{
-		conf.AddPublishMessageTypesFromNamespaceContaining<LoginOrder>();
 		conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
 
 		conf.ConfigureEndpoints(ctx);
+
+		conf.Host("rabbitmq://rabbit", h =>
+		{
+			h.Username("guest");
+			h.Password("guest");
+		});
 	});
 });
 

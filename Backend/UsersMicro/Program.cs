@@ -4,7 +4,7 @@ using Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Installer.InstallCommonServices<UsersUnitOfWork>(builder);
+Installer.InstallCommonMicroServices<UsersUnitOfWork>(builder);
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 var app = builder.Build();

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Core.Data;
 using FluentValidation;
 using MassTransit;
@@ -9,13 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebCommons;
 
 namespace Core.Web;
 
 public static class Installer
 {
-    public static void InstallCommonServices<TUnitOfWork>(WebApplicationBuilder builder) where TUnitOfWork : DbContext, IUnitOfWork
+    public static void InstallCommonMicroServices<TUnitOfWork>(WebApplicationBuilder builder) where TUnitOfWork : DbContext, IUnitOfWork
     {
         InstallDbContext<TUnitOfWork>(builder);
 
@@ -28,15 +28,7 @@ public static class Installer
         builder.Services.AddSwaggerGen();
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(TUnitOfWork));
 
-        builder.Services.AddMediator(mrc =>
-        {
-            mrc.ConfigureMediator((context, cfg) =>
-            {
-                cfg.UseSendFilter(typeof(ValidationFilter<>), context);
-            });
-
-            mrc.AddConsumers(typeof(TUnitOfWork).Assembly);
-        });
+        InstallMassTransit(builder.Services);
 
         InstallAuth(builder.Services);
 
@@ -99,6 +91,28 @@ public static class Installer
             });
         services.AddAuthorization();
         services.AddSession();
+    }
+
+    public static void InstallMassTransit(IServiceCollection services)
+    {
+        services.AddMassTransit(x =>
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            x.AddConsumers(assembly);
+
+            x.UsingRabbitMq((ctx, conf) =>
+            {
+                conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
+
+                conf.ConfigureEndpoints(ctx);
+
+                conf.Host("rabbitmq://rabbit", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+            });
+        });
     }
 
     public static void EnableCommonServices(WebApplication app)

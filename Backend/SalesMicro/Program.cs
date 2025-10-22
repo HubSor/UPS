@@ -3,7 +3,7 @@ using SalesMicro.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Installer.InstallCommonServices<SalesUnitOfWork>(builder);
+Installer.InstallCommonMicroServices<SalesUnitOfWork>(builder);
 
 var app = builder.Build();
 
