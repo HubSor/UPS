@@ -2,15 +2,10 @@ namespace Core.Dtos;
 
 public class PagedList<T>
 {
-	public List<T> Items { get; set; }
-	public ResultPaginationDto Pagination { get; set; }
+	public List<T> Items { get; set; } = [];
+	public ResultPaginationDto Pagination { get; set; } = new ();
 	
-	public PagedList() 
-	{
-		Items = new();
-		Pagination = new ResultPaginationDto();
-	}
-	
+	public PagedList() {}
 	public PagedList(IEnumerable<T> items, int totalCount, int pageIndex, int pageSize)
 	{
 		Items = items.ToList();

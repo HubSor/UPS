@@ -56,10 +56,6 @@ services:
      dockerfile: ./proxy.Dockerfile
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
-     USERS_URL: "https://users-micro:2107"
-     CLIENTS_URL: "https://clients-micro:2108"
-     PRODUCTS_URL: "https://products-micro:2109"
-     SALES_URL: "https://sales-micro:2110"
      ASPNETCORE_HTTPS_PORTS: 2106
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
@@ -77,6 +73,7 @@ services:
      dockerfile: ./users.Dockerfile
    depends_on:
      - users-base
+     - rabbit
    environment:
      ASPNETCORE_HTTPS_PORTS: 2107
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -95,6 +92,7 @@ services:
      dockerfile: ./clients.Dockerfile
    depends_on:
      - clients-base
+     - rabbit
    environment:
      ASPNETCORE_HTTPS_PORTS: 2108
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -113,6 +111,7 @@ services:
      dockerfile: ./products.Dockerfile
    depends_on:
      - products-base
+     - rabbit
    environment:
      ASPNETCORE_HTTPS_PORTS: 2109
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -131,12 +130,11 @@ services:
      dockerfile: ./sales.Dockerfile
    depends_on:
      - sales-base
+     - rabbit
    environment:
      ASPNETCORE_HTTPS_PORTS: 2110
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-     CLIENTS_URL: "https://clients-micro:2108"
-     PRODUCTS_URL: "https://products-micro:2109"
    ports:
      - 2110:2110
    volumes:
@@ -156,12 +154,17 @@ services:
      REACT_APP_BACKEND_URL: https://localhost:2106
 
  rabbit:
-   image: masstransit/rabbitmq:latest
+   image: rabbitmq:management
+   hostname: rabbithost
    ports:
-     - "5672:5672"
-     - "15672:15672"
+     - 5672:5672
+     - 15672:15672
    networks:
      - ups-net
+   environment:
+     RABBITMQ_DEFAULT_USER: guest
+     RABBITMQ_DEFAULT_PASS: guest
+     RABBITMQ_DEFAULT_VHOST: vhost
      
 volumes:
  users-data:

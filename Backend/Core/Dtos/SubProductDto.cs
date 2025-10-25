@@ -2,7 +2,7 @@ using Core.Models;
 
 namespace Core.Dtos
 {
-	public class SubProductDto 
+	public class SubProductDto
 	{
 		public int Id { get; set; }
 		public string Name { get; set; } = default!;
@@ -10,7 +10,9 @@ namespace Core.Dtos
 		public decimal BasePrice { get; set; }
 		public decimal TaxRate { get; set; }
 		public string? Description { get; set; }
-		
+
+		public SubProductDto(){}
+
 		public SubProductDto(SubProduct sp)
 		{
 			Id = sp.Id;

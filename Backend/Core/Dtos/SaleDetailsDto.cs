@@ -13,6 +13,6 @@ public class SaleDetailsDto
 	public CompanyClientDto? CompanyClient { get; set; } = default!;
 	public int ProductId { get; set; }
 	public ProductDto Product { get; set; } = default!;
-	public ICollection<SaleDetailsSubProductDto> SubProducts { get; set; } = default!;
-	public ICollection<SaleParameterDto> Parameters { get; set; } = default!;
+	public ICollection<SaleDetailsSubProductDto> SubProducts { get; set; } = [];
+	public ICollection<SaleParameterDto> Parameters { get; set; } = [];
 }

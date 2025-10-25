@@ -18,7 +18,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 
-Installer.InstallMassTransit(builder.Services);
+Installer.InstallMassTransit(builder.Services, builder.Environment.IsDevelopment());
 
 Installer.InstallAuth(builder.Services);
 

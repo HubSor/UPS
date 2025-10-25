@@ -10,6 +10,7 @@ namespace Core.Dtos
 		public bool Required { get; set; }
 		public ICollection<ExtendedOptionDto> Options { get; set; } = new List<ExtendedOptionDto>();
 		
+		public ParameterDto(){}
 		public ParameterDto(Parameter param)
 		{
 			Id = param.Id;

@@ -25,7 +25,7 @@ public static class Installer
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(TUnitOfWork));
 
-        InstallMassTransit(builder.Services);
+        InstallMassTransit(builder.Services, builder.Environment.IsDevelopment());
 
         InstallDataProtection(builder.Services, builder.Environment.IsDevelopment());
     }
@@ -88,7 +88,7 @@ public static class Installer
         services.AddSession();
     }
 
-    public static void InstallMassTransit(IServiceCollection services)
+    public static void InstallMassTransit(IServiceCollection services, bool isDev = false)
     {
         services.AddMassTransit(x =>
         {
@@ -108,10 +108,11 @@ public static class Installer
             x.UsingRabbitMq((ctx, conf) =>
             {
                 conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
+                conf.UseJsonSerializer();
 
                 conf.ConfigureEndpoints(ctx);
 
-                conf.Host("rabbitmq://localhost", h =>
+                conf.Host("rabbitmq://" + (isDev ? "localhost" : "rabbithost/vhost"), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
