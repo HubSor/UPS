@@ -21,10 +21,8 @@ public static class Installer
 
         builder.Services.AddControllersWithViews(x => x.Filters.Add<ExceptionFilter>());
 
-        builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IUnitOfWork, TUnitOfWork>();
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddSwaggerGen();
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(TUnitOfWork));
 

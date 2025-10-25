@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Core.Web;
 using Core.Messages;
 using Core.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace UPS.Controllers
 {
@@ -21,7 +24,20 @@ namespace UPS.Controllers
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginOrder order)
 		{
-			return await RespondAsync<LoginOrder, LoginResponse>(order);
+			var resp = await GetApiResponse<LoginOrder, LoginResponse>(order);
+			if (resp.Data?.Claims.Count > 0)
+			{
+				var claimsIdentity = new ClaimsIdentity(resp.Data.Claims.Select(x => x.ToClaim()), CookieAuthenticationDefaults.AuthenticationScheme);
+				var principal = new ClaimsPrincipal(claimsIdentity);
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+				resp.Data.Claims.Clear();
+			}
+
+			return new ObjectResult(resp)
+            {
+                StatusCode = (int)resp.StatusCode
+            };
 		}
 		
 		[HttpPost]
@@ -29,7 +45,11 @@ namespace UPS.Controllers
 		[Route("logout")]
 		public async Task<IActionResult> Logout([FromBody] LogoutOrder order)
 		{
-			return await RespondAsync<LogoutOrder, LogoutResponse>(order);
+			await HttpContext.SignOutAsync();
+			return new ObjectResult(new {})
+            {
+                StatusCode = 200,
+            };
 		}
 		
 		[HttpPost]
@@ -47,13 +67,26 @@ namespace UPS.Controllers
 		{
 			return await RespondAsync<ListUsersOrder, ListUsersResponse>(order);
 		}
-		
+
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.UserManager, RoleEnum.Administrator)]
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditUserOrder order)
 		{
-			return await RespondAsync<EditUserOrder, EditUserResponse>(order);
+			var resp = await GetApiResponse<EditUserOrder, EditUserResponse>(order);
+			if (resp.Data?.Claims.Count > 0)
+			{
+				var claimsIdentity = new ClaimsIdentity(resp.Data.Claims.Select(x => x.ToClaim()), CookieAuthenticationDefaults.AuthenticationScheme);
+				var principal = new ClaimsPrincipal(claimsIdentity);
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+				resp.Data.Claims.Clear();
+			}
+
+			return new ObjectResult(resp)
+            {
+                StatusCode = (int)resp.StatusCode
+            };
 		}
 		
 		[HttpPost]

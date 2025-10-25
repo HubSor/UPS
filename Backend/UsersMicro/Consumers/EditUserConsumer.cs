@@ -1,12 +1,9 @@
-using System.Security.Claims;
 using Core;
 using Core.Data;
 using Core.Messages;
 using Core.Models;
 using Core.Web;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using UsersMicro.Services;
 
@@ -14,20 +11,18 @@ namespace UsersMicro.Consumers;
 
 public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserResponse>
 {
-	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IRepository<User> users;
 	private readonly IRepository<Role> roles;
 	private readonly IPasswordService passwordService;
 	private User editedUser = default!;
 	
-	public EditUserConsumer(IHttpContextAccessor httpContextAccessor, ILogger<EditUserConsumer> logger, IRepository<User> users, IPasswordService passwordService,
+	public EditUserConsumer(ILogger<EditUserConsumer> logger, IRepository<User> users, IPasswordService passwordService,
 		IRepository<Role> roles, IUnitOfWork unitOfWork)
 		: base(unitOfWork, logger)
 	{
 		this.roles = roles;
 		this.users = users;
 		this.passwordService = passwordService;
-		this.httpContextAccessor = httpContextAccessor;
 	}
 
 	public override async Task<bool> PreTransaction(ConsumeContext<EditUserOrder> context)
@@ -94,15 +89,10 @@ public class EditUserConsumer : TransactionConsumer<EditUserOrder, EditUserRespo
 	}
 
 	public override async Task PostTransaction(ConsumeContext<EditUserOrder> context)
-	{
-		if (editedUser != null)
-		{
-			logger.LogInformation("Updating claims after self edit");
-			var claimsIdentity = new ClaimsIdentity(editedUser.GetClaims(), CookieAuthenticationDefaults.AuthenticationScheme);
-			var principal = new ClaimsPrincipal(claimsIdentity);
-			await httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-		}
-		
-		await RespondAsync(context, new EditUserResponse());
+	{		
+		await RespondAsync(context, new EditUserResponse()
+        {
+            Claims = editedUser != null ? editedUser.GetClaims().Select(x => new ClaimDto(x)).ToList() : [],
+        });
 	}
 }
