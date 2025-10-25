@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Core.Web;
+﻿using Core.Web;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,31 +18,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMassTransit(x =>
-{
-	var requestTypes = Assembly.GetExecutingAssembly()
-		.GetTypes()
-		.Where(t => t.Namespace == "Core.Messages" && t.IsClass)
-		.ToList();
-
-	foreach (var type in requestTypes)
-	{
-		x.AddRequestClient(type);
-	}
-
-	x.UsingRabbitMq((ctx, conf) =>
-	{
-		conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
-
-		conf.ConfigureEndpoints(ctx);
-
-		conf.Host("rabbitmq://localhost", h =>
-		{
-			h.Username("guest");
-			h.Password("guest");
-		});
-	});
-});
+Installer.InstallMassTransit(builder.Services);
 
 Installer.InstallAuth(builder.Services);
 

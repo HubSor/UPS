@@ -23,12 +23,9 @@ public static class Installer
 
         builder.Services.AddScoped<IUnitOfWork, TUnitOfWork>();
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        builder.Services.AddSwaggerGen();
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(TUnitOfWork));
 
         InstallMassTransit(builder.Services);
-
-        InstallAuth(builder.Services);
 
         InstallDataProtection(builder.Services, builder.Environment.IsDevelopment());
     }

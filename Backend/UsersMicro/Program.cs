@@ -24,8 +24,6 @@ catch (Exception)
 	throw;
 }
 
-Installer.EnableCommonServices(app);
-
 app.Run();
 
 public partial class Program {}
