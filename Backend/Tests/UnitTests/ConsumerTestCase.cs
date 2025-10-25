@@ -19,7 +19,6 @@ public abstract class ConsumerTestCase<C, O, R>
 	protected ICollection<ApiResponse<R>> responses = new List<ApiResponse<R>>();
 	protected Mock<IUnitOfWork> mockUnitOfWork = new();
 	protected Mock<ILogger<C>> mockLogger = new();
-	protected MockHttpContextAccessor mockHttpContextAccessor = new();
 	
 	protected void AssertOk()
 	{

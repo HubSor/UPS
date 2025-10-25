@@ -87,10 +87,10 @@ public class UsersTests(UPSWebApplicationFactory<Program> factory) : Integration
 		response = await client.SendAsync(req2);
 		response.EnsureSuccessStatusCode();
 		
-		var apiResponse = await GetApiResponseAsync<LogoutResponse>(response);
+		var apiResponse = GetApiResponse(response);
 
 		Assert.NotNull(apiResponse);
-		Assert.True(apiResponse.Success);
+		Assert.True(apiResponse.StatusCode == HttpStatusCode.OK);
 	}
 
 	[Fact]

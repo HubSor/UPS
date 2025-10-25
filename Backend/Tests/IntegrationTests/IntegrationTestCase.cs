@@ -33,18 +33,25 @@ public abstract class IntegrationTestCase : IClassFixture<UPSWebApplicationFacto
 		
 		return msg;
 	}
-	
+
 	protected async Task<ApiResponse<T>?> GetApiResponseAsync<T>(HttpResponseMessage httpResponse) where T : class
 	{
 		var json = await httpResponse.Content.ReadAsStringAsync();
 		CheckAuthCookie(httpResponse);
 
 		return JsonSerializer.Deserialize<ApiResponse<T>>(json,
-			new JsonSerializerOptions() { 
+			new JsonSerializerOptions()
+			{
 				PropertyNameCaseInsensitive = true,
 				IncludeFields = true,
 			}
 		);
+	}
+	
+	protected HttpResponseMessage GetApiResponse(HttpResponseMessage httpResponse)
+	{
+		CheckAuthCookie(httpResponse);
+		return httpResponse;
 	}
 	
 	protected void CheckAuthCookie(HttpResponseMessage httpResponse)

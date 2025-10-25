@@ -39,7 +39,7 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 				}
 			}
 		});
-		consumer = new LoginConsumer(mockUnitOfWork.Object, users.Object, mockHttpContextAccessor.Object, mockLogger.Object, passwordService);
+		consumer = new LoginConsumer(mockUnitOfWork.Object, users.Object, mockLogger.Object, passwordService);
 		return Task.CompletedTask;
 	}
 	
@@ -50,7 +50,6 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
-		Assert.That(mockHttpContextAccessor.SignedIn, Is.False);
 		Assert.That(responses.Single().Errors!.Values.Any(v => v.Contains("Niepoprawne hasło")), Is.True);
 	}
 	
@@ -61,7 +60,6 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
-		Assert.That(mockHttpContextAccessor.SignedIn, Is.False);
 	}
 	
 	[Test]
@@ -72,7 +70,6 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
-		Assert.That(mockHttpContextAccessor.SignedIn, Is.False);
 	}
 	
 	[Test]
@@ -82,7 +79,6 @@ public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, Lo
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
-		Assert.That(mockHttpContextAccessor.SignedIn, Is.True);
 		
 		var result = responses.Single().Data?.UserDto;
 		Assert.That(result, Is.Not.Null);

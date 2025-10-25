@@ -38,8 +38,6 @@ public class DeleteUserConsumerTests : ConsumerTestCase<DeleteUserConsumer, Dele
 				}
 			}
 		});
-		
-		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
 		consumer = new DeleteUserConsumer(mockLogger.Object, users.Object, mockUnitOfWork.Object);
 		return Task.CompletedTask;
@@ -71,8 +69,7 @@ public class DeleteUserConsumerTests : ConsumerTestCase<DeleteUserConsumer, Dele
 	
 	[Test]
 	public async Task Consume_BadRequest_DeleteAdminAsManager()
-	{
-		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
+	{;
 		var order = new DeleteUserOrder(1);
 		
 		await consumer.Consume(GetConsumeContext(order));

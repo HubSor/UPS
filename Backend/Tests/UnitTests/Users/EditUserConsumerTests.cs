@@ -4,6 +4,8 @@ using UsersMicro.Consumers;
 using Core.Messages;
 using UsersMicro.Services;
 using Core.Models;
+using Core.Web;
+using System.Security.Claims;
 
 namespace UnitTests.Users;
 
@@ -61,11 +63,14 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 			Id = RoleEnum.Seller,
 			Description = "seller"
 		});
-		
-		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
-		consumer = new EditUserConsumer(mockHttpContextAccessor.Object, mockLogger.Object, 
-			users.Object, passwordService, roles.Object, mockUnitOfWork.Object);
+		consumer = new EditUserConsumer(
+			mockLogger.Object,
+			users.Object,
+			passwordService,
+			roles.Object,
+			mockUnitOfWork.Object
+		);
 		return Task.CompletedTask;
 	}
 	
@@ -106,7 +111,10 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	[Test]
 	public async Task Consume_Ok_EditingSelfUnchangedPassword()
 	{
-		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
+		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator })
+        {
+            Claims = [ new () { Name = ClaimTypes.Role, Value = "Administrator" }]
+        };
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertOk();
@@ -123,9 +131,10 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	[Test]
 	public async Task Consume_BadRequest_NotAdminEditingSelt()
 	{
-		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
-			
-		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
+		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator })
+		{ 
+			Claims = [new() { Name = ClaimsHelpers.IdClaimType, Value = "2" }]
+		};
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
@@ -134,9 +143,10 @@ public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUser
 	[Test]
 	public async Task Consume_BadRequest_AdminRemovingAdmin()
 	{
-		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
-			
-		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ });
+		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ })
+		{ 
+			Claims = [new() { Name = ClaimsHelpers.IdClaimType, Value = "1" }]
+		};
 		
 		await consumer.Consume(GetConsumeContext(order));
 		AssertBadRequest();
