@@ -98,6 +98,16 @@ public static class Installer
             var assembly = Assembly.GetEntryAssembly();
             x.AddConsumers(assembly);
 
+            var requestTypes = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.Namespace == "Core.Messages" && t.IsClass)
+                .ToList();
+
+            foreach (var type in requestTypes)
+            {
+                x.AddRequestClient(type);
+            }
+
             x.UsingRabbitMq((ctx, conf) =>
             {
                 conf.UseSendFilter(typeof(ValidationFilter<>), ctx);
