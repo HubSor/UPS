@@ -3,38 +3,38 @@ using Core.Data;
 using Core.Dtos;
 using Core.Messages;
 using Core.Models;
+using Core.Web;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace SalesMicro.Consumers;
 
-public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse>
+public class GetSaleConsumer(
+	ILogger<GetSaleConsumer> _logger,
+	IRepository<Sale> sales,
+	IUnitOfWork unitOfWork,
+	IRequestClient<GetSaleParametersOrder> getSaleParamsClient
+) : TransactionConsumer<GetSaleOrder, GetSaleResponse>(unitOfWork, _logger)
 {
-	private readonly IRepository<Sale> sales;
-	private SaleDetailsDto saleDetailsDto = default!;
-	
-	public GetSaleConsumer(ILogger<GetSaleConsumer> logger, IRepository<Sale> sales, IUnitOfWork unitOfWork)
-		: base(unitOfWork, logger)
-	{
-		this.sales = sales;
-	}
+    private SaleDetailsDto saleDetailsDto = default!;
 
-	public override async Task<bool> PreTransaction(ConsumeContext<GetSaleOrder> context)
+    public override async Task<bool> PreTransaction(ConsumeContext<GetSaleOrder> context)
 	{
-		if (!await sales.GetAll().AnyAsync(x => x.Id == context.Message.SaleId))
+		var sale = await sales.GetAll().FirstAsync(p => p.Id == context.Message.SaleId);
+		if (sale == null)
 		{
 			await RespondWithValidationFailAsync(context, "SaleId", "Nie znaleziono transakcji");
 			return false;
 		}
 
-		return true;
-	}
+		var saleParamsResponse = await getSaleParamsClient.GetResponse<ApiResponse<GetSaleParametersResponse>>(new GetSaleParametersOrder(sale.Id, sale.ProductId));
+		if (!saleParamsResponse.Message.Success)
+		{
+			await RespondWithValidationFailAsync(context, "SaleId", "Nie znaleziono transakcji");
+			return false;
+		}
 
-	public override async Task InTransaction(ConsumeContext<GetSaleOrder> context)
-	{
-		var sale = await sales.GetAll()
-			.FirstAsync(p => p.Id == context.Message.SaleId);
-
+		var subProductTax = saleParamsResponse.Message.Data!.SubProducts.Select(x => x.Tax).Sum();
 		saleDetailsDto = new SaleDetailsDto()
 		{
 			SaleId = sale.Id,
@@ -43,9 +43,21 @@ public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse
 			ProductPrice = sale.ProductPrice,
 			ProductTax = sale.ProductTax,
 			ClientId = sale.ClientId,
+			ProductCode = sale.ProductCode,
+			ProductId = sale.ProductId,
+			ClientName = sale.ClientName,
+			SubProductCodes = sale.SubProductCodes,
+			TotalTax = subProductTax + sale.ProductTax,
+			Parameters = saleParamsResponse.Message.Data!.Parameters,
 		};
 
-		logger.LogInformation("Got sale {SaleId} details", sale.Id);
+		return true;
+	}
+
+	public override Task InTransaction(ConsumeContext<GetSaleOrder> context)
+	{
+		logger.LogInformation("Got sale {SaleId} details", saleDetailsDto.SaleId);
+		return Task.CompletedTask;
 	}
 
 	public override async Task PostTransaction(ConsumeContext<GetSaleOrder> context)

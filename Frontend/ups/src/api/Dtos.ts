@@ -144,15 +144,16 @@ export type SaleDto = {
 
 export type SaleDetailsDto = {
     saleId: number,
-    personClient?: PersonClientDto,
-    companyClient?: CompanyClientDto,
+    clientName?: string,
+    clientId?: number,
     saleTime: string,
     totalPrice: number,
     totalTax: number,
     productPrice: number,
     productTax: number,
-    product: ProductDto,
-    subProducts: SaleDetailsSubProductDto[],
+    productId: number,
+    productCode: string,
+    subProductCodes: string,
     parameters: SaleParameterDto[],
 }
 
