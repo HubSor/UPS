@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
 using Messages.Products;

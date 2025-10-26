@@ -1,6 +1,5 @@
 ﻿using Data;
 using FluentValidation;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Services;

@@ -1,11 +1,10 @@
 ﻿using System.Net;
 using Core;
 using Data;
-using Helpers;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using TestHelpers;
 
 namespace UnitTests;
 
@@ -37,11 +36,6 @@ public abstract class ConsumerTestCase<C, O, R>
 		Assert.That(resp?.Success, Is.False);
 		Assert.That(resp?.Errors, Is.Not.Empty);
 		Assert.That(resp?.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-	}
-	
-	protected ConsumeContext<O> GetConsumeContext(O order)
-	{
-		return new MockConsumeContext<O, R>(order, responses).Object;
 	}
 	
 	[OneTimeSetUp]

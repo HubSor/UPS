@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Models.Entities;
 using Moq;
 
-namespace Helpers;
+namespace TestHelpers;
+
 public class MockHttpContextAccessor : Mock<IHttpContextAccessor>
 {
 	public bool SignedIn { get; set; }

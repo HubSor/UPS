@@ -17,7 +17,7 @@ public class ExceptionFilter : IExceptionFilter
 	}
 	public void OnException(ExceptionContext context)
 	{
-		if (context.Exception is MassTransit.RequestException requestException && requestException.InnerException is ValidationException validationException)
+		if (context.Exception is ValidationException validationException)
 		{
 			context.Result = new ObjectResult(new ApiResponse<object>(validationException.Errors))
 			{
