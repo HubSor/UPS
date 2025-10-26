@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AssignSubProductConsumerTests : ConsumerTestCase<AssignSubProductConsumer, AssignSubProductOrder, AssignSubProductResponse>
+public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductConsumer, AssignSubProductOrder, AssignSubProductResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;

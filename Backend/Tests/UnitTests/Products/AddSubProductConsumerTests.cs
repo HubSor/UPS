@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer, AddSubProductOrder, AddSubProductResponse>
+public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer, AddSubProductOrder, AddSubProductResponse>
 {
 	private MockRepository<SubProduct> subProducts = default!;
 

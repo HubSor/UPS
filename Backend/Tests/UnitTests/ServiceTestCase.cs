@@ -4,34 +4,34 @@ using Data;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using Services.Application;
 using TestHelpers;
 
 namespace UnitTests;
 
 [TestFixture]
-public abstract class ConsumerTestCase<C, O, R>
-	where C : class
+public abstract class ServiceTestCase<C, O, R>
+	where C : BaseApplicationService
 	where O : class
 	where R : class
 {
-	protected C consumer = default!;
-	protected ICollection<ApiResponse<R>> responses = new List<ApiResponse<R>>();
+	protected C service = default!;
 	protected Mock<IUnitOfWork> mockUnitOfWork = new();
 	protected Mock<ILogger<C>> mockLogger = new();
 	protected MockHttpContextAccessor mockHttpContextAccessor = new();
 	
-	protected void AssertOk()
+	protected void AssertOk<T>(ApiResponse<T>? resp)
+		where T : class
 	{
-		var resp = responses.FirstOrDefault();
 		Assert.That(resp, Is.Not.Null);
 		Assert.That(resp?.Success, Is.True);
 		Assert.That(resp?.Errors, Is.Null);
 		Assert.That(resp?.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 	}
 	
-	protected void AssertBadRequest()
+	protected void AssertBadRequest<T>(ApiResponse<T>? resp)
+		where T : class
 	{
-		var resp = responses.FirstOrDefault();
 		Assert.That(resp, Is.Not.Null);
 		Assert.That(resp?.Success, Is.False);
 		Assert.That(resp?.Errors, Is.Not.Empty);
@@ -57,7 +57,6 @@ public abstract class ConsumerTestCase<C, O, R>
 	[TearDown]
 	public async Task SuperTearDown()
 	{
-		responses.Clear();
 		await TearDown();
 	}
 	

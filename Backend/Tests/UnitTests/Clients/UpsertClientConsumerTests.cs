@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class UpsertClientConsumerTests : ConsumerTestCase<UpsertClientConsumer, UpsertClientOrder, UpsertClientResponse>
+public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, UpsertClientOrder, UpsertClientResponse>
 {
 	private MockRepository<Client> clients = default!;
 

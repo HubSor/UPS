@@ -8,7 +8,7 @@ using Services;
 namespace UnitTests.Users;
 
 [TestFixture]
-public class LoginConsumerTests : ConsumerTestCase<LoginConsumer, LoginOrder, LoginResponse>
+public class LoginConsumerTests : ServiceTestCase<LoginConsumer, LoginOrder, LoginResponse>
 {
 	private static readonly string userPassword = "testowEha5ło";
 	private static readonly string userName= "admin";

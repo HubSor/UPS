@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace UnitTests.Users;
 
 [TestFixture]
-public class ListUsersConsumerTests : ConsumerTestCase<ListUsersConsumer, ListUsersOrder, ListUsersResponse>
+public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUsersOrder, ListUsersResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<User> users = default!;

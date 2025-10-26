@@ -1,21 +1,21 @@
-﻿using Consumers.Clients;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Clients;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientConsumer, FindPersonClientOrder, FindPersonClientResponse>
+public class FindPersonClientConsumerTests : ServiceTestCase<ClientsApplicationService, FindPersonClientOrder, FindPersonClientResponse>
 {
-	private MockRepository<PersonClient> clients = default!;
+	private MockRepository<PersonClient> personClients = default!;
 	private static readonly string pesel = "00123456789";
 	protected override Task SetUp()
 	{
-		clients = new MockRepository<PersonClient>();
-		
-		clients.Entities.Add(new PersonClient() 
+		personClients = new MockRepository<PersonClient>();
+		personClients.Entities.Add(new PersonClient()
 		{
 			Id = 1,
 			FirstName = "jan",
@@ -25,7 +25,10 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 			Pesel = pesel
 		});
 
-		consumer = new FindPersonClientConsumer(mockLogger.Object, clients.Object, mockUnitOfWork.Object);
+		var companyClients = new MockRepository<CompanyClient>();
+		var clients = new MockRepository<Client>();
+
+		service = new ClientsApplicationService(mockLogger.Object, mockUnitOfWork.Object, clients.Object, personClients.Object, companyClients.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -33,11 +36,10 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 	public async Task Consume_Ok_FindByPesel()
 	{
 		var order = new FindPersonClientOrder(pesel);
-		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var personClient = responses.Single().Data?.PersonClient;
+
+		var resp = await service.FindPersonAsync(order);
+
+		var personClient = resp.PersonClient;
 		Assert.That(personClient, Is.Not.Null);
 
 		Assert.That(personClient!.FirstName, Is.EqualTo("jan"));
@@ -52,7 +54,6 @@ public class FindPersonClientConsumerTests : ConsumerTestCase<FindPersonClientCo
 	{
 		var order = new FindPersonClientOrder(pesel + '1');
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.FindPersonAsync(order));
 	}
 }

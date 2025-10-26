@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class DeleteOptionConsumerTests : ConsumerTestCase<DeleteOptionConsumer, DeleteOptionOrder, DeleteOptionResponse>
+public class DeleteOptionConsumerTests : ServiceTestCase<DeleteOptionConsumer, DeleteOptionOrder, DeleteOptionResponse>
 {
 	private MockRepository<ParameterOption> options = default!;
 

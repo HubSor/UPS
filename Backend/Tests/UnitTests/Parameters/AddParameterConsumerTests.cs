@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class AddParameterConsumerTests : ConsumerTestCase<AddParameterConsumer, AddParameterOrder, AddParameterResponse>
+public class AddParameterConsumerTests : ServiceTestCase<AddParameterConsumer, AddParameterOrder, AddParameterResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 	private MockRepository<Product> products = default!;

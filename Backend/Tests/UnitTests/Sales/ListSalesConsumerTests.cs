@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace UnitTests.Sales;
 
 [TestFixture]
-public class ListSalesConsumerTests : ConsumerTestCase<ListSalesConsumer, ListSalesOrder, ListSalesResponse>
+public class ListSalesConsumerTests : ServiceTestCase<ListSalesConsumer, ListSalesOrder, ListSalesResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<Sale> sales = default!;

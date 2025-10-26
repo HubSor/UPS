@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Users;
 
 [TestFixture]
-public class DeleteUserConsumerTests : ConsumerTestCase<DeleteUserConsumer, DeleteUserOrder, DeleteUserResponse>
+public class DeleteUserConsumerTests : ServiceTestCase<DeleteUserConsumer, DeleteUserOrder, DeleteUserResponse>
 {
 	private MockRepository<User> users = default!;
 

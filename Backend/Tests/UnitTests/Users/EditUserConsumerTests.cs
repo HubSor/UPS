@@ -8,7 +8,7 @@ using Services;
 namespace UnitTests.Users;
 
 [TestFixture]
-public class EditUserConsumerTests : ConsumerTestCase<EditUserConsumer, EditUserOrder, EditUserResponse>
+public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserOrder, EditUserResponse>
 {
 	private static readonly string userPassword = "testowEha5ło";
 	private readonly IPasswordService passwordService = new PasswordService();

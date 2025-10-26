@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace UnitTests.Products;
 
 [TestFixture]
-public class EditSubProductAssignmentConsumerTests : ConsumerTestCase<EditSubProductAssignmentConsumer, EditSubProductAssignmentOrder, EditSubProductAssignmentResponse>
+public class EditSubProductAssignmentConsumerTests : ServiceTestCase<EditSubProductAssignmentConsumer, EditSubProductAssignmentOrder, EditSubProductAssignmentResponse>
 {
 	private MockRepository<SubProductInProduct> intersection = default!;
 

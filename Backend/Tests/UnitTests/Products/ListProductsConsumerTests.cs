@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace UnitTests.Products;
 
 [TestFixture]
-public class ListProductsConsumerTests : ConsumerTestCase<ListProductsConsumer, ListProductsOrder, ListProductsResponse>
+public class ListProductsConsumerTests : ServiceTestCase<ListProductsConsumer, ListProductsOrder, ListProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private readonly PaginationDto pagination = new (){ PageIndex = 0, PageSize = 10 };
