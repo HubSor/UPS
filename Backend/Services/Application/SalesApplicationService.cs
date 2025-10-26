@@ -1,17 +1,11 @@
 using Core;
-using Messages.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
 using Helpers;
-using Services.Domain;
 using Data;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Dtos;
-using Dtos.Users;
 using Messages.Sales;
 using Dtos.Sales;
 using Dtos.Clients;
