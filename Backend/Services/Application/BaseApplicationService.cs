@@ -1,39 +1,22 @@
 using Core;
+using Data;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
 namespace Services.Application;
 
-public abstract class BaseApplicationService(ILogger<BaseApplicationService> logger)
+public interface IBaseApplicationService
 {
-    public virtual ApiResponse<TResponse> PerformRequest<TRequest, TResponse>(
-        Func<TRequest, TResponse> func,
+    Task<ApiResponse<TResponse>> PerformRequestAsync<TRequest, TResponse>(
+        Func<TRequest, Task<TResponse>> func,
         TRequest request,
         IEnumerable<IValidator<TRequest>> validators
-    ) where TResponse : class
-    {
-        var errors = ValidateRequest(validators, request);
-        if (errors.Any())
-        {
-            return new ApiResponse<TResponse>(errors);
-        }
+    ) where TResponse : class;
+}
 
-        try
-        {
-            var result = func(request);
-            return new ApiResponse<TResponse>(result);
-        }
-        catch (ValidationException vex)
-        {
-            return HandleValidationException<TResponse>(vex);
-        }
-        catch (Exception)
-        {
-            return HandleOtherException<TResponse>();
-        }
-    }
-
+public abstract class BaseApplicationService(ILogger<BaseApplicationService> logger, IUnitOfWork unitOfWork) : IBaseApplicationService
+{
     public async virtual Task<ApiResponse<TResponse>> PerformRequestAsync<TRequest, TResponse>(
         Func<TRequest, Task<TResponse>> func,
         TRequest request,
@@ -48,15 +31,21 @@ public abstract class BaseApplicationService(ILogger<BaseApplicationService> log
 
         try
         {
+            await unitOfWork.BeginTransasctionAsync();
             var result = await Task.Run(() => func(request));
+            await unitOfWork.FlushAsync();
+            await unitOfWork.CommitTransasctionAsync();
+
             return new ApiResponse<TResponse>(result);
         }
         catch (ValidationException vex)
         {
+            await unitOfWork.RollbackTransactionAsync();
             return HandleValidationException<TResponse>(vex);
         }
         catch (Exception e)
         {
+            await unitOfWork.RollbackTransactionAsync();
             return HandleOtherException<TResponse>(e);
         }
     }
@@ -99,4 +88,8 @@ public abstract class BaseApplicationService(ILogger<BaseApplicationService> log
         return new ApiResponse<TResponse>(new ValidationFailure("_", "Coś poszło nie tak"));
     }
 
+    protected static void ThrowValidationException(string key, string errorMessage)
+    {
+        throw new ValidationException([new ValidationFailure(key, errorMessage)]);
+    }
 }

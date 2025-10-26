@@ -7,7 +7,7 @@ namespace UPS.Controllers
 	[ApiController]
 	public abstract class BaseController(IServiceProvider sp) : ControllerBase
 	{
-		protected async Task<IActionResult> PerformAction<O, R>(O order, BaseApplicationService appService, Func<Task<R>> action)
+		protected async Task<IActionResult> PerformAction<O, R>(O order, IBaseApplicationService appService, Func<Task<R>> action)
 			where O : class
 			where R : class
 		{

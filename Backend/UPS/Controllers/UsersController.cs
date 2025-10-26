@@ -1,21 +1,19 @@
-﻿using MassTransit.Mediator;
-using Messages.Users;
+﻿using Messages.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using UPS.Attributes;
 using Models.Entities;
+using Services.Application;
 
 namespace UPS.Controllers
 {
 	[Route("users")]
-	public class UsersController : BaseController
+	public class UsersController(
+		IServiceProvider sp,
+		IUsersApplicationService usersApplicationService
+	) : BaseController(sp)
 	{
-		public UsersController(IMediator mediator)
-			: base(mediator)
-		{
-		}
-		
-		[HttpPost]
+        [HttpPost]
 		[Authorize]
 		[Route("session")]
 		public IActionResult Session()
@@ -27,7 +25,7 @@ namespace UPS.Controllers
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginOrder order)
 		{
-			return await PerformAction<LoginOrder, LoginResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.LoginAsync(order));
 		}
 		
 		[HttpPost]
@@ -35,7 +33,7 @@ namespace UPS.Controllers
 		[Route("logout")]
 		public async Task<IActionResult> Logout([FromBody] LogoutOrder order)
 		{
-			return await PerformAction<LogoutOrder, LogoutResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.LogoutAsync(order));
 		}
 		
 		[HttpPost]
@@ -43,7 +41,7 @@ namespace UPS.Controllers
 		[Route("add")]
 		public async Task<IActionResult> AddUser([FromBody] AddUserOrder order)
 		{
-			return await PerformAction<AddUserOrder, AddUserResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.AddUserAsync(order));
 		}
 		
 		[HttpPost]
@@ -51,7 +49,7 @@ namespace UPS.Controllers
 		[Route("list")]
 		public async Task<IActionResult> ListUsers([FromBody] ListUsersOrder order)
 		{
-			return await PerformAction<ListUsersOrder, ListUsersResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.ListUsersAsync(order));
 		}
 		
 		[HttpPost]
@@ -59,7 +57,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditUserOrder order)
 		{
-			return await PerformAction<EditUserOrder, EditUserResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.EditUserAsync(order));
 		}
 		
 		[HttpPost]
@@ -67,7 +65,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteUserOrder order)
 		{
-			return await PerformAction<DeleteUserOrder, DeleteUserResponse>(order);
+			return await PerformAction(order, usersApplicationService, () => usersApplicationService.DeleteUserAsync(order));
 		}
 	}
 }

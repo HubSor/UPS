@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data;
+using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 using Services.Domain;
 
-namespace Data
+namespace Services
 {
 	public static class DataInitializer
 	{
