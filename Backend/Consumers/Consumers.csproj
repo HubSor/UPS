@@ -11,12 +11,4 @@
     <PackageReference Include="FluentValidationForMassTransit" Version="4.0.0" />
     <PackageReference Include="MassTransit" Version="8.5.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Messages\Messages.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
-    <ProjectReference Include="..\Helpers\Helpers.csproj" />
-  </ItemGroup>
-
 </Project>

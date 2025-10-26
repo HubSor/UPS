@@ -19,7 +19,7 @@ namespace UPS.Controllers
 		[Route("upsert")]
 		public async Task<IActionResult> Upsert([FromBody] UpsertClientOrder order)
 		{
-			return await RespondAsync<UpsertClientOrder, UpsertClientResponse>(order);
+			return await PerformAction<UpsertClientOrder, UpsertClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -27,7 +27,7 @@ namespace UPS.Controllers
 		[Route("people/find")]
 		public async Task<IActionResult> FindPerson([FromBody] FindPersonClientOrder order)
 		{
-			return await RespondAsync<FindPersonClientOrder, FindPersonClientResponse>(order);
+			return await PerformAction<FindPersonClientOrder, FindPersonClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -35,7 +35,7 @@ namespace UPS.Controllers
 		[Route("people/list")]
 		public async Task<IActionResult> ListPeople([FromBody] ListPersonClientsOrder order)
 		{
-			return await RespondAsync<ListPersonClientsOrder, ListPersonClientsResponse>(order);
+			return await PerformAction<ListPersonClientsOrder, ListPersonClientsResponse>(order);
 		}
 
 		[HttpPost]
@@ -43,7 +43,7 @@ namespace UPS.Controllers
 		[Route("companies/find")]
 		public async Task<IActionResult> FindCompany([FromBody] FindCompanyClientOrder order)
 		{
-			return await RespondAsync<FindCompanyClientOrder, FindCompanyClientResponse>(order);
+			return await PerformAction<FindCompanyClientOrder, FindCompanyClientResponse>(order);
 		}
 
 		[HttpPost]
@@ -51,7 +51,7 @@ namespace UPS.Controllers
 		[Route("companies/list")]
 		public async Task<IActionResult> ListCompanies([FromBody] ListCompanyClientsOrder order)
 		{
-			return await RespondAsync<ListCompanyClientsOrder, ListCompanyClientsResponse>(order);
+			return await PerformAction<ListCompanyClientsOrder, ListCompanyClientsResponse>(order);
 		}
 	}
 }

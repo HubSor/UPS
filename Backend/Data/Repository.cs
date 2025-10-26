@@ -1,6 +1,4 @@
-﻿using Data;
-
-namespace Core
+﻿namespace Data
 {
 	public class Repository<TEntity> : IRepository<TEntity>
 		where TEntity : class
