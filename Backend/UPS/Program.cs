@@ -1,11 +1,11 @@
-﻿using Consumers;
-using Core;
-using Data;
+﻿using Data;
 using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using Services.Application;
+using Services.Domain;
 using UPS.Filters;
 using Validators.Users;
 
@@ -39,20 +39,16 @@ builder.Services.AddCors(op =>
 	});
 });
 
-builder.Services.AddMediator(mrc => 
-{
-	mrc.ConfigureMediator((context, cfg) => 
-	{
-		cfg.UseSendFilter(typeof(ValidationFilter<>), context);
-	});
-	
-	mrc.AddConsumers(typeof(BaseConsumer<,>).Assembly);
-});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
+builder.Services.AddScoped(typeof(IClientsApplicationService), typeof(ClientsApplicationService));
+builder.Services.AddScoped(typeof(IParametersApplicationService), typeof(ParametersApplicationService));
+builder.Services.AddScoped(typeof(IProductsApplicationService), typeof(ProductsApplicationService));
+builder.Services.AddScoped(typeof(ISalesApplicationService), typeof(SalesApplicationService));
+builder.Services.AddScoped(typeof(IUsersApplicationService), typeof(UsersApplicationService));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(PasswordValidator));
