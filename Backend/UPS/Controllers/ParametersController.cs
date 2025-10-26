@@ -7,7 +7,7 @@ using Services.Application;
 namespace UPS.Controllers
 {
 	[Route(template: "parameters")]
-	public class ParametersController(IServiceProvider sp, ParametersApplicationService parametersApplicationService) : BaseController(sp)
+	public class ParametersController(IServiceProvider sp, IParametersApplicationService parametersApplicationService) : BaseController(sp)
 	{
         [HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]

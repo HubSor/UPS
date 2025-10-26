@@ -8,7 +8,7 @@ using Services.Application;
 namespace UPS.Controllers
 {
 	[Route(template: "products")]
-	public class ProductsController(IServiceProvider sp, ProductsApplicationService productsApplicationService) : BaseController(sp)
+	public class ProductsController(IServiceProvider sp, IProductsApplicationService productsApplicationService) : BaseController(sp)
 	{
         [HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator, RoleEnum.Seller)]
