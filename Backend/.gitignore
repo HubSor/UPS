@@ -61,3 +61,5 @@ notes.txt
 lcov.info
 output.xml
 /Tests/coverage
+
+.notes
