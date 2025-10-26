@@ -1,25 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MassTransit.Mediator;
 using Models.Entities;
 using UPS.Attributes;
 using Messages.Parameters;
+using Services.Application;
 
 namespace UPS.Controllers
 {
 	[Route(template: "parameters")]
-	public class ParametersController : BaseController
+	public class ParametersController(IServiceProvider sp, ParametersApplicationService parametersApplicationService) : BaseController(sp)
 	{
-		public ParametersController(IMediator mediator)
-			: base(mediator)
-		{
-		}
-
-		[HttpPost]
+        [HttpPost]
 		[AuthorizeRoles(RoleEnum.ProductManager, RoleEnum.Administrator)]
 		[Route("add")]
 		public async Task<IActionResult> Add([FromBody] AddParameterOrder order)
 		{
-			return await PerformAction<AddParameterOrder, AddParameterResponse>(order);
+			return await PerformAction(order, parametersApplicationService, () => parametersApplicationService.AddParameterAsync(order));
 		}
 
 		[HttpPost]
@@ -27,7 +22,7 @@ namespace UPS.Controllers
 		[Route("edit")]
 		public async Task<IActionResult> Edit([FromBody] EditParameterOrder order)
 		{
-			return await PerformAction<EditParameterOrder, EditParameterResponse>(order);
+			return await PerformAction(order, parametersApplicationService, () => parametersApplicationService.EditParameterAsync(order));
 		}
 
 		[HttpPost]
@@ -35,7 +30,7 @@ namespace UPS.Controllers
 		[Route("delete")]
 		public async Task<IActionResult> Delete([FromBody] DeleteParameterOrder order)
 		{
-			return await PerformAction<DeleteParameterOrder, DeleteParameterResponse>(order);
+			return await PerformAction(order, parametersApplicationService, () => parametersApplicationService.DeleteParameterAsync(order));
 		}
 
 		[HttpPost]
@@ -43,7 +38,7 @@ namespace UPS.Controllers
 		[Route("options/add")]
 		public async Task<IActionResult> AddOption([FromBody] AddOptionOrder order)
 		{
-			return await PerformAction<AddOptionOrder, AddOptionResponse>(order);
+			return await PerformAction(order, parametersApplicationService, () => parametersApplicationService.AddOptionAsync(order));
 		}
 
 		[HttpPost]
@@ -51,7 +46,7 @@ namespace UPS.Controllers
 		[Route("options/delete")]
 		public async Task<IActionResult> DeleteOption([FromBody] DeleteOptionOrder order)
 		{
-			return await PerformAction<DeleteOptionOrder, DeleteOptionResponse>(order);
+			return await PerformAction(order, parametersApplicationService, () => parametersApplicationService.DeleteOptionAsync(order));
 		}
 	}
 }
