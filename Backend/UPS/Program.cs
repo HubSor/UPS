@@ -16,9 +16,18 @@ try
 {
 	builder.Services.AddDbContext<UnitOfWork>(options => 
 	{
-		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Connection"),
+		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Write"),
 			op => {
 				op.MigrationsAssembly(typeof(UnitOfWork).Assembly.FullName);
+				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+			});
+	});
+
+	builder.Services.AddDbContext<ReadDbContext>(options => 
+	{
+		options.UseNpgsql(builder.Configuration.GetConnectionString("UPS_Read"),
+			op => {
+				op.MigrationsAssembly(typeof(ReadDbContext).Assembly.FullName);
 				op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
 			});
 	});

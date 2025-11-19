@@ -2,36 +2,27 @@
 
 namespace Core
 {
-	public class Repository<TEntity> : IRepository<TEntity>
+	public class Repository<TEntity>(UnitOfWork uow, ReadDbContext readDbContext) : ReadRepository<TEntity>(readDbContext)
 		where TEntity : class
 	{
-		protected readonly UnitOfWork context;
-		public Repository(UnitOfWork context)
-		{
-			this.context = context;
-		}
+		protected readonly UnitOfWork unitOfWork = uow;
 
-		public async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
 		{
-			await context.Set<TEntity>().AddAsync(entity);
-			await context.SaveChangesAsync();
+			await unitOfWork.Set<TEntity>().AddAsync(entity);
+			await unitOfWork.SaveChangesAsync();
 		}
 
 		public async Task DeleteAsync(TEntity entity)
 		{
-			context.Set<TEntity>().Remove(entity);
-			await context.SaveChangesAsync();
+			unitOfWork.Set<TEntity>().Remove(entity);
+			await unitOfWork.SaveChangesAsync();
 		}
 
 		public async Task UpdateAsync(TEntity entity)
 		{
-			context.Set<TEntity>().Update(entity);
-			await context.SaveChangesAsync();
-		}
-
-		public IQueryable<TEntity> GetAll()
-		{
-			return context.Set<TEntity>().AsQueryable();
+			unitOfWork.Set<TEntity>().Update(entity);
+			await unitOfWork.SaveChangesAsync();
 		}
 	}
 }

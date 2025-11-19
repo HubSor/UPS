@@ -1,9 +1,8 @@
 ﻿namespace Core
 {
-	public interface IRepository<TEntity>
+	public interface IRepository<TEntity> : IReadRepository<TEntity>
 		where TEntity : class
 	{
-		IQueryable<TEntity> GetAll();
 		Task AddAsync(TEntity entity);
 		Task UpdateAsync(TEntity entity);
 		Task DeleteAsync(TEntity entity);
