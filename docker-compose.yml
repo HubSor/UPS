@@ -2,13 +2,23 @@ networks:
   ups-net:
 
 services:
- base:
+ readbase:
    image: postgres:16
    restart: always
    environment:
      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
    volumes:
-     - postgres-data:/var/lib/postgresql/data
+     - postgres-data-read:/var/lib/postgresql/data
+   networks:
+     - ups-net
+  
+ writebase:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - postgres-data-write:/var/lib/postgresql/data
    networks:
      - ups-net
 
@@ -27,15 +37,18 @@ services:
      - 2443:443
      - 2080:80
    depends_on:
-     - base
+     - readbase
+     - writebase
    networks:
      - ups-net
+   volumes:
+     - ~/.dotnet/https:/https:ro
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
      ASPNETCORE_URLS: https://+
      ASPNETCORE_HTTPS_PORT: 2443
-     ASPNETCORE_Kestrel__Certificates__Default__Password: certpasswd
-     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/upscert.pfx
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
      
  
  frontend:
@@ -49,4 +62,5 @@ services:
      REACT_APP_BACKEND_URL: https://localhost:2443
      
 volumes:
- postgres-data:
+ postgres-data-read:
+ postgres-data-write:
