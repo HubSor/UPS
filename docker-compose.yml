@@ -2,25 +2,61 @@ networks:
   ups-net:
 
 services:
- readbase:
+ writebase:
    image: postgres:16
    restart: always
    environment:
+     POSTGRES_USER: postgres
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - postgres-data-write:/var/lib/postgresql/data
+     - ./Backend/config/00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
+     - ./Backend/config/write_hba.conf:/var/etc/postgresql/custom_hba.conf
+   networks:
+     - ups-net
+   ports:
+     - 5432:5432
+   command: |
+      postgres 
+      -c hba_file=/var/etc/postgresql/custom_hba.conf
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
+
+ readbase:
+   image: postgres:16
+   environment:
+     POSTGRES_USER: postgres
      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
    volumes:
      - postgres-data-read:/var/lib/postgresql/data
    networks:
      - ups-net
-  
- writebase:
-   image: postgres:16
-   restart: always
-   environment:
-     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-   volumes:
-     - postgres-data-write:/var/lib/postgresql/data
-   networks:
-     - ups-net
+   ports:
+     - 5433:5432
+   depends_on:
+     - writebase
+   command: |
+      bash -c "
+      echo 'Cleaning replica data directory as root'
+      rm -rf /var/lib/postgresql/data/*
+
+      echo 'Waiting for primary...'
+      sleep 2
+
+      echo 'Running pg_basebackup as postgres'
+      su postgres -c '
+        pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot ups --host=writebase --port=5432 -X stream -v -w -U postgres
+      '
+
+      echo 'Fixing ownership'
+      chmod -R 0700 /var/lib/postgresql/data
+
+      echo 'Backup done. Starting replica...'
+      exec su postgres -c postgres
+      "
 
  adminer:
    image: adminer
