@@ -11,13 +11,13 @@ using Models.Entities;
 namespace Consumers.Query;
 public class ListSubProductsConsumer : BaseQueryConsumer<ListSubProductsQuery, ListSubProductsResponse>
 {
-	private readonly IRepository<Product> products;
-	private readonly IRepository<SubProduct> subProducts;
+	private readonly IReadRepository<Product> products;
+	private readonly IReadRepository<SubProduct> subProducts;
 	
 	public ListSubProductsConsumer(
 		ILogger<ListSubProductsConsumer> logger,
-		IRepository<Product> products,
-		IRepository<SubProduct> subProducts
+		IReadRepository<Product> products,
+		IReadRepository<SubProduct> subProducts
 	) : base(logger)
 	{
 		this.products = products;

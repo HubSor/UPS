@@ -11,9 +11,9 @@ using Models.Entities;
 namespace Consumers.Query;
 public class ListUsersConsumer : BaseQueryConsumer<ListUsersQuery, ListUsersResponse>
 {
-	private readonly IRepository<User> users;
+	private readonly IReadRepository<User> users;
 	
-	public ListUsersConsumer(ILogger<ListUsersConsumer> logger, IRepository<User> users)
+	public ListUsersConsumer(ILogger<ListUsersConsumer> logger, IReadRepository<User> users)
 		: base(logger)
 	{
 		this.users = users;

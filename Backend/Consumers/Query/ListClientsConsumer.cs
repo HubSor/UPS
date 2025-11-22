@@ -14,9 +14,9 @@ public abstract class ListClientsConsumer<T, O, D, R> : BaseQueryConsumer<O, R>
 	where D : ClientDto
 	where R : class
 {
-	protected readonly IRepository<T> clients;
+	protected readonly IReadRepository<T> clients;
 	
-	public ListClientsConsumer(ILogger<ListClientsConsumer<T, O, D, R>> logger, IRepository<T> clients)
+	public ListClientsConsumer(ILogger<ListClientsConsumer<T, O, D, R>> logger, IReadRepository<T> clients)
 		: base(logger)
 	{
 		this.clients = clients;

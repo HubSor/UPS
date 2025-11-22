@@ -15,11 +15,11 @@ using Services.Domain;
 namespace Consumers.Query;
 public class LoginConsumer : BaseQueryConsumer<LoginQuery, LoginResponse>
 {
-	private readonly IRepository<User> users;
+	private readonly IReadRepository<User> users;
 	private readonly IHttpContextAccessor httpContextAccessor;
 	private readonly IPasswordService passwordService;
 	
-	public LoginConsumer(IRepository<User> users, IHttpContextAccessor httpContextAccessor, ILogger<LoginConsumer> logger, IPasswordService passwordService)
+	public LoginConsumer(IReadRepository<User> users, IHttpContextAccessor httpContextAccessor, ILogger<LoginConsumer> logger, IPasswordService passwordService)
 		: base(logger)
 	{
 		this.users = users;

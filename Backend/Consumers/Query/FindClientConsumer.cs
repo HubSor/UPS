@@ -13,9 +13,9 @@ public abstract class FindClientConsumer<T, O, R> : BaseQueryConsumer<O, R>
 	where O : FindClientQuery
 	where R : FindClientResponse
 {
-	protected readonly IRepository<T> clients;
+	protected readonly IReadRepository<T> clients;
 	
-	public FindClientConsumer(ILogger<FindClientConsumer<T, O, R>> logger, IRepository<T> clients)
+	public FindClientConsumer(ILogger<FindClientConsumer<T, O, R>> logger, IReadRepository<T> clients)
 		: base(logger)
 	{
 		this.clients = clients;

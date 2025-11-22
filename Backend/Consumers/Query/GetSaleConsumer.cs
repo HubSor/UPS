@@ -10,9 +10,9 @@ using Models.Entities;
 namespace Consumers.Query;
 public class GetSaleConsumer : BaseQueryConsumer<GetSaleQuery, GetSaleResponse>
 {
-	private readonly IRepository<Sale> sales;
+	private readonly IReadRepository<Sale> sales;
 	
-	public GetSaleConsumer(ILogger<GetSaleConsumer> logger, IRepository<Sale> sales)
+	public GetSaleConsumer(ILogger<GetSaleConsumer> logger, IReadRepository<Sale> sales)
 		: base(logger)
 	{
 		this.sales = sales;
