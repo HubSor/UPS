@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data
 {
-	public class ReadDbContext(DbContextOptions options) : BaseDbContext(options)
+	public class ReadDbContext(DbContextOptions<ReadDbContext> options) : BaseDbContext(options)
 	{
         
 	}

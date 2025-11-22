@@ -62,6 +62,7 @@ builder.Services.AddMediator(mrc =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
 builder.Services.AddScoped(typeof(IPasswordService), typeof(PasswordService));
 builder.Services.AddScoped(typeof(ICqrsService), typeof(CqrsService));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

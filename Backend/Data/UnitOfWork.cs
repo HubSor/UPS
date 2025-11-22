@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 
 namespace Data
 {
-	public class UnitOfWork(DbContextOptions options) : BaseDbContext(options), IUnitOfWork
+	public class UnitOfWork(DbContextOptions<UnitOfWork> options) : BaseDbContext(options), IUnitOfWork
 	{
 		public async Task BeginTransasctionAsync(CancellationToken cancellationToken = default)
 		{

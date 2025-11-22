@@ -2,7 +2,7 @@
 
 namespace Core
 {
-	public class Repository<TEntity>(UnitOfWork uow, ReadDbContext readDbContext) : ReadRepository<TEntity>(readDbContext)
+	public class Repository<TEntity>(UnitOfWork uow, ReadDbContext readDbContext) : ReadRepository<TEntity>(readDbContext), IRepository<TEntity>
 		where TEntity : class
 	{
 		protected readonly UnitOfWork unitOfWork = uow;
