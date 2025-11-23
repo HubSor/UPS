@@ -159,6 +159,18 @@ namespace Data
 				Email = "jnowak@gmail.com",
 			});
 
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Test",
+				LastName = "Prywatny",
+			});
+
+			context.Clients.Add(new PersonClient()
+			{
+				FirstName = "Test",
+				LastName = "Prywatny2",
+			});
+
 			context.SaveChanges();
 
 			context.Clients.Add(new CompanyClient()
@@ -175,6 +187,16 @@ namespace Data
 				PhoneNumber = "888777666",
 				Email = "januszex@gmail.com",
 				Nip = "1336329260",
+			});
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "Test Firma",
+			});
+
+			context.Clients.Add(new CompanyClient()
+			{
+				CompanyName = "Test Firma2",
 			});
 
 			context.SubProductsInProducts.Add(new()
