@@ -30,12 +30,14 @@ services:
      - base
    networks:
      - ups-net
+   volumes:
+     - ~/.dotnet/https:/https:ro
    environment:
      FRONTEND_ORIGIN: https://localhost:3000
      ASPNETCORE_URLS: https://+
      ASPNETCORE_HTTPS_PORT: 2443
-     ASPNETCORE_Kestrel__Certificates__Default__Password: certpasswd
-     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/upscert.pfx
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
      
  
  frontend:
