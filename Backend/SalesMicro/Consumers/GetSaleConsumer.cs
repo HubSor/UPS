@@ -43,6 +43,9 @@ public class GetSaleConsumer : TransactionConsumer<GetSaleOrder, GetSaleResponse
 			ProductPrice = sale.ProductPrice,
 			ProductTax = sale.ProductTax,
 			ClientId = sale.ClientId,
+			ProductId = sale.ProductId,
+			ProductCode = sale.ProductCode,
+			SubProductCodes = sale.SubProductCodes,
 		};
 
 		logger.LogInformation("Got sale {SaleId} details", sale.Id);

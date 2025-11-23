@@ -13,6 +13,7 @@ namespace Core.Dtos
 		public string? Description { get; set; }
 		public ProductStatusEnum Status { get; set; }
 		
+		public ProductDto(){}
 		public ProductDto(Product p)
 		{
 			Id = p.Id;

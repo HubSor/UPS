@@ -10,7 +10,8 @@ namespace Core.Dtos
 		public decimal BasePrice { get; set; }
 		public decimal TaxRate { get; set; }
 		public string? Description { get; set; }
-		
+
+		public SubProductDto(){}		
 		public SubProductDto(SubProduct sp)
 		{
 			Id = sp.Id;

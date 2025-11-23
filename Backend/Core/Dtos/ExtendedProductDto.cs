@@ -6,6 +6,8 @@ namespace Core.Dtos
 	{
 		public ICollection<ExtendedSubProductDto> SubProducts { get; set; } = default!;
 		public ICollection<ParameterDto> Parameters { get; set; } = default!;
+
+		public ExtendedProductDto(){}
 		public ExtendedProductDto(Product p) : base(p)
 		{
 			SubProducts = p.SubProductInProducts

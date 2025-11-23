@@ -146,6 +146,8 @@ export type SaleDetailsDto = {
     saleId: number,
     personClient?: PersonClientDto,
     companyClient?: CompanyClientDto,
+    clientName?: string,
+    clientId?: number,
     saleTime: string,
     totalPrice: number,
     totalTax: number,
@@ -153,6 +155,9 @@ export type SaleDetailsDto = {
     productTax: number,
     product: ProductDto,
     subProducts: SaleDetailsSubProductDto[],
+    productId: number,
+    productCode: string,
+    subProductCodes: string,
     parameters: SaleParameterDto[],
 }
 

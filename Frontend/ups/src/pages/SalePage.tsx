@@ -1,13 +1,11 @@
-import React, { useEffect, useReducer } from "react"
+import { useEffect, useReducer } from "react"
 import { SaleDetailsDto } from "../api/Dtos"
 import { Api } from "../api/Api"
 import { toastDefaultError } from "../helpers/ToastHelpers"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { Form } from "react-bootstrap"
 import { DisplayInfoRow } from "../components/products/DisplayInfoRow"
-import { getClientName } from "../helpers/FormHelpers"
 import { DisplayParameterRow } from "../components/parameters/DisplayParameterRow"
-import { Paths } from "../App"
 
 export default function SalePage() {
     const { id } = useParams();
@@ -46,7 +44,6 @@ type SalePageProps = {
 
 function SalePageInner({ saleId }: SalePageProps) {
     const [state, dispatch] = useReducer(reducer, initalState);
-    const nav = useNavigate();
 
     useEffect(() => {
         const fetchSale = () => {
@@ -62,11 +59,7 @@ function SalePageInner({ saleId }: SalePageProps) {
             fetchSale();
     }, [saleId, state.refresh])
 
-    const clientId = state.sale?.personClient?.id ?? state.sale?.companyClient?.id;
-    const displayClientName = getClientName(state.sale?.personClient, state.sale?.companyClient);
-    const subProductCodes = state.sale?.subProducts.map(s => s.code).join(',')
-    const subProductTax = state.sale?.subProducts.map(s => s.tax).reduce((sum, elem) => sum + elem, 0);
-
+    const subProductTax = (state.sale?.totalTax ?? 0) - (state.sale?.productTax ?? 0);
     return <>
         <h3>Transakcja {saleId}</h3>
         <br />
@@ -80,16 +73,10 @@ function SalePageInner({ saleId }: SalePageProps) {
                 <DisplayInfoRow value={state.sale?.productPrice.toFixed(2).replace('.', ',')} name="Ostateczna cena produktu" />
                 <DisplayInfoRow value={state.sale?.productTax.toFixed(2).replace('.', ',')} name="Podatek na produkcie" />
                 <DisplayInfoRow value={state.sale?.saleTime} name="Data rejestracji" />
-                <div onClick={() => !!state.sale?.product ?
-                    nav(Paths.product.replace(":id", state.sale?.product.id.toString())) :
-                    undefined
-                }>
-                    <DisplayInfoRow value={state.sale?.product.code} name="Kod produktu" />
-                    <DisplayInfoRow value={state.sale?.product.name} name="Nazwa produktu" />
-                </div>
-                <DisplayInfoRow value={clientId?.toString()} name="Id klienta" />
-                <DisplayInfoRow value={displayClientName} name="Klient" />
-                <DisplayInfoRow value={subProductCodes} name="Wybrane podprodukty" />
+                <DisplayInfoRow value={state.sale?.productCode} name="Kod produktu" />
+                <DisplayInfoRow value={state.sale?.clientId?.toString()} name="Id klienta" />
+                <DisplayInfoRow value={state.sale?.clientName} name="Klient" />
+                <DisplayInfoRow value={state.sale?.subProductCodes} name="Wybrane podprodukty" />
                 <DisplayInfoRow value={subProductTax?.toFixed(2).replace('.', ',')} name="Podatek na podproduktach" />
             </form>
         </div>

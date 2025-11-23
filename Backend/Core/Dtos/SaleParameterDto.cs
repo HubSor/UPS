@@ -4,6 +4,7 @@ namespace Core.Dtos;
 
 public class SaleParameterDto : ParameterDto
 {
+	public SaleParameterDto(){}		
 	public SaleParameterDto(Parameter param, string? answer) : base(param)
 	{
 		Answer = answer;

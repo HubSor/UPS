@@ -35,6 +35,7 @@ public class GetSaleParametersConsumer(
 		var parameters = await saleParametersRepo.GetAll()
 			.Where(x => x.SaleId == context.Message.SaleId)
 			.Include(x => x.Parameter)
+			.ThenInclude(x => x.Options)
 			.ToListAsync();
 
 		var parameterDtos = parameters.Select(x => new SaleParameterDto(x.Parameter, x.Value));

@@ -122,19 +122,7 @@ namespace SalesMicro.Controllers
 
             if (paramsResponse != null && paramsResponse.Data != null)
             {
-                saleDto.Product = paramsResponse.Data.Product;
-                saleDto.SubProducts = paramsResponse.Data.SubProducts;
                 saleDto.Parameters = paramsResponse.Data.Parameters;
-            }
-
-            if (saleDto.ClientId.HasValue)
-            {
-                var clientResponse = await MakeMicroRequest<GetClientOrder, GetClientResponse>(ClientsMicroUrl + "/clients/get", new GetClientOrder(saleDto.ClientId.Value));
-                if (clientResponse != null && clientResponse.Data != null)
-                {
-                    saleDto.PersonClient = clientResponse.Data.PersonClient;
-                    saleDto.CompanyClient = clientResponse.Data.CompanyClient;
-                }
             }
         }
     }

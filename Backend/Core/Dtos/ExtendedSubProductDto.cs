@@ -8,6 +8,7 @@ namespace Core.Dtos
 		public ICollection<ParameterDto> Parameters { get; set; } = default!;
 		public ICollection<ProductDto> Products { get; set; } = default!;
 
+		public ExtendedSubProductDto() {}
 		public ExtendedSubProductDto(SubProduct sp, decimal price) : base(sp)
 		{
 			Price = price;
