@@ -4,17 +4,16 @@ using Core.Messages;
 using Core.Models;
 using Core.Web;
 using MassTransit;
-using MassTransit.Mediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProductsMicro.Consumers;
 public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, AddSubProductResponse>
 {
 	private readonly IRepository<SubProduct> subProducts;
-	private readonly IMediator mediator;
+	private readonly IRequestClient<AssignSubProductOrder> mediator;
 	private SubProduct subProduct = default!;
 	
-	public AddSubProductConsumer(ILogger<AddSubProductConsumer> logger, IRepository<SubProduct> subProducts, IUnitOfWork unitOfWork, IMediator mediator)
+	public AddSubProductConsumer(ILogger<AddSubProductConsumer> logger, IRepository<SubProduct> subProducts, IUnitOfWork unitOfWork, IRequestClient<AssignSubProductOrder> mediator)
 		: base(unitOfWork, logger)
 	{
 		this.subProducts = subProducts;
@@ -55,8 +54,7 @@ public class AddSubProductConsumer : TransactionConsumer<AddSubProductOrder, Add
 			var order = new AssignSubProductOrder(context.Message.ProductId.Value, subProduct.Id, subProduct.BasePrice);
 			try
 			{
-				var client = mediator.CreateRequestClient<AssignSubProductOrder>();
-				var response = await client.GetResponse<ApiResponse<AssignSubProductResponse>>(order);
+				var response = await mediator.GetResponse<ApiResponse<AssignSubProductResponse>>(order);
 				
 				if (response.Message.Success)
 				{
