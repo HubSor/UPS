@@ -46,6 +46,7 @@ public class SaveSaleConsumer(
 
 			await saleParametersRepo.AddAsync(new SaleParameter()
 			{
+				SaleId = context.Message.SaleId,
 				ParameterId = parameter.Id,
 				Value = saleParameter.Answer,
 				OptionId = parameter.Options.FirstOrDefault(o => o.Value == saleParameter.Answer)?.Id,

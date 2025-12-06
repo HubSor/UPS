@@ -15,6 +15,8 @@ public class SaveSaleConsumer(
 	IHttpContextAccessor httpContextAccessor
 ) : TransactionConsumer<ExtendedSaveSaleOrder, SaveSaleResponse>(unitOfWork, _logger)
 {
+	private int newSaleId;
+
 	public override async Task InTransaction(ConsumeContext<ExtendedSaveSaleOrder> context)
 	{
 		var totalPrice = context.Message.ProductPrice + context.Message.SubProducts.Select(s => s.Price).Sum();
@@ -37,10 +39,11 @@ public class SaveSaleConsumer(
 		await sales.AddAsync(newSale);
 
 		logger.LogInformation("Saved new sale {SaleId}", newSale.Id);
+		newSaleId = newSale.Id;
 	}
 
 	public override async Task PostTransaction(ConsumeContext<ExtendedSaveSaleOrder> context)
 	{
-		await RespondAsync(context, new SaveSaleResponse());
+		await RespondAsync(context, new SaveSaleResponse() { SaleId = newSaleId });
 	}
 }

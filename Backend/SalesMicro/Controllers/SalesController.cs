@@ -109,7 +109,7 @@ namespace SalesMicro.Controllers
 
             return new ObjectResult(response.Message)
             {
-                StatusCode = 400,
+                StatusCode = 200,
             };
         }
 

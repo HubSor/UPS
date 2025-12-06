@@ -70,7 +70,6 @@ namespace ClientsMicro.Data
 				Nip = "1336329260",
 			});
 
-
 			context.Clients.Add(new CompanyClient()
 			{
 				CompanyName = "Test Firma",
