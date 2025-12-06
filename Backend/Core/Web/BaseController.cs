@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,15 +50,21 @@ namespace Core.Web
             var client = new HttpClient(handler);
 
             var resp = await client.SendAsync(msg);
-            var responseBody = await resp.Content.ReadAsStringAsync();
-
             var responseHeaders = resp.Headers.NonValidated.ToDictionary();
             foreach (var header in responseHeaders)
             {
-                HttpContext.Response.Headers.Append(header.Key, header.Value.FirstOrDefault());
-            }
+                if (HttpContext.Response.Headers.ContainsKey(header.Key))
+                {
+                    HttpContext.Response.Headers.Remove(header.Key);
+                }
 
-            var result = new ObjectResult(responseBody)
+                HttpContext.Response.Headers.Append(header.Key, header.Value.FirstOrDefault()); 
+            }
+            HttpContext.Response.Headers.Remove("Transfer-Encoding");
+
+            var responseBody = await resp.Content.ReadAsStringAsync();
+            var json = JsonNode.Parse(responseBody);
+            var result = new ObjectResult(json)
             {
                 StatusCode = (int)resp.StatusCode,
             };
