@@ -51,6 +51,11 @@ services:
      - ups-net
 
  proxy:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
      dockerfile: ./proxy.Dockerfile
@@ -72,6 +77,11 @@ services:
      - ups-net
 
  users-micro:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
      dockerfile: ./users.Dockerfile
@@ -90,6 +100,11 @@ services:
      - ups-net
 
  clients-micro:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
      dockerfile: ./clients.Dockerfile
@@ -108,6 +123,11 @@ services:
      - ups-net
 
  products-micro:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
      dockerfile: ./products.Dockerfile
@@ -126,6 +146,11 @@ services:
      - ups-net
 
  sales-micro:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
      dockerfile: ./sales.Dockerfile
