@@ -67,6 +67,11 @@ services:
      - ups-net
 
  backend:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    build:
      context: ./Backend
    ports:
