@@ -6,7 +6,7 @@ export const options = {
     duration: '30s',
 };
 
-const URL = "https://localhost:2443";
+const URL = "https://localhost:2106";
 
 export default function () {
     const loginHeaders = {
