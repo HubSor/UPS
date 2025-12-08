@@ -1,12 +1,12 @@
 import http from 'k6/http';
-import { sleep } from 'k6';
 
 export const options = {
     vus: 50,
-    duration: '30s',
+    iterations: 500,
 };
 
 const URL = "https://localhost:2106";
+let saleId = 1;
 
 export default function () {
     const loginHeaders = {
@@ -67,5 +67,12 @@ export default function () {
         throw new Error()
     }
 
-    sleep(1);
+    const getSale = JSON.stringify(
+        { "saleId": saleId++ }
+    )
+    const getSaleRes = http.post(URL + "/sales/get", getSale, salesHeaders);
+    if (getSaleRes.status != 200){
+        console.error("get sales failed", getSaleRes)
+        throw new Error()
+    }
 }
