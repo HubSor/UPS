@@ -1,8 +1,8 @@
 import http from 'k6/http';
 
 export const options = {
-    vus: 50,
-    iterations: 500,
+    vus: 1,
+    iterations: 2000,
 };
 
 const URL = "https://localhost:2106";
