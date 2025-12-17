@@ -5,6 +5,7 @@ using NUnit.Framework;
 using ProductsMicro.Consumers;
 using Core.Messages;
 using Core.Models;
+using MassTransit;
 
 namespace UnitTests.Products;
 
@@ -17,7 +18,7 @@ public class AddSubProductConsumerTests : ConsumerTestCase<AddSubProductConsumer
 	{
 		subProducts = new MockRepository<SubProduct>();
 		
-		var mediator = new Mock<IMediator>();
+		var mediator = new Mock<IRequestClient<AssignSubProductOrder>>();
 
 		consumer = new AddSubProductConsumer(mockLogger.Object, subProducts.Object, mockUnitOfWork.Object, mediator.Object);
 		return Task.CompletedTask;

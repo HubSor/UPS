@@ -112,6 +112,8 @@ public static class Installer
 
                 conf.ConfigureEndpoints(ctx);
 
+                conf.PrefetchCount = 10;
+
                 conf.Host("rabbitmq://" + (isDev ? "localhost" : "rabbithost/vhost"), h =>
                 {
                     h.Username("guest");

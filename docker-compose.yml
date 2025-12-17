@@ -71,6 +71,9 @@ services:
      - ~/.dotnet/https:/https:ro
    networks:
      - ups-net
+   depends_on:
+     rabbit:
+        condition: service_healthy
 
  users-micro:
    deploy:
@@ -82,8 +85,10 @@ services:
      context: ./Backend
      dockerfile: ./users.Dockerfile
    depends_on:
-     - users-base
-     - rabbit
+     users-base:
+        condition: service_started
+     rabbit:
+        condition: service_healthy
    environment:
      ASPNETCORE_HTTPS_PORTS: 2107
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -106,8 +111,10 @@ services:
      context: ./Backend
      dockerfile: ./clients.Dockerfile
    depends_on:
-     - clients-base
-     - rabbit
+     clients-base:
+        condition: service_started
+     rabbit:
+        condition: service_healthy
    environment:
      ASPNETCORE_HTTPS_PORTS: 2108
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -130,8 +137,10 @@ services:
      context: ./Backend
      dockerfile: ./products.Dockerfile
    depends_on:
-     - products-base
-     - rabbit
+     products-base:
+        condition: service_started
+     rabbit:
+        condition: service_healthy
    environment:
      ASPNETCORE_HTTPS_PORTS: 2109
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -154,8 +163,10 @@ services:
      context: ./Backend
      dockerfile: ./sales.Dockerfile
    depends_on:
-     - sales-base
-     - rabbit
+     sales-base:
+        condition: service_started
+     rabbit:
+        condition: service_healthy
    environment:
      ASPNETCORE_HTTPS_PORTS: 2110
      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -181,6 +192,11 @@ services:
  rabbit:
    image: rabbitmq:management
    hostname: rabbithost
+   healthcheck:
+     test: ["CMD", "rabbitmq-diagnostics", "ping"]
+     interval: 5s
+     timeout: 5s
+     retries: 10
    ports:
      - 5672:5672
      - 15672:15672

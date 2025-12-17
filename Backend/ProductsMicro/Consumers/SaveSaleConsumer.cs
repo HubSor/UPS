@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProductsMicro.Consumers;
 
-public class SaveSaleConsumer(
-	ILogger<SaveSaleConsumer> _logger,
+public class SaveSaleProductsMicroConsumer(
+	ILogger<SaveSaleProductsMicroConsumer> _logger,
 	IRepository<SubProduct> subProductsRepo,
 	IRepository<SubProductInSale> subProductsInSaleRepo,
 	IRepository<SaleParameter> saleParametersRepo,
