@@ -1,13 +1,13 @@
-﻿using Consumers.Parameters;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Parameters;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class DeleteOptionConsumerTests : ServiceTestCase<DeleteOptionConsumer, DeleteOptionOrder, DeleteOptionResponse>
+public class DeleteOptionConsumerTests : ServiceTestCase<ParametersApplicationService, DeleteOptionOrder, DeleteOptionResponse>
 {
 	private MockRepository<ParameterOption> options = default!;
 
@@ -20,7 +20,7 @@ public class DeleteOptionConsumerTests : ServiceTestCase<DeleteOptionConsumer, D
 			Value = "test"
 		});
 
-		consumer = new DeleteOptionConsumer(mockLogger.Object, options.Object, mockUnitOfWork.Object);
+		service = new ParametersApplicationService(mockLogger.Object, mockUnitOfWork.Object, GetMockRepo<Parameter>(), options.Object, GetMockRepo<Product>(), GetMockRepo<SubProduct>());
 		return Task.CompletedTask;
 	}
 	
@@ -29,9 +29,8 @@ public class DeleteOptionConsumerTests : ServiceTestCase<DeleteOptionConsumer, D
 	{
 		var order = new DeleteOptionOrder(1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
+		await service.DeleteOptionAsync(order); 
+
 		Assert.That(options.Entities.Count, Is.EqualTo(0));
 	}
 }

@@ -1,14 +1,13 @@
-﻿using Consumers.Products;
-using Dtos.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class EditProductConsumerTests : ServiceTestCase<EditProductConsumer, EditProductOrder, EditProductResponse>
+public class EditProductConsumerTests : ServiceTestCase<ProductsApplicationService, EditProductOrder, EditProductResponse>
 {
 	private MockRepository<Product> products = default!;
 
@@ -26,7 +25,7 @@ public class EditProductConsumerTests : ServiceTestCase<EditProductConsumer, Edi
 			TaxRate = 0.23m
 		});
 
-		consumer = new EditProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, GetMockRepo<SubProduct>(), GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -35,8 +34,7 @@ public class EditProductConsumerTests : ServiceTestCase<EditProductConsumer, Edi
 	{
 		var order = new EditProductOrder(false, "CODE", "new", 10.99m, 10, "test", 1, ProductStatusEnum.Withdrawn);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditProductAsync(order);
 		
 		var edited = products.Entities.SingleOrDefault();
 		Assert.That(edited, Is.Not.Null);

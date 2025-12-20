@@ -1,14 +1,14 @@
-﻿using Consumers.Products;
-using Dtos;
+﻿using Dtos;
 using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class ListProductsConsumerTests : ServiceTestCase<ListProductsConsumer, ListProductsOrder, ListProductsResponse>
+public class ListProductsConsumerTests : ServiceTestCase<ProductsApplicationService, ListProductsOrder, ListProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private readonly PaginationDto pagination = new (){ PageIndex = 0, PageSize = 10 };
@@ -34,7 +34,7 @@ public class ListProductsConsumerTests : ServiceTestCase<ListProductsConsumer, L
 			Code = "TEST2"
 		});
 
-		consumer = new ListProductsConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, GetMockRepo<SubProduct>(), GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -43,10 +43,9 @@ public class ListProductsConsumerTests : ServiceTestCase<ListProductsConsumer, L
 	{
 		var order = new ListProductsOrder(new ProductStatusEnum[] { ProductStatusEnum.NotOffered }, pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var response = await service.ListProductAsync(order);
 		
-		var product = responses.Single().Data?.Products.Items.FirstOrDefault();
+		var product = response.Products.Items.FirstOrDefault();
 		Assert.That(product, Is.Not.Null);
 		Assert.That(product?.Id, Is.EqualTo(1));
 		Assert.That(product?.Name, Is.EqualTo("test"));

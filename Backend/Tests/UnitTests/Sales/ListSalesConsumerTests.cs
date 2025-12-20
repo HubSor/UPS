@@ -1,14 +1,14 @@
-﻿using Consumers.Sales;
-using Dtos;
+﻿using Dtos;
 using TestHelpers;
 using Messages.Sales;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Sales;
 
 [TestFixture]
-public class ListSalesConsumerTests : ServiceTestCase<ListSalesConsumer, ListSalesOrder, ListSalesResponse>
+public class ListSalesConsumerTests : ServiceTestCase<SalesApplicationService, ListSalesOrder, ListSalesResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<Sale> sales = default!;
@@ -61,7 +61,7 @@ public class ListSalesConsumerTests : ServiceTestCase<ListSalesConsumer, ListSal
 			},
 		});
 		
-		consumer = new ListSalesConsumer(mockLogger.Object, sales.Object);
+		service = new SalesApplicationService(mockLogger.Object, mockUnitOfWork.Object, mockHttpContextAccessor.Object, sales.Object, GetMockRepo<Parameter>(), GetMockRepo<Product>(), GetMockRepo<Client>());
 		return Task.CompletedTask;
 	}
 	
@@ -70,10 +70,7 @@ public class ListSalesConsumerTests : ServiceTestCase<ListSalesConsumer, ListSal
 	{
 		var order = new ListSalesOrder(Pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var data = responses.Single().Data?.Sales;
+		var data = (await service.ListSalesAsync(order))?.Sales;
 		
 		Assert.That(data, Is.Not.Null);
 		Assert.That(data!.Pagination.Count, Is.EqualTo(2));

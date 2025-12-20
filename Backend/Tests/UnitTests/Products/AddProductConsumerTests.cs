@@ -1,13 +1,14 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AddProductConsumerTests : ServiceTestCase<AddProductConsumer, AddProductOrder, AddProductResponse>
+public class AddProductConsumerTests : ServiceTestCase<ProductsApplicationService, AddProductOrder, AddProductResponse>
 {
 	private MockRepository<Product> products = default!;
 
@@ -15,7 +16,7 @@ public class AddProductConsumerTests : ServiceTestCase<AddProductConsumer, AddPr
 	{
 		products = new MockRepository<Product>();
 
-		consumer = new AddProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, GetMockRepo<SubProduct>(), GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -24,8 +25,7 @@ public class AddProductConsumerTests : ServiceTestCase<AddProductConsumer, AddPr
 	{
 		var order = new AddProductOrder(true, "TEST1", "Nowy produkt", 99.99m, 10, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AddProductAsync(order);
 		
 		var newProduct = products.Entities.SingleOrDefault();
 		Assert.That(newProduct, Is.Not.Null);
@@ -39,7 +39,7 @@ public class AddProductConsumerTests : ServiceTestCase<AddProductConsumer, AddPr
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_CodeTaken()
+	public void Consume_BadRequest_CodeTaken()
 	{
 		products.Entities.Add(new() 
 		{
@@ -49,7 +49,6 @@ public class AddProductConsumerTests : ServiceTestCase<AddProductConsumer, AddPr
 		
 		var order = new AddProductOrder(true, "test1", "Nowy produkt", 99.99m, 10, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.AddProductAsync(order));
 	}
 }

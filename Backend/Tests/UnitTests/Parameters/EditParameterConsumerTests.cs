@@ -1,14 +1,14 @@
-﻿using Consumers.Parameters;
-using Dtos.Parameters;
+﻿using Dtos.Parameters;
 using TestHelpers;
 using Messages.Parameters;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class EditParameterConsumerTests : ServiceTestCase<EditParameterConsumer, EditParameterOrder, EditParameterResponse>
+public class EditParameterConsumerTests : ServiceTestCase<ParametersApplicationService, EditParameterOrder, EditParameterResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 	private MockRepository<ParameterOption> options = default!;
@@ -42,7 +42,7 @@ public class EditParameterConsumerTests : ServiceTestCase<EditParameterConsumer,
 			Type = ParameterTypeEnum.Select
 		});
 
-		consumer = new EditParameterConsumer(mockLogger.Object, parameters.Object, options.Object, mockUnitOfWork.Object);
+		service = new ParametersApplicationService(mockLogger.Object, mockUnitOfWork.Object, parameters.Object, options.Object, GetMockRepo<Product>(), GetMockRepo<SubProduct>());
 		return Task.CompletedTask;
 	}
 	
@@ -51,8 +51,7 @@ public class EditParameterConsumerTests : ServiceTestCase<EditParameterConsumer,
 	{
 		var order = new EditParameterOrder(1, "new", true, ParameterTypeEnum.Text, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditParameterAsync(order);
 		
 		var newParam = parameters.Entities.SingleOrDefault();
 		Assert.That(newParam, Is.Not.Null);
@@ -76,8 +75,7 @@ public class EditParameterConsumerTests : ServiceTestCase<EditParameterConsumer,
 			}
 		});
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditParameterAsync(order);
 
 		var newParam = parameters.Entities.SingleOrDefault();
 		Assert.That(newParam, Is.Not.Null);
@@ -99,8 +97,7 @@ public class EditParameterConsumerTests : ServiceTestCase<EditParameterConsumer,
 		
 		var order = new EditParameterOrder(1, "new3", false, ParameterTypeEnum.Checkbox, null);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditParameterAsync(order);
 
 		var newParam = parameters.Entities.SingleOrDefault();
 		Assert.That(newParam, Is.Not.Null);

@@ -1,13 +1,13 @@
-﻿using Consumers.Parameters;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Parameters;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class DeleteParameterConsumerTests : ServiceTestCase<DeleteParameterConsumer, DeleteParameterOrder, DeleteParameterResponse>
+public class DeleteParameterConsumerTests : ServiceTestCase<ParametersApplicationService, DeleteParameterOrder, DeleteParameterResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 
@@ -38,7 +38,7 @@ public class DeleteParameterConsumerTests : ServiceTestCase<DeleteParameterConsu
 			SaleParameters = new List<SaleParameter>() {}
 		});
 
-		consumer = new DeleteParameterConsumer(mockLogger.Object, parameters.Object, mockUnitOfWork.Object);
+		service = new ParametersApplicationService(mockLogger.Object, mockUnitOfWork.Object, parameters.Object, GetMockRepo<ParameterOption>(), GetMockRepo<Product>(), GetMockRepo<SubProduct>());
 		return Task.CompletedTask;
 	}
 	
@@ -47,8 +47,7 @@ public class DeleteParameterConsumerTests : ServiceTestCase<DeleteParameterConsu
 	{
 		var order = new DeleteParameterOrder(2);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteParameterAsync(order);
 		
 		Assert.That(parameters.Entities.Count, Is.EqualTo(1));
 		Assert.That(parameters.Entities.First().Id, Is.Not.EqualTo(2));
@@ -59,8 +58,7 @@ public class DeleteParameterConsumerTests : ServiceTestCase<DeleteParameterConsu
 	{
 		var order = new DeleteParameterOrder(1);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteParameterAsync(order);
 
 		Assert.That(parameters.Entities.Count, Is.EqualTo(2));
 		var sofDeleted = parameters.Entities.Single(x => x.Id == 1);

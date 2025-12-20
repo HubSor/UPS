@@ -1,13 +1,13 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class GetProductConsumerTests : ServiceTestCase<GetProductConsumer, GetProductOrder, GetProductResponse>
+public class GetProductConsumerTests : ServiceTestCase<ProductsApplicationService, GetProductOrder, GetProductResponse>
 {
 	private MockRepository<Product> products = default!;
 
@@ -58,7 +58,7 @@ public class GetProductConsumerTests : ServiceTestCase<GetProductConsumer, GetPr
 			}
 		});
 
-		consumer = new GetProductConsumer(mockLogger.Object, products.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, GetMockRepo<SubProduct>(), GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -67,10 +67,8 @@ public class GetProductConsumerTests : ServiceTestCase<GetProductConsumer, GetPr
 	{
 		var order = new GetProductOrder(1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var product = (await service.GetProductAsync(order)).Product;
 		
-		var product = responses.Single().Data?.Product;
 		Assert.That(product, Is.Not.Null);
 		Assert.That(product!.Id, Is.EqualTo(1));
 		Assert.That(product!.Code, Is.EqualTo("CODE"));

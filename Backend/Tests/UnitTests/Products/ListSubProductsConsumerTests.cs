@@ -1,14 +1,14 @@
-﻿using Consumers.Products;
-using Dtos;
+﻿using Dtos;
 using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class ListSubProductsConsumerTests : ServiceTestCase<ListSubProductsConsumer, ListSubProductsOrder, ListSubProductsResponse>
+public class ListSubProductsConsumerTests : ServiceTestCase<ProductsApplicationService, ListSubProductsOrder, ListSubProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -47,7 +47,7 @@ public class ListSubProductsConsumerTests : ServiceTestCase<ListSubProductsConsu
 			SubProductInProducts = new List<SubProductInProduct>()
 		});
 
-		consumer = new ListSubProductsConsumer(mockLogger.Object, products.Object, subProducts.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, subProducts.Object, GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -56,10 +56,9 @@ public class ListSubProductsConsumerTests : ServiceTestCase<ListSubProductsConsu
 	{
 		var order = new ListSubProductsOrder(null, pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var resp = await service.ListSubProductsAsync(order);
 		
-		var result = responses.SingleOrDefault()?.Data?.SubProducts;
+		var result = resp.SubProducts;
 		Assert.That(result, Is.Not.Null);
 		Assert.That(result?.Items, Has.Count.EqualTo(2));
 	}
@@ -69,10 +68,9 @@ public class ListSubProductsConsumerTests : ServiceTestCase<ListSubProductsConsu
 	{
 		var order = new ListSubProductsOrder(1, pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var resp = await service.ListSubProductsAsync(order);
 		
-		var result = responses.SingleOrDefault()?.Data?.SubProducts;
+		var result = resp.SubProducts;
 		Assert.That(result, Is.Not.Null);
 		Assert.That(result?.Items, Has.Count.EqualTo(1));
 		Assert.That(result?.Items.Single().Id, Is.EqualTo(2));

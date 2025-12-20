@@ -1,13 +1,14 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class EditSubProductAssignmentConsumerTests : ServiceTestCase<EditSubProductAssignmentConsumer, EditSubProductAssignmentOrder, EditSubProductAssignmentResponse>
+public class EditSubProductAssignmentConsumerTests : ServiceTestCase<ProductsApplicationService, EditSubProductAssignmentOrder, EditSubProductAssignmentResponse>
 {
 	private MockRepository<SubProductInProduct> intersection = default!;
 
@@ -21,7 +22,7 @@ public class EditSubProductAssignmentConsumerTests : ServiceTestCase<EditSubProd
 			InProductPrice = 10m
 		});
 
-		consumer = new EditSubProductAssignmentConsumer(mockLogger.Object, intersection.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, GetMockRepo<Product>(), GetMockRepo<SubProduct>(), intersection.Object, GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -30,8 +31,7 @@ public class EditSubProductAssignmentConsumerTests : ServiceTestCase<EditSubProd
 	{
 		var order = new EditSubProductAssignmentOrder(1, 1, 0.75m);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditSubProductAssignmentAsync(order);
 		
 		var edited = intersection.Entities.SingleOrDefault();
 		Assert.That(edited, Is.Not.Null);
@@ -40,11 +40,10 @@ public class EditSubProductAssignmentConsumerTests : ServiceTestCase<EditSubProd
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_NotFound()
+	public void Consume_BadRequest_NotFound()
 	{
 		var order = new EditSubProductAssignmentOrder(10, 10, 0.75m);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.EditSubProductAssignmentAsync(order));
 	}
 }

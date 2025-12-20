@@ -1,14 +1,14 @@
-﻿using Consumers.Parameters;
-using Dtos.Parameters;
+﻿using Dtos.Parameters;
 using TestHelpers;
 using Messages.Parameters;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class AddParameterConsumerTests : ServiceTestCase<AddParameterConsumer, AddParameterOrder, AddParameterResponse>
+public class AddParameterConsumerTests : ServiceTestCase<ParametersApplicationService, AddParameterOrder, AddParameterResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 	private MockRepository<Product> products = default!;
@@ -28,7 +28,7 @@ public class AddParameterConsumerTests : ServiceTestCase<AddParameterConsumer, A
 			Id = 1,
 		});
 
-		consumer = new AddParameterConsumer(mockLogger.Object, parameters.Object, products.Object, subProducts.Object, mockUnitOfWork.Object);
+		service = new ParametersApplicationService(mockLogger.Object, mockUnitOfWork.Object, parameters.Object, GetMockRepo<ParameterOption>(), products.Object, subProducts.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -37,8 +37,7 @@ public class AddParameterConsumerTests : ServiceTestCase<AddParameterConsumer, A
 	{
 		var order = new AddParameterOrder("test", true, ParameterTypeEnum.Text, 1, null, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AddParameterAsync(order);
 		
 		var newParam = parameters.Entities.SingleOrDefault();
 		Assert.That(newParam, Is.Not.Null);
@@ -56,8 +55,7 @@ public class AddParameterConsumerTests : ServiceTestCase<AddParameterConsumer, A
 	{
 		var order = new AddParameterOrder("test2", true, ParameterTypeEnum.Select, null, 1, new List<OptionDto>(){ new() { Value = "option" } });
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AddParameterAsync(order);
 
 		var newParam = parameters.Entities.SingleOrDefault();
 		Assert.That(newParam, Is.Not.Null);

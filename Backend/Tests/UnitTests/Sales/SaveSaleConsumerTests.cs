@@ -1,15 +1,15 @@
-﻿using System.Runtime.InteropServices;
-using Consumers.Sales;
-using Dtos.Sales;
+﻿using Dtos.Sales;
 using TestHelpers;
 using Messages.Sales;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Sales;
 
 [TestFixture]
-public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleOrder, SaveSaleResponse>
+public class SaveSaleConsumerTests : ServiceTestCase<SalesApplicationService, SaveSaleOrder, SaveSaleResponse>
 {
 	private MockRepository<Sale> sales = default!;
 	private MockRepository<Product> products = default!;
@@ -74,7 +74,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			Roles = new List<Role>()
 		});
 
-		consumer = new SaveSaleConsumer(mockLogger.Object, sales.Object, parameters.Object, products.Object, clients.Object, mockUnitOfWork.Object, mockHttpContextAccessor.Object);
+		service = new SalesApplicationService(mockLogger.Object, mockUnitOfWork.Object, mockHttpContextAccessor.Object, sales.Object, parameters.Object, products.Object, clients.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -85,8 +85,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 		var order = new SaveSaleOrder(1, null, Array.Empty<SaveSaleParameterDto>(), 99.99m, Array.Empty<SaveSaleSubProductDto>());
 		
 		var then = DateTime.Now;
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.SaveSaleAsync(order);
 		var after = DateTime.Now;
 		
 		var newSale = sales.Entities.Single();
@@ -104,8 +103,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 		parameters.Entities.Clear();
 		var order = new SaveSaleOrder(1, 500, Array.Empty<SaveSaleParameterDto>(), 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.SaveSaleAsync(order);
 
 		var newSale = sales.Entities.Single();
 		Assert.That(newSale.FinalPrice, Is.EqualTo(99.99m));
@@ -127,8 +125,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			}
 		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.SaveSaleAsync(order);
 
 		var newSale = sales.Entities.Single();
 		Assert.That(newSale.FinalPrice, Is.EqualTo(99.99m));
@@ -156,8 +153,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			}
 		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.SaveSaleAsync(order);
 
 		var newSale = sales.Entities.Single();
 		Assert.That(newSale.FinalPrice, Is.EqualTo(99.99m));
@@ -169,7 +165,7 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_NoRequiredAnswer()
+	public void Consume_BadRequest_NoRequiredAnswer()
 	{
 		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
@@ -180,12 +176,11 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			}
 		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.SaveSaleAsync(order));
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_InvalidValue()
+	public void Consume_BadRequest_InvalidValue()
 	{
 		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
@@ -196,12 +191,11 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			}
 		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.SaveSaleAsync(order));
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_DuplicatedAnswer()
+	public void Consume_BadRequest_DuplicatedAnswer()
 	{
 		var order = new SaveSaleOrder(1, 500, new SaveSaleParameterDto[]
 		{
@@ -217,7 +211,6 @@ public class SaveSaleConsumerTests : ServiceTestCase<SaveSaleConsumer, SaveSaleO
 			}
 		}, 99.99m, Array.Empty<SaveSaleSubProductDto>());
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.SaveSaleAsync(order));
 	}
 }

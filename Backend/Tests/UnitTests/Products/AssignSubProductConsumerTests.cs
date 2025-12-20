@@ -1,13 +1,14 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductConsumer, AssignSubProductOrder, AssignSubProductResponse>
+public class AssignSubProductConsumerTests : ServiceTestCase<ProductsApplicationService, AssignSubProductOrder, AssignSubProductResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -29,8 +30,7 @@ public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductCon
 		
 		intersection = new MockRepository<SubProductInProduct>();
 
-		consumer = new AssignSubProductConsumer(mockLogger.Object, subProducts.Object, 
-			products.Object, intersection.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, subProducts.Object, intersection.Object, GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -39,8 +39,7 @@ public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductCon
 	{
 		var order = new AssignSubProductOrder(1, 1, 0.75m);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AssignSubProductAsync(order);
 		
 		var newIntersection = intersection.Entities.SingleOrDefault();
 		Assert.That(newIntersection, Is.Not.Null);
@@ -49,7 +48,7 @@ public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductCon
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_AlreadyAssigned()
+	public void Consume_BadRequest_AlreadyAssigned()
 	{
 		intersection.Entities.Add(new()
 		{
@@ -59,7 +58,6 @@ public class AssignSubProductConsumerTests : ServiceTestCase<AssignSubProductCon
 		});
 		var order = new AssignSubProductOrder(1, 1, 0.75m);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.AssignSubProductAsync(order));
 	}
 }

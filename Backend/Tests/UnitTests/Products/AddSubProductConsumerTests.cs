@@ -1,15 +1,15 @@
-﻿using Consumers.Products;
-using TestHelpers;
-using MassTransit.Mediator;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using Moq;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer, AddSubProductOrder, AddSubProductResponse>
+public class AddSubProductConsumerTests : ServiceTestCase<ProductsApplicationService, AddSubProductOrder, AddSubProductResponse>
 {
 	private MockRepository<SubProduct> subProducts = default!;
 
@@ -17,9 +17,7 @@ public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer,
 	{
 		subProducts = new MockRepository<SubProduct>();
 		
-		var mediator = new Mock<IMediator>();
-
-		consumer = new AddSubProductConsumer(mockLogger.Object, subProducts.Object, mockUnitOfWork.Object, mediator.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, GetMockRepo<Product>(), subProducts.Object, GetMockRepo<SubProductInProduct>(), GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -28,8 +26,7 @@ public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer,
 	{
 		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 0, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AddSubProductAsync(order);
 		
 		var newProduct = subProducts.Entities.SingleOrDefault();
 		Assert.That(newProduct, Is.Not.Null);
@@ -42,16 +39,15 @@ public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer,
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_AddSubProductNoRequestClient()
+	public void Consume_BadRequest_AddSubProductNoRequestClient()
 	{
 		var order = new AddSubProductOrder( "TEST1", "Nowy podprodukt", 99.99m, "opis", 10, 1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.AddSubProductAsync(order));
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_CodeTaken()
+	public void Consume_BadRequest_CodeTaken()
 	{
 		subProducts.Entities.Add(new() 
 		{
@@ -61,7 +57,6 @@ public class AddSubProductConsumerTests : ServiceTestCase<AddSubProductConsumer,
 		
 		var order = new AddSubProductOrder("test1", "Nowy podprodukt", 99.99m, null, 10, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.AddSubProductAsync(order));
 	}
 }

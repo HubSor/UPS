@@ -1,13 +1,13 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class UnassignSubProductsConsumerTests : ServiceTestCase<UnassignSubProductsConsumer, UnassignSubProductsOrder, UnassignSubProductsResponse>
+public class UnassignSubProductsConsumerTests : ServiceTestCase<ProductsApplicationService, UnassignSubProductsOrder, UnassignSubProductsResponse>
 {
 	private MockRepository<Product> products = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -45,8 +45,7 @@ public class UnassignSubProductsConsumerTests : ServiceTestCase<UnassignSubProdu
 			InProductPrice = 5.99m
 		});
 
-		consumer = new UnassignSubProductsConsumer(mockLogger.Object, subProducts.Object, 
-			products.Object, intersection.Object, mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, products.Object, subProducts.Object, intersection.Object, GetMockRepo<Parameter>());
 		return Task.CompletedTask;
 	}
 	
@@ -55,8 +54,7 @@ public class UnassignSubProductsConsumerTests : ServiceTestCase<UnassignSubProdu
 	{
 		var order = new UnassignSubProductsOrder(1, new int[] { 1 });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.UnassignSubProductsAsync(order);
 		
 		var singleIntersection = intersection.Entities.SingleOrDefault();
 		Assert.That(singleIntersection, Is.Not.Null);
@@ -69,8 +67,7 @@ public class UnassignSubProductsConsumerTests : ServiceTestCase<UnassignSubProdu
 		intersection.Entities = intersection.Entities.Where(x => x.SubProductId != 1).ToList();
 		var order = new UnassignSubProductsOrder(1, new int[] { 1 });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.UnassignSubProductsAsync(order);
 		
 		var singleIntersection = intersection.Entities.SingleOrDefault();
 		Assert.That(singleIntersection, Is.Not.Null);

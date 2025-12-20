@@ -1,13 +1,13 @@
-﻿using Consumers.Products;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Products;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Products;
 
 [TestFixture]
-public class DeleteSubProductConsumerTests : ServiceTestCase<DeleteSubProductConsumer, DeleteSubProductOrder, DeleteSubProductResponse>
+public class DeleteSubProductConsumerTests : ServiceTestCase<ProductsApplicationService, DeleteSubProductOrder, DeleteSubProductResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 	private MockRepository<SubProduct> subProducts = default!;
@@ -42,8 +42,7 @@ public class DeleteSubProductConsumerTests : ServiceTestCase<DeleteSubProductCon
 		intersection = new MockRepository<SubProductInProduct>();
 		intersection.Entities.Add(subProductInProduct);
 
-		consumer = new DeleteSubProductConsumer(mockLogger.Object, subProducts.Object,
-			intersection.Object, parameters.Object,  mockUnitOfWork.Object);
+		service = new ProductsApplicationService(mockLogger.Object, mockUnitOfWork.Object, GetMockRepo<Product>(), subProducts.Object, intersection.Object, parameters.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -52,8 +51,7 @@ public class DeleteSubProductConsumerTests : ServiceTestCase<DeleteSubProductCon
 	{
 		var order = new DeleteSubProductOrder(1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteSubProductAsync(order);
 		
 		Assert.That(intersection.Entities.Count, Is.EqualTo(0));
 		Assert.That(subProducts.Entities.Count, Is.EqualTo(0));
@@ -73,8 +71,7 @@ public class DeleteSubProductConsumerTests : ServiceTestCase<DeleteSubProductCon
 		};
 		var order = new DeleteSubProductOrder(1);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteSubProductAsync(order);
 
 		Assert.That(intersection.Entities.Count, Is.EqualTo(0));
 		Assert.That(subProducts.Entities.Count, Is.EqualTo(1));
@@ -95,8 +92,7 @@ public class DeleteSubProductConsumerTests : ServiceTestCase<DeleteSubProductCon
 		};
 		var order = new DeleteSubProductOrder(1);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteSubProductAsync(order);
 
 		Assert.That(intersection.Entities.Count, Is.EqualTo(0));
 		Assert.That(subProducts.Entities.Count, Is.EqualTo(1));

@@ -1,13 +1,14 @@
-﻿using Consumers.Parameters;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Parameters;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Parameters;
 
 [TestFixture]
-public class AddOptionConsumerTests : ServiceTestCase<AddOptionConsumer, AddOptionOrder, AddOptionResponse>
+public class AddOptionConsumerTests : ServiceTestCase<ParametersApplicationService, AddOptionOrder, AddOptionResponse>
 {
 	private MockRepository<Parameter> parameters = default!;
 	private MockRepository<ParameterOption> options = default!;
@@ -27,7 +28,7 @@ public class AddOptionConsumerTests : ServiceTestCase<AddOptionConsumer, AddOpti
 		});
 		options = new MockRepository<ParameterOption>();
 
-		consumer = new AddOptionConsumer(mockLogger.Object, parameters.Object, options.Object, mockUnitOfWork.Object);
+		service = new ParametersApplicationService(mockLogger.Object, mockUnitOfWork.Object, parameters.Object, options.Object, GetMockRepo<Product>(), GetMockRepo<SubProduct>());
 		return Task.CompletedTask;
 	}
 	
@@ -36,8 +37,7 @@ public class AddOptionConsumerTests : ServiceTestCase<AddOptionConsumer, AddOpti
 	{
 		var order = new AddOptionOrder(2, "test535");
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.AddOptionAsync(order);
 		
 		var newOption = options.Entities.SingleOrDefault();
 		Assert.That(newOption, Is.Not.Null);
@@ -47,12 +47,11 @@ public class AddOptionConsumerTests : ServiceTestCase<AddOptionConsumer, AddOpti
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_AddToWrongType()
+	public void Consume_BadRequest_AddToWrongType()
 	{
 		var order = new AddOptionOrder(1, "test535");
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.AddOptionAsync(order));
 
 		var newOption = options.Entities.SingleOrDefault();
 		Assert.That(newOption, Is.Null);
