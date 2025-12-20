@@ -1,20 +1,20 @@
-﻿using Consumers.Clients;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Clients;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, UpsertClientOrder, UpsertClientResponse>
+public class UpsertClientConsumerTests : ServiceTestCase<ClientsApplicationService, UpsertClientOrder, UpsertClientResponse>
 {
 	private MockRepository<Client> clients = default!;
 
 	protected override Task SetUp()
 	{
 		clients = new MockRepository<Client>();
-		
 		clients.Entities.Add(new CompanyClient() 
 		{
 			Id = 1,
@@ -25,7 +25,10 @@ public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, U
 			Nip = null,
 		});
 
-		consumer = new UpsertClientConsumer(mockLogger.Object, clients.Object, mockUnitOfWork.Object);
+		var personClients = new MockRepository<PersonClient>();
+		var companyClients = new MockRepository<CompanyClient>();
+		
+		service = new ClientsApplicationService(mockLogger.Object, mockUnitOfWork.Object, clients.Object, personClients.Object, companyClients.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -35,8 +38,7 @@ public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, U
 		var order = new UpsertClientOrder(false, null, "123456789", "jan.los@gmail.com",
 			"jan", "łoś", "12345678900", null, null, null);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var resp = await service.UpsertClientAsync(order);
 		
 		var newClient = clients.Entities.SingleOrDefault(x => x.Email == order.Email);
 		Assert.That(newClient, Is.Not.Null);
@@ -54,8 +56,7 @@ public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, U
 		var order = new UpsertClientOrder(true, 1, "987654321", null,
 			null, null, null, "drugi krzak", "000000000", null);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		var resp = await service.UpsertClientAsync(order);
 
 		var newClient = clients.Entities.SingleOrDefault(x => x.Id == order.ClientId);
 		Assert.That(newClient, Is.Not.Null);
@@ -69,12 +70,11 @@ public class UpsertClientConsumerTests : ServiceTestCase<UpsertClientConsumer, U
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_ChangeClientType()
+	public void Consume_BadRequest_ChangeClientType()
 	{
 		var order = new UpsertClientOrder(false, 1, "987654321", null,
 			null, null, null, "drugi krzak", "000000000", null);
 
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.UpsertClientAsync(order));
 	}
 }

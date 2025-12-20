@@ -1,14 +1,16 @@
-﻿using Consumers.Users;
-using Dtos;
+﻿using Dtos;
 using TestHelpers;
 using Messages.Users;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using Moq;
+using Services.Domain;
 
 namespace UnitTests.Users;
 
 [TestFixture]
-public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUsersOrder, ListUsersResponse>
+public class ListUsersConsumerTests : ServiceTestCase<UsersApplicationService, ListUsersOrder, ListUsersResponse>
 {
 	private PaginationDto Pagination = default!;
 	private MockRepository<User> users = default!;
@@ -56,7 +58,7 @@ public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUse
 			},
 		});
 		
-		consumer = new ListUsersConsumer(mockLogger.Object, users.Object);
+		service = new UsersApplicationService(mockLogger.Object, mockUnitOfWork.Object, users.Object, GetMockRepo<Role>(), mockHttpContextAccessor.Object, new Mock<IPasswordService>().Object);
 		return Task.CompletedTask;
 	}
 	
@@ -65,10 +67,7 @@ public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUse
 	{
 		var order = new ListUsersOrder(Pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var data = responses.Single().Data?.Users;
+		var data = (await service.ListUsersAsync(order))?.Users;
 		
 		Assert.That(data, Is.Not.Null);
 		Assert.That(data!.Pagination.Count, Is.EqualTo(3));
@@ -90,10 +89,7 @@ public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUse
 		Pagination.PageIndex = 1;
 		var order = new ListUsersOrder(Pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var data = responses.Single().Data?.Users;
+		var data = (await service.ListUsersAsync(order))?.Users;
 		
 		Assert.That(data, Is.Not.Null);
 		Assert.That(data!.Pagination.Count, Is.EqualTo(1));
@@ -113,10 +109,7 @@ public class ListUsersConsumerTests : ServiceTestCase<ListUsersConsumer, ListUse
 		users.Entities.Clear();
 		var order = new ListUsersOrder(Pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var data = responses.Single().Data?.Users;
+		var data = (await service.ListUsersAsync(order))?.Users;
 		
 		Assert.That(data, Is.Not.Null);
 		Assert.That(data!.Pagination.Count, Is.EqualTo(0));

@@ -1,13 +1,17 @@
-﻿using Consumers.Users;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Users;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
+using Microsoft.AspNetCore.Identity;
+using Moq;
+using Services.Domain;
+using FluentValidation;
 
 namespace UnitTests.Users;
 
 [TestFixture]
-public class DeleteUserConsumerTests : ServiceTestCase<DeleteUserConsumer, DeleteUserOrder, DeleteUserResponse>
+public class DeleteUserConsumerTests : ServiceTestCase<UsersApplicationService, DeleteUserOrder, DeleteUserResponse>
 {
 	private MockRepository<User> users = default!;
 
@@ -40,9 +44,8 @@ public class DeleteUserConsumerTests : ServiceTestCase<DeleteUserConsumer, Delet
 		});
 		
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
-			
-		consumer = new DeleteUserConsumer(mockLogger.Object, users.Object,
-		mockUnitOfWork.Object, mockHttpContextAccessor.Object);
+
+		service = new UsersApplicationService(mockLogger.Object, mockUnitOfWork.Object, users.Object, GetMockRepo<Role>(), mockHttpContextAccessor.Object, new Mock<IPasswordService>().Object);
 		return Task.CompletedTask;
 	}
 	
@@ -51,8 +54,7 @@ public class DeleteUserConsumerTests : ServiceTestCase<DeleteUserConsumer, Delet
 	{
 		var order = new DeleteUserOrder(2);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.DeleteUserAsync(order);
 		
 		Assert.That(users.Entities.Count, expression: Is.EqualTo(1));
 		Assert.That(users.Entities.Single().Id, Is.EqualTo(1));
@@ -60,25 +62,23 @@ public class DeleteUserConsumerTests : ServiceTestCase<DeleteUserConsumer, Delet
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_DeleteSelf()
+	public void Consume_BadRequest_DeleteSelf()
 	{
 		var order = new DeleteUserOrder(1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.DeleteUserAsync(order));
 		
 		Assert.That(users.Entities.Count, expression: Is.EqualTo(2));
 	}
-	
+
 	[Test]
-	public async Task Consume_BadRequest_DeleteAdminAsManager()
+	public void Consume_BadRequest_DeleteAdminAsManager()
 	{
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
 		var order = new DeleteUserOrder(1);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
-		
+		Assert.ThrowsAsync<ValidationException>(() => service.DeleteUserAsync(order));
+
 		Assert.That(users.Entities.Count, expression: Is.EqualTo(2));
 	}
 }

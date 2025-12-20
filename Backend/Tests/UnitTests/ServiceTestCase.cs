@@ -1,7 +1,8 @@
-﻿using System.Net;
-using Core;
+﻿using System.Runtime.CompilerServices;
 using Data;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
+using Models.Entities;
 using Moq;
 using NUnit.Framework;
 using Services.Application;
@@ -19,24 +20,6 @@ public abstract class ServiceTestCase<C, O, R>
 	protected Mock<IUnitOfWork> mockUnitOfWork = new();
 	protected Mock<ILogger<C>> mockLogger = new();
 	protected MockHttpContextAccessor mockHttpContextAccessor = new();
-	
-	protected void AssertOk<T>(ApiResponse<T>? resp)
-		where T : class
-	{
-		Assert.That(resp, Is.Not.Null);
-		Assert.That(resp?.Success, Is.True);
-		Assert.That(resp?.Errors, Is.Null);
-		Assert.That(resp?.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-	}
-	
-	protected void AssertBadRequest<T>(ApiResponse<T>? resp)
-		where T : class
-	{
-		Assert.That(resp, Is.Not.Null);
-		Assert.That(resp?.Success, Is.False);
-		Assert.That(resp?.Errors, Is.Not.Empty);
-		Assert.That(resp?.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-	}
 	
 	[OneTimeSetUp]
 	public async Task SuperOneTimeSetUp()
@@ -61,4 +44,11 @@ public abstract class ServiceTestCase<C, O, R>
 	}
 	
 	protected virtual Task TearDown() => Task.CompletedTask;
+
+	protected IRepository<T> GetMockRepo<T>()
+		where T : class
+	{
+		var mockRepo = new MockRepository<T>();
+		return mockRepo.Object;
+	}
 }

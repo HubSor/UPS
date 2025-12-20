@@ -1,24 +1,24 @@
-﻿using Consumers.Clients;
-using Dtos;
+﻿using Dtos;
 using TestHelpers;
 using Messages.Clients;
 using Models.Entities;
 using NUnit.Framework;
+using Services.Application;
 
 namespace UnitTests.Clients;
 
 [TestFixture]
-public class ListCompanyClientsConsumerTests : ServiceTestCase<ListCompanyClientsConsumer, ListCompanyClientsOrder, ListCompanyClientsResponse>
+public class ListCompanyClientsConsumerTests : ServiceTestCase<ClientsApplicationService, ListCompanyClientsOrder, ListCompanyClientsResponse>
 {
 	private PaginationDto Pagination = default!;
-	private MockRepository<CompanyClient> clients = default!;
+	private MockRepository<CompanyClient> companyClients = default!;
 	
 	protected override Task SetUp()
 	{
 		Pagination = new();
 		
-		clients = new MockRepository<CompanyClient>();
-		clients.Entities.AddRange(new List<CompanyClient>()
+		companyClients = new MockRepository<CompanyClient>();
+		companyClients.Entities.AddRange(new List<CompanyClient>()
 		{
 			new ()
 			{
@@ -35,8 +35,11 @@ public class ListCompanyClientsConsumerTests : ServiceTestCase<ListCompanyClient
 				CompanyName = "januszex"
 			},
 		});
+
+		var personClients = new MockRepository<PersonClient>();
+		var clients = new MockRepository<Client>();
 		
-		consumer = new ListCompanyClientsConsumer(mockLogger.Object, clients.Object);
+		service = new ClientsApplicationService(mockLogger.Object, mockUnitOfWork.Object, clients.Object, personClients.Object, companyClients.Object);
 		return Task.CompletedTask;
 	}
 	
@@ -45,10 +48,8 @@ public class ListCompanyClientsConsumerTests : ServiceTestCase<ListCompanyClient
 	{
 		var order = new ListCompanyClientsOrder(Pagination);
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
-		
-		var data = responses.Single().Data?.Clients;
+		var resp = await service.ListCompaniesAsync(order);
+		var data = resp?.Clients;
 		
 		Assert.That(data, Is.Not.Null);
 		Assert.That(data!.Pagination.Count, Is.EqualTo(2));

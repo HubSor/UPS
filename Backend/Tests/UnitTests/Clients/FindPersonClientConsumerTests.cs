@@ -50,7 +50,7 @@ public class FindPersonClientConsumerTests : ServiceTestCase<ClientsApplicationS
 	}
 
 	[Test]
-	public async Task Consume_BadRequest_NotFound()
+	public void Consume_BadRequest_NotFound()
 	{
 		var order = new FindPersonClientOrder(pesel + '1');
 

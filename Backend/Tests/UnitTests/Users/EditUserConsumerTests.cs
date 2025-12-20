@@ -1,14 +1,16 @@
-﻿using Consumers.Users;
-using TestHelpers;
+﻿using TestHelpers;
 using Messages.Users;
 using Models.Entities;
 using NUnit.Framework;
 using Services;
+using Services.Domain;
+using Services.Application;
+using FluentValidation;
 
 namespace UnitTests.Users;
 
 [TestFixture]
-public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserOrder, EditUserResponse>
+public class EditUserConsumerTests : ServiceTestCase<UsersApplicationService, EditUserOrder, EditUserResponse>
 {
 	private static readonly string userPassword = "testowEha5ło";
 	private readonly IPasswordService passwordService = new PasswordService();
@@ -64,8 +66,7 @@ public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserO
 		
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
-		consumer = new EditUserConsumer(mockHttpContextAccessor.Object, mockLogger.Object, 
-			users.Object, passwordService, roles.Object, mockUnitOfWork.Object);
+		service = new UsersApplicationService(mockLogger.Object, mockUnitOfWork.Object, users.Object, roles.Object, mockHttpContextAccessor.Object, passwordService);
 		return Task.CompletedTask;
 	}
 	
@@ -74,8 +75,7 @@ public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserO
 	{
 		var order = new EditUserOrder(2, "newUser", userPassword + "eee", new List<RoleEnum>(){ RoleEnum.Administrator, RoleEnum.Seller });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditUserAsync(order);
 		
 		var newUser = users.Entities.FirstOrDefault(u => u.Name == "newUser");
 		Assert.That(newUser, Is.Not.Null);
@@ -91,8 +91,7 @@ public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserO
 	{
 		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditUserAsync(order);
 		
 		var newUser = users.Entities.FirstOrDefault(u => u.Name == "newUser");
 		Assert.That(newUser, Is.Not.Null);
@@ -108,8 +107,7 @@ public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserO
 	{
 		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertOk();
+		await service.EditUserAsync(order);
 		
 		var newUser = users.Entities.FirstOrDefault(u => u.Name == "newUser");
 		Assert.That(newUser, Is.Not.Null);
@@ -121,24 +119,22 @@ public class EditUserConsumerTests : ServiceTestCase<EditUserConsumer, EditUserO
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_NotAdminEditingSelt()
+	public void Consume_BadRequest_NotAdminEditingSelt()
 	{
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 2));
 			
 		var order = new EditUserOrder(2, "newUser", null, new List<RoleEnum>(){ RoleEnum.Administrator });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.EditUserAsync(order));
 	}
 	
 	[Test]
-	public async Task Consume_BadRequest_AdminRemovingAdmin()
+	public void Consume_BadRequest_AdminRemovingAdmin()
 	{
 		mockHttpContextAccessor.SetClaims(users.Entities.First(u => u.Id == 1));
 			
 		var order = new EditUserOrder(1, "newUser", null, new List<RoleEnum>(){ });
 		
-		await consumer.Consume(GetConsumeContext(order));
-		AssertBadRequest();
+		Assert.ThrowsAsync<ValidationException>(() => service.EditUserAsync(order));
 	}
 }
