@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Entities;
 
 namespace Data
@@ -37,5 +38,11 @@ namespace Data
 				modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 			}
 		}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+			optionsBuilder.ConfigureWarnings(x => x.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
 	}
 }
