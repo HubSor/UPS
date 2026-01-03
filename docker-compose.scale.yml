@@ -1,0 +1,95 @@
+networks:
+  ups-net:
+
+services:
+ base-first:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - postgres-data-1:/var/lib/postgresql/data
+   networks:
+     - ups-net
+
+ base-second:
+   image: postgres:16
+   restart: always
+   environment:
+     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   volumes:
+     - postgres-data-2:/var/lib/postgresql/data
+   networks:
+     - ups-net
+
+ adminer:
+   image: adminer
+   restart: always
+   ports:
+     - 8081:8080
+   networks:
+     - ups-net
+
+ backend-1:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
+   build:
+     context: ./Backend
+   ports:
+     - 2443:443
+     - 2080:80
+   depends_on:
+     - base-first
+   networks:
+     - ups-net
+   volumes:
+     - ~/.dotnet/https:/https:ro
+   environment:
+     FRONTEND_ORIGIN: https://localhost:3000
+     ASPNETCORE_URLS: https://+
+     ASPNETCORE_HTTPS_PORT: 2443
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+     ASPNETCORE_ENVIRONMENT: "First"
+
+ backend-2:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
+   build:
+     context: ./Backend
+   ports:
+     - 2444:443
+     - 2081:80
+   depends_on:
+     - base-second
+   networks:
+     - ups-net
+   volumes:
+     - ~/.dotnet/https:/https:ro
+   environment:
+     FRONTEND_ORIGIN: https://localhost:3000
+     ASPNETCORE_URLS: https://+
+     ASPNETCORE_HTTPS_PORT: 2443
+     ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+     ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+     ASPNETCORE_ENVIRONMENT: "Second"
+ 
+ frontend:
+   build:
+     context: ./Frontend/ups
+   ports:
+     - 3000:3000
+   networks:
+     - ups-net
+   environment:
+     REACT_APP_BACKEND_URL: https://localhost:2443
+     
+volumes:
+ postgres-data-1:
+ postgres-data-2:
