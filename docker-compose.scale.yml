@@ -63,10 +63,6 @@ services:
       dockerfile: ./proxy.Dockerfile
     environment:
       FRONTEND_ORIGIN: https://localhost:3000
-      USERS_URL: "https://users-micro:2107"
-      CLIENTS_URL: "https://clients-micro:2108"
-      PRODUCTS_URL: "https://products-micro:2109"
-      SALES_URL: "https://sales-micro-1:2110;https://sales-micro-2:2111"
       ASPNETCORE_HTTPS_PORTS: 2106
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
@@ -77,6 +73,9 @@ services:
       - ~/.dotnet/https:/https:ro
     networks:
       - ups-net
+    depends_on:
+      rabbit:
+        condition: service_healthy
 
   users-micro:
     deploy:
@@ -88,7 +87,10 @@ services:
       context: ./Backend
       dockerfile: ./users.Dockerfile
     depends_on:
-      - users-base
+      users-base:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
     environment:
       ASPNETCORE_HTTPS_PORTS: 2107
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -111,7 +113,10 @@ services:
       context: ./Backend
       dockerfile: ./clients.Dockerfile
     depends_on:
-      - clients-base
+      clients-base:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
     environment:
       ASPNETCORE_HTTPS_PORTS: 2108
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -134,7 +139,10 @@ services:
       context: ./Backend
       dockerfile: ./products.Dockerfile
     depends_on:
-      - products-base
+      products-base:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
     environment:
       ASPNETCORE_HTTPS_PORTS: 2109
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
@@ -147,10 +155,10 @@ services:
     networks:
       - ups-net
 
-  sales-micro-1:
+  sales-micro:
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
       resources:
         limits:
           cpus: 2
@@ -159,47 +167,39 @@ services:
       context: ./Backend
       dockerfile: ./sales.Dockerfile
     depends_on:
-      - sales-base
+      sales-base:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
     environment:
-      ASPNETCORE_HTTPS_PORTS: "2110"
+      ASPNETCORE_HTTPS_PORTS: 2110
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      CLIENTS_URL: "https://clients-micro:2108"
-      PRODUCTS_URL: "https://products-micro:2109"
     ports:
-      - 2110:2110
+      - 2110-2111:2110
     volumes:
       - key-data:/app/keys
       - ~/.dotnet/https:/https:ro
     networks:
       - ups-net
 
-  sales-micro-2:
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: 2
-          memory: 500M
-    build:
-      context: ./Backend
-      dockerfile: ./sales.Dockerfile
-    depends_on:
-      - sales-base
-    environment:
-      ASPNETCORE_HTTPS_PORTS: "2111"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      CLIENTS_URL: "https://clients-micro:2108"
-      PRODUCTS_URL: "https://products-micro:2109"
+  rabbit:
+    image: rabbitmq:management
+    hostname: rabbithost
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     ports:
-      - 2111:2111
-    volumes:
-      - key-data:/app/keys
-      - ~/.dotnet/https:/https:ro
+      - 5672:5672
+      - 15672:15672
     networks:
       - ups-net
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: vhost
 
 volumes:
   users-data:
