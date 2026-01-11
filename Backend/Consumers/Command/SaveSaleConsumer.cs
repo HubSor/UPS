@@ -21,6 +21,7 @@ public class SaveSaleConsumer : BaseCommandConsumer<SaveSaleOrder, SaveSaleRespo
 	private ICollection<Parameter> RelevantParameters { get; set; } = default!;
 	private Product SelectedProduct { get; set; } = default!;
 	private ICollection<SubProduct> SelectedSubProducts { get; set; } = default!;
+	private int _saleId;
 	
 	public SaveSaleConsumer(ILogger<SaveSaleConsumer> logger, IRepository<Sale> sales,
 		IRepository<Parameter> parameters, IRepository<Product> products, 
@@ -194,12 +195,17 @@ public class SaveSaleConsumer : BaseCommandConsumer<SaveSaleOrder, SaveSaleRespo
 		};
 		
 		await sales.AddAsync(newSale);
+
+		_saleId = newSale.Id;
 		
 		logger.LogInformation("Saved new sale {SaleId}", newSale.Id);
 	}
 
 	public override async Task PostTransaction(ConsumeContext<SaveSaleOrder> context)
 	{
-		await RespondAsync(context, new SaveSaleResponse());
+		await RespondAsync(context, new SaveSaleResponse()
+		{
+			SaleId = _saleId,
+		});
 	}
 }

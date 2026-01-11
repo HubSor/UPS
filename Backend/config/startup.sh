@@ -8,7 +8,8 @@ docker-entrypoint.sh postgres \
   -c hot_standby=on \
   -c max_wal_senders=10 \
   -c max_replication_slots=10 \
-  -c hot_standby_feedback=on &
+  -c hot_standby_feedback=on \
+  -c max_connections=1000 &
 
 # Wait for Postgres to be ready
 echo "Waiting for PostgreSQL to accept connections..."

@@ -1,9 +1,8 @@
 networks:
   ups-net:
 
-
 services:
-  writebase-first:
+  writebase:
     image: postgres:16
     restart: always
     environment:
@@ -16,20 +15,7 @@ services:
       - ups-net
     entrypoint: ["bash", "/startup.sh"]
 
-  writebase-second:
-    image: postgres:16
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - ./Backend/config/startup.sh:/startup.sh:ro
-      - ./Backend/config/write_hba.conf:/var/etc/postgresql/custom_hba.conf
-    networks:
-      - ups-net
-    entrypoint: ["bash", "/startup.sh"]
-
-  readbase-first:
+  readbase:
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
@@ -37,7 +23,7 @@ services:
     networks:
       - ups-net
     depends_on:
-      - writebase-first
+      - writebase
     command: |
       bash -c "
       echo 'Cleaning replica data directory as root'
@@ -48,43 +34,16 @@ services:
 
       echo 'Running pg_basebackup as postgres'
       su postgres -c '
-        pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot ups --host=writebase-first --port=5432 -X stream -v -w -U postgres
+        pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot ups --host=writebase --port=5432 -X stream -v -w -U postgres
       '
 
       echo 'Fixing ownership'
       chmod -R 0700 /var/lib/postgresql/data
 
       echo 'Backup done. Starting replica...'
-      exec su postgres -c postgres
-      "
-
-  readbase-second:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    networks:
-      - ups-net
-    depends_on:
-      - writebase-second
-    command: |
-      bash -c "
-      echo 'Cleaning replica data directory as root'
-      rm -rf /var/lib/postgresql/data/*
-
-      echo 'Waiting for primary...'
-      sleep 2
-
-      echo 'Running pg_basebackup as postgres'
-      su postgres -c '
-        pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot ups --host=writebase-second --port=5432 -X stream -v -w -U postgres
+      exec su postgres -c '
+        postgres -c max_connections=1000
       '
-
-      echo 'Fixing ownership'
-      chmod -R 0700 /var/lib/postgresql/data
-
-      echo 'Backup done. Starting replica...'
-      exec su postgres -c postgres
       "
 
   adminer:
@@ -95,8 +54,10 @@ services:
     networks:
       - ups-net
 
-  backend-1:
+  backend:
     deploy:
+      mode: replicated
+      replicas: 2
       resources:
         limits:
           cpus: 2
@@ -104,11 +65,11 @@ services:
     build:
       context: ./Backend
     ports:
-      - 2443:443
-      - 2080:80
+      - 2443-2444:443
+      - 2080-2081:80
     depends_on:
-      - writebase-first
-      - readbase-first
+      - writebase
+      - readbase
     networks:
       - ups-net
     volumes:
@@ -119,30 +80,3 @@ services:
       ASPNETCORE_HTTPS_PORT: 2443
       ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      ASPNETCORE_ENVIRONMENT: "First"
-
-  backend-2:
-    deploy:
-      resources:
-        limits:
-          cpus: 2
-          memory: 500M
-    build:
-      context: ./Backend
-    ports:
-      - 2444:443
-      - 2081:80
-    depends_on:
-      - writebase-second
-      - readbase-second
-    networks:
-      - ups-net
-    volumes:
-      - ~/.dotnet/https:/https:ro
-    environment:
-      FRONTEND_ORIGIN: https://localhost:3000
-      ASPNETCORE_URLS: https://+
-      ASPNETCORE_HTTPS_PORT: 2443
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      ASPNETCORE_ENVIRONMENT: "Second"

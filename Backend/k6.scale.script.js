@@ -8,8 +8,6 @@ export const options = {
 const URL_1 = "https://localhost:2443";
 const URL_2 = "https://localhost:2444";
 const URLS = [ URL_1, URL_2 ];
-let saleId1 = 1;
-let saleId2 = 1;
 let iteration = 0;
 
 export default function () {
@@ -75,9 +73,8 @@ export default function () {
         throw new Error()
     }
 
-    const saleId = iteration % 2 == 0 ? saleId1++ : saleId2++;
     const getSale = JSON.stringify(
-        { "saleId": saleId }
+        { "saleId": saveSaleRes.json().data.saleId }
     )
     const getSaleRes = http.post(url + "/sales/get", getSale, salesHeaders);
     if (getSaleRes.status != 200){
