@@ -8,7 +8,8 @@ namespace UPS.Controllers
 	[Route("sales")]
 	public class SalesController : BaseController
 	{
-		protected override string TargetMicroUrl => Environment.GetEnvironmentVariable("SALES_URL") ?? "https://localhost:2110";
+		protected Random rnd = new();
+		protected override string TargetMicroUrl => (Environment.GetEnvironmentVariable("SALES_URL") ?? "https://localhost:2110").Split(";").ElementAt(rnd.Next(2));
 		
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]

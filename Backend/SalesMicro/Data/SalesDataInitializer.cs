@@ -12,6 +12,11 @@ namespace SalesMicro.Data
 			if (context.Database.GetPendingMigrations().Any())
 				context.Database.Migrate();
 
+			if (context.Sales.Any()){
+				Console.WriteLine("Skipping init");
+				return;
+			}
+
 			context.SaveChanges();
 			Clear(context);
 
