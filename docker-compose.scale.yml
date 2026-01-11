@@ -1,0 +1,214 @@
+networks:
+  ups-net:
+
+
+services:
+  users-base:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - users-data:/var/lib/postgresql/data
+    networks:
+      - ups-net
+
+  clients-base:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - clients-data:/var/lib/postgresql/data
+    networks:
+      - ups-net
+
+  products-base:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - products-data:/var/lib/postgresql/data
+    networks:
+      - ups-net
+
+  sales-base:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - sales-data:/var/lib/postgresql/data
+    networks:
+      - ups-net
+    command: postgres -c 'max_connections=1000'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - ups-net
+
+  proxy:
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./proxy.Dockerfile
+    environment:
+      FRONTEND_ORIGIN: https://localhost:3000
+      USERS_URL: "https://users-micro:2107"
+      CLIENTS_URL: "https://clients-micro:2108"
+      PRODUCTS_URL: "https://products-micro:2109"
+      SALES_URL: "https://sales-micro-1:2110;https://sales-micro-2:2111"
+      ASPNETCORE_HTTPS_PORTS: 2106
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+    ports:
+      - 2106:2106
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+  users-micro:
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./users.Dockerfile
+    depends_on:
+      - users-base
+    environment:
+      ASPNETCORE_HTTPS_PORTS: 2107
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+    ports:
+      - 2107:2107
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+  clients-micro:
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./clients.Dockerfile
+    depends_on:
+      - clients-base
+    environment:
+      ASPNETCORE_HTTPS_PORTS: 2108
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+    ports:
+      - 2108:2108
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+  products-micro:
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./products.Dockerfile
+    depends_on:
+      - products-base
+    environment:
+      ASPNETCORE_HTTPS_PORTS: 2109
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+    ports:
+      - 2109:2109
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+  sales-micro-1:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./sales.Dockerfile
+    depends_on:
+      - sales-base
+    environment:
+      ASPNETCORE_HTTPS_PORTS: "2110"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      CLIENTS_URL: "https://clients-micro:2108"
+      PRODUCTS_URL: "https://products-micro:2109"
+    ports:
+      - 2110:2110
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+  sales-micro-2:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: 2
+          memory: 500M
+    build:
+      context: ./Backend
+      dockerfile: ./sales.Dockerfile
+    depends_on:
+      - sales-base
+    environment:
+      ASPNETCORE_HTTPS_PORTS: "2111"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "qazxsw23ed"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      CLIENTS_URL: "https://clients-micro:2108"
+      PRODUCTS_URL: "https://products-micro:2109"
+    ports:
+      - 2111:2111
+    volumes:
+      - key-data:/app/keys
+      - ~/.dotnet/https:/https:ro
+    networks:
+      - ups-net
+
+volumes:
+  users-data:
+  clients-data:
+  products-data:
+  sales-data:
+  key-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: "./protection"
+      o: bind

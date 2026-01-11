@@ -7,7 +7,7 @@ namespace UPS.Controllers
 {
 	[Route("sales")]
 	public class SalesController(IServiceProvider sp) : BaseController(sp)
-	{
+	{	
 		[HttpPost]
 		[AuthorizeRoles(RoleEnum.SaleManager, RoleEnum.Seller, RoleEnum.Administrator)]
 		[Route("save")]
