@@ -6,7 +6,6 @@ export const options = {
 };
 
 const URL = "https://localhost:2443";
-let saleId = 1;
 
 export default function () {
     const loginHeaders = {
@@ -68,7 +67,7 @@ export default function () {
     }
 
     const getSale = JSON.stringify(
-        { "saleId": saleId++ }
+        { "saleId": saveSaleRes.json().data.saleId }
     )
     const getSaleRes = http.post(URL + "/sales/get", getSale, salesHeaders);
     if (getSaleRes.status != 200){

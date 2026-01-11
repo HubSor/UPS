@@ -214,7 +214,7 @@ public class SalesApplicationService(
 		await sales.AddAsync(newSale);
 
 		logger.LogInformation("Saved new sale {SaleId}", newSale.Id);
-		return new SaveSaleResponse();
+		return new SaveSaleResponse() { SaleId = newSale.Id };
 	}
 	
 	private static bool ValidateAnswer(Parameter parameter, string answer)
