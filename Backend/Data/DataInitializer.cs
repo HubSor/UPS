@@ -50,14 +50,14 @@ namespace Data
 		public static void Initialize(UnitOfWork context, IPasswordService passwordService)
 		{
 			if (context.Database.IsSqlite()) return;
+			
+			if (context.Database.GetPendingMigrations().Any())
+				context.Database.Migrate();
 
 			if (context.Roles.Any()){
 				Console.WriteLine("Skipping init");
 				return;
 			}
-			
-			if (context.Database.GetPendingMigrations().Any())
-				context.Database.Migrate();
 
 			context.SaveChanges();
 			Clear(context);
