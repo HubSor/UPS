@@ -55,6 +55,11 @@ namespace Services
 			if (context.Database.GetPendingMigrations().Any())
 				context.Database.Migrate();
 
+			if (context.Roles.Any()){
+				Console.WriteLine("Skipping init");
+				return;
+			}
+
 			context.SaveChanges();
 			Clear(context);
 					
