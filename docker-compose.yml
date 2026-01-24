@@ -24,8 +24,8 @@ services:
    deploy:
      resources:
       limits:
-        cpus: 2
-        memory: 500M
+        cpus: 12
+        memory: 3000M
    build:
      context: ./Backend
    volumes:
