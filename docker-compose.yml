@@ -190,6 +190,11 @@ services:
      REACT_APP_BACKEND_URL: https://localhost:2106
 
  rabbit:
+   deploy:
+     resources:
+      limits:
+        cpus: 2
+        memory: 500M
    image: rabbitmq:management
    hostname: rabbithost
    healthcheck:
