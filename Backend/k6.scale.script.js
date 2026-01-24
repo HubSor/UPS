@@ -2,7 +2,7 @@ import http from 'k6/http';
 
 export const options = {
     vus: 50,
-    iterations: 500,
+    iterations: 2500,
 };
 
 const URL_1 = "https://localhost:2443";
