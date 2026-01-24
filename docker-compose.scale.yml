@@ -56,8 +56,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 4
+          memory: 1000M
     build:
       context: ./Backend
       dockerfile: ./proxy.Dockerfile
@@ -82,8 +82,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 4
+          memory: 1000M
     build:
       context: ./Backend
       dockerfile: ./users.Dockerfile
@@ -105,8 +105,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 4
+          memory: 1000M
     build:
       context: ./Backend
       dockerfile: ./clients.Dockerfile
@@ -128,8 +128,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 4
+          memory: 1000M
     build:
       context: ./Backend
       dockerfile: ./products.Dockerfile
@@ -153,8 +153,8 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 8
+          memory: 2000M
     build:
       context: ./Backend
       dockerfile: ./sales.Dockerfile
@@ -180,8 +180,8 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: 2
-          memory: 500M
+          cpus: 8
+          memory: 2000M
     build:
       context: ./Backend
       dockerfile: ./sales.Dockerfile

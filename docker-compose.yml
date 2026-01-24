@@ -149,8 +149,8 @@ services:
    deploy:
      resources:
       limits:
-        cpus: 2
-        memory: 500M
+        cpus: 4
+        memory: 1000M
    build:
      context: ./Backend
      dockerfile: ./sales.Dockerfile
